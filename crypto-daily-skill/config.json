@@ -1,0 +1,14 @@
+{
+  "notion": {
+    "page_id": "2f4acc3fa76380ba8a9ee671b5359787",
+    "database_id": "2f4acc3f-a763-8163-a775-e02f2cf471e8"
+  },
+  "daily_report_url": "https://jhinresh.github.io/tanbea.st/{date}.html",
+  "platforms": {
+    "xiaohongshu": true,
+    "instagram": true,
+    "youtube": true
+  },
+  "schedule": "0 16 * * *",
+  "timezone": "America/Los_Angeles"
+}
