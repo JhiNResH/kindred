@@ -1,4 +1,28 @@
-# HEARTBEAT.md
+# HEARTBEAT.md - 定期檢查清單
 
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
-# Add tasks below when you want the agent to check something periodically.
+## 每次 Heartbeat 輪流檢查（每天 2-4 次）
+
+### 📧 通訊
+- [ ] 檢查是否有重要訊息需要回覆
+
+### 📅 日程
+- [ ] 接下來 24 小時有什麼重要事項？
+
+### 🎯 項目狀態
+- [ ] Maat hackathon 進度
+- [ ] Crypto Daily 自動化是否正常
+
+### 💡 主動改進
+- [ ] 有什麼可以自動化的？
+- [ ] Memory 需要整理嗎？
+
+---
+
+## 追蹤狀態
+```json
+{
+  "lastFullCheck": null,
+  "lastProjectCheck": null,
+  "pendingTasks": []
+}
+```

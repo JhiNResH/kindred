@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kindred 🐺</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: radial-gradient(ellipse at center, #0d1b2a 0%, #070d15 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Cinzel', Georgia, serif;
+      overflow: hidden;
+    }
+    
+    .container {
+      text-align: center;
+      position: relative;
+    }
+    
+    /* Spirit particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      background: radial-gradient(circle, rgba(120, 200, 255, 0.8) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: spiritFloat 6s infinite ease-in-out;
+    }
+    
+    .particle.soul {
+      background: radial-gradient(circle, rgba(200, 230, 255, 0.9) 0%, rgba(100, 180, 255, 0.3) 50%, transparent 70%);
+    }
+    
+    @keyframes spiritFloat {
+      0% { transform: translateY(100vh) scale(0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-20vh) scale(1) rotate(360deg); opacity: 0; }
+    }
+    
+    /* Main stage for Wolf & Lamb */
+    .kindred-stage {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    
+    /* ===== WOLF (Main) ===== */
+    .wolf-container {
+      position: relative;
+      width: 220px;
+      height: 280px;
+    }
+    
+    .spirit-aura {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, 
+        rgba(100, 180, 255, 0.15) 0%, 
+        rgba(60, 120, 200, 0.1) 40%,
+        transparent 70%);
+      border-radius: 50%;
+      animation: auraBreath 4s infinite ease-in-out;
+      filter: blur(15px);
+    }
+    
+    .spirit-aura.working {
+      background: radial-gradient(circle, 
+        rgba(255, 150, 50, 0.25) 0%, 
+        rgba(255, 100, 50, 0.1) 40%,
+        transparent 70%);
+      animation: auraBreath 1.5s infinite ease-in-out;
+    }
+    
+    .spirit-aura.thinking {
+      background: radial-gradient(circle, 
+        rgba(180, 100, 255, 0.25) 0%, 
+        rgba(120, 80, 200, 0.1) 40%,
+        transparent 70%);
+      animation: auraBreath 2s infinite ease-in-out;
+    }
+    
+    @keyframes auraBreath {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    }
+    
+    .spirit-trail {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      width: 160px;
+      height: 160px;
+      transform: translate(-50%, -50%);
+      border: 2px solid rgba(100, 180, 255, 0.2);
+      border-radius: 50%;
+      animation: trailRotate 8s infinite linear;
+    }
+    
+    .spirit-trail:nth-child(2) {
+      width: 190px;
+      height: 190px;
+      animation-duration: 12s;
+      animation-direction: reverse;
+      border-color: rgba(100, 180, 255, 0.1);
+    }
+    
+    @keyframes trailRotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    /* Wolf Mask */
+    .wolf-mask {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 170px;
+      animation: maskFloat 4s infinite ease-in-out;
+    }
+    
+    .wolf-mask.working {
+      animation: maskHunt 1.5s infinite ease-in-out;
+    }
+    
+    @keyframes maskFloat {
+      0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      25% { transform: translateX(-50%) translateY(-5px) rotate(-1deg); }
+      75% { transform: translateX(-50%) translateY(-5px) rotate(1deg); }
+    }
+    
+    @keyframes maskHunt {
+      0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+      50% { transform: translateX(-50%) translateY(-8px) scale(1.02); }
+    }
+    
+    .mask-face {
+      position: relative;
+      width: 120px;
+      height: 140px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, 
+        #c8dce8 0%, 
+        #a8c4d4 30%,
+        #8ab0c4 60%,
+        #6a9ab4 100%);
+      border-radius: 45% 45% 40% 40%;
+      box-shadow: 
+        0 0 40px rgba(100, 180, 255, 0.3),
+        inset 0 -20px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .mask-marking {
+      position: absolute;
+      background: #1a3a4a;
+    }
+    
+    .mask-marking.forehead {
+      width: 3px;
+      height: 35px;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .mask-marking.left-cheek {
+      width: 22px;
+      height: 3px;
+      top: 80px;
+      left: 12px;
+      transform: rotate(-20deg);
+    }
+    
+    .mask-marking.right-cheek {
+      width: 22px;
+      height: 3px;
+      top: 80px;
+      right: 12px;
+      transform: rotate(20deg);
+    }
+    
+    .ear {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      border-bottom: 55px solid #b8d0e0;
+      filter: drop-shadow(0 0 10px rgba(100, 180, 255, 0.3));
+    }
+    
+    .ear::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 30px solid #1a3a4a;
+      top: 15px;
+      left: -10px;
+    }
+    
+    .ear.left {
+      top: -32px;
+      left: 12px;
+      transform: rotate(-15deg);
+    }
+    
+    .ear.right {
+      top: -32px;
+      right: 12px;
+      transform: rotate(15deg);
+    }
+    
+    .eyes {
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 30px;
+    }
+    
+    .eye {
+      width: 24px;
+      height: 30px;
+      background: #0a1520;
+      border-radius: 50% 50% 45% 45%;
+      position: relative;
+      overflow: visible;
+    }
+    
+    .eye::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 22px;
+      background: radial-gradient(circle, #7dd3fc 0%, #38bdf8 50%, #0284c7 100%);
+      border-radius: 50%;
+      top: 4px;
+      left: 3px;
+      box-shadow: 
+        0 0 15px #7dd3fc,
+        0 0 30px rgba(125, 211, 252, 0.5);
+      animation: eyePulse 3s infinite ease-in-out;
+    }
+    
+    .eye.working::before {
+      background: radial-gradient(circle, #fcd34d 0%, #f59e0b 50%, #d97706 100%);
+      box-shadow: 
+        0 0 20px #fcd34d,
+        0 0 40px rgba(252, 211, 77, 0.6);
+      animation: eyePulse 0.8s infinite ease-in-out;
+    }
+    
+    .eye.thinking::before {
+      background: radial-gradient(circle, #c4b5fd 0%, #a78bfa 50%, #7c3aed 100%);
+      box-shadow: 
+        0 0 15px #c4b5fd,
+        0 0 30px rgba(196, 181, 253, 0.5);
+      animation: eyePulse 1.5s infinite ease-in-out;
+    }
+    
+    .eye::after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: white;
+      border-radius: 50%;
+      top: 7px;
+      left: 14px;
+      opacity: 0.9;
+    }
+    
+    @keyframes eyePulse {
+      0%, 100% { 
+        box-shadow: 0 0 15px currentColor, 0 0 30px currentColor;
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 25px currentColor, 0 0 50px currentColor;
+        transform: scale(1.05);
+      }
+    }
+    
+    .snout {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 45px;
+      height: 35px;
+      background: linear-gradient(180deg, #9fc5d8 0%, #7eb3c8 100%);
+      border-radius: 40% 40% 50% 50%;
+    }
+    
+    .nose {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 12px;
+      background: #1a3a4a;
+      border-radius: 50% 50% 45% 45%;
+    }
+    
+    .kindred-mark {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      border: 2px solid #1a3a4a;
+      border-radius: 50%;
+    }
+    
+    .kindred-mark::before {
+      content: '';
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background: #7dd3fc;
+      border-radius: 50%;
+      top: 3.5px;
+      left: 3.5px;
+      box-shadow: 0 0 10px #7dd3fc;
+      animation: markGlow 2s infinite;
+    }
+    
+    @keyframes markGlow {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; box-shadow: 0 0 15px #7dd3fc, 0 0 25px #7dd3fc; }
+    }
+    
+    /* Wolf label */
+    .wolf-label {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: #7dd3fc;
+      letter-spacing: 3px;
+      opacity: 0.7;
+    }
+    
+    /* ===== LAMB (Companion) ===== */
+    .lamb-container {
+      position: relative;
+      width: 140px;
+      height: 200px;
+      opacity: 0.9;
+    }
+    
+    .lamb-aura {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(200, 220, 255, 0.1) 40%,
+        transparent 70%);
+      border-radius: 50%;
+      animation: lambAura 5s infinite ease-in-out;
+      filter: blur(10px);
+    }
+    
+    @keyframes lambAura {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.9; }
+    }
+    
+    .lamb-mask {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: lambFloat 5s infinite ease-in-out;
+    }
+    
+    @keyframes lambFloat {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+    
+    .lamb-face {
+      width: 80px;
+      height: 90px;
+      background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+      border-radius: 50% 50% 45% 45%;
+      position: relative;
+      box-shadow: 
+        0 0 30px rgba(255, 255, 255, 0.3),
+        inset 0 -15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Lamb horns - curved */
+    .horn {
+      position: absolute;
+      width: 12px;
+      height: 50px;
+      background: linear-gradient(90deg, #d4d4d8 0%, #f4f4f5 50%, #d4d4d8 100%);
+      border-radius: 50% 50% 20% 20%;
+    }
+    
+    .horn.left {
+      top: -25px;
+      left: 5px;
+      transform: rotate(-30deg);
+      border-radius: 50% 20% 20% 50%;
+    }
+    
+    .horn.right {
+      top: -25px;
+      right: 5px;
+      transform: rotate(30deg);
+      border-radius: 20% 50% 50% 20%;
+    }
+    
+    .lamb-eyes {
+      position: absolute;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+    }
+    
+    .lamb-eye {
+      width: 14px;
+      height: 18px;
+      background: #0f172a;
+      border-radius: 50%;
+      position: relative;
+    }
+    
+    .lamb-eye::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 12px;
+      background: radial-gradient(circle, #e0f2fe 0%, #7dd3fc 100%);
+      border-radius: 50%;
+      top: 3px;
+      left: 2px;
+      box-shadow: 0 0 10px rgba(125, 211, 252, 0.5);
+    }
+    
+    .lamb-eye::after {
+      content: '';
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      top: 5px;
+      left: 8px;
+    }
+    
+    .lamb-mark {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 20px;
+      background: #94a3b8;
+    }
+    
+    .lamb-label {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: #cbd5e1;
+      letter-spacing: 3px;
+      opacity: 0.7;
+    }
+    
+    /* ===== Status Area ===== */
+    .status {
+      margin-top: 10px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .name {
+      font-size: 36px;
+      font-weight: 400;
+      color: #e2e8f0;
+      letter-spacing: 12px;
+      text-shadow: 
+        0 0 20px rgba(125, 211, 252, 0.5),
+        0 0 40px rgba(125, 211, 252, 0.3);
+    }
+    
+    .title {
+      font-size: 11px;
+      color: #7dd3fc;
+      letter-spacing: 6px;
+      margin-top: 5px;
+      opacity: 0.8;
+    }
+    
+    .status-text {
+      font-size: 14px;
+      color: #7dd3fc;
+      margin-top: 15px;
+      letter-spacing: 3px;
+      min-height: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .status-text.working {
+      color: #fcd34d;
+    }
+    
+    .status-text.thinking {
+      color: #c4b5fd;
+    }
+    
+    /* Activity */
+    .activity {
+      margin-top: 20px;
+      padding: 18px 22px;
+      background: rgba(10, 30, 50, 0.6);
+      border-radius: 8px;
+      max-width: 360px;
+      margin-left: auto;
+      margin-right: auto;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(125, 211, 252, 0.15);
+    }
+    
+    .activity-title {
+      font-size: 10px;
+      color: #7dd3fc;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+    
+    .activity-item {
+      font-size: 12px;
+      color: #94a3b8;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(125, 211, 252, 0.1);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-dot {
+      width: 6px;
+      height: 6px;
+      background: #7dd3fc;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px #7dd3fc;
+    }
+    
+    .activity-dot.complete {
+      background: #4ade80;
+      box-shadow: 0 0 6px #4ade80;
+    }
+    
+    /* Sub-agents */
+    .subagents {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .subagent {
+      width: 50px;
+      height: 50px;
+      background: rgba(125, 211, 252, 0.1);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      animation: spiritOrbit 3s infinite ease-in-out;
+      border: 1px solid rgba(125, 211, 252, 0.3);
+      box-shadow: 0 0 15px rgba(125, 211, 252, 0.2);
+    }
+    
+    @keyframes spiritOrbit {
+      0%, 100% { transform: scale(1) translateY(0); opacity: 0.8; }
+      50% { transform: scale(1.08) translateY(-5px); opacity: 1; }
+    }
+    
+    .subagent-label {
+      font-size: 8px;
+      color: #7dd3fc;
+      margin-top: 6px;
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
+
+    /* Quote */
+    .quote {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: rgba(125, 211, 252, 0.4);
+      font-style: italic;
+      letter-spacing: 2px;
+    }
+    
+    /* Sound indicator */
+    .sound-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(10, 30, 50, 0.6);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border: 1px solid rgba(125, 211, 252, 0.2);
+      font-size: 18px;
+      transition: all 0.3s;
+    }
+    
+    .sound-indicator:hover {
+      background: rgba(125, 211, 252, 0.1);
+    }
+    
+    .sound-indicator.muted {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <div class="sound-indicator" id="soundToggle" onclick="toggleSound()">🔊</div>
+  
+  <div class="container">
+    <div class="kindred-stage">
+      <!-- LAMB -->
+      <div class="lamb-container">
+        <div class="lamb-aura"></div>
+        <div class="lamb-mask">
+          <div class="lamb-face">
+            <div class="horn left"></div>
+            <div class="horn right"></div>
+            <div class="lamb-mark"></div>
+            <div class="lamb-eyes">
+              <div class="lamb-eye"></div>
+              <div class="lamb-eye"></div>
+            </div>
+          </div>
+        </div>
+        <div class="lamb-label">LAMB</div>
+      </div>
+      
+      <!-- WOLF -->
+      <div class="wolf-container">
+        <div class="spirit-aura" id="aura"></div>
+        <div class="spirit-trail"></div>
+        <div class="spirit-trail"></div>
+        
+        <div class="wolf-mask" id="mask">
+          <div class="mask-face">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="kindred-mark"></div>
+            <div class="mask-marking forehead"></div>
+            <div class="mask-marking left-cheek"></div>
+            <div class="mask-marking right-cheek"></div>
+            <div class="eyes">
+              <div class="eye" id="eye-left"></div>
+              <div class="eye" id="eye-right"></div>
+            </div>
+            <div class="snout">
+              <div class="nose"></div>
+            </div>
+          </div>
+        </div>
+        <div class="wolf-label">WOLF</div>
+      </div>
+    </div>
+    
+    <div class="status">
+      <div class="name">KINDRED</div>
+      <div class="title">THE ETERNAL HUNTERS</div>
+      <div class="status-text" id="status">● Never one without the other</div>
+    </div>
+    
+    <div class="activity">
+      <div class="activity-title">MARKED TARGETS</div>
+      <div id="activity-log">
+        <div class="activity-item">
+          <span class="activity-dot complete"></span>
+          <span>研究 @iXiaoWu 合作機會</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot complete"></span>
+          <span>Maat video 項目更新</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot"></span>
+          <span>等待下一個獵物...</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="subagents" id="subagents"></div>
+  </div>
+  
+  <div class="quote">"Tell me again, little wolf, which things are ours to take?"</div>
+  
+  <!-- Audio elements -->
+  <audio id="ambientSound" loop>
+    <source src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="huntSound">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="markSound">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+  </audio>
+  
+  <script>
+    // Create spirit particles
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle' + (Math.random() > 0.7 ? ' soul' : '');
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.width = (3 + Math.random() * 8) + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.animationDelay = Math.random() * 6 + 's';
+      particle.style.animationDuration = (5 + Math.random() * 4) + 's';
+      particlesContainer.appendChild(particle);
+    }
+    
+    // Sound state
+    let soundEnabled = true;
+    const ambientSound = document.getElementById('ambientSound');
+    const huntSound = document.getElementById('huntSound');
+    const markSound = document.getElementById('markSound');
+    
+    ambientSound.volume = 0.15;
+    huntSound.volume = 0.3;
+    markSound.volume = 0.25;
+    
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const indicator = document.getElementById('soundToggle');
+      if (soundEnabled) {
+        indicator.textContent = '🔊';
+        indicator.classList.remove('muted');
+        ambientSound.play().catch(() => {});
+      } else {
+        indicator.textContent = '🔇';
+        indicator.classList.add('muted');
+        ambientSound.pause();
+      }
+    }
+    
+    // Try to start ambient sound on first interaction
+    document.body.addEventListener('click', () => {
+      if (soundEnabled && ambientSound.paused) {
+        ambientSound.play().catch(() => {});
+      }
+    }, { once: true });
+    
+    // State management
+    const state = {
+      mode: 'idle',
+      status: '● Never one without the other',
+      activities: [],
+      subagents: []
+    };
+    
+    // Update UI based on state
+    function updateUI() {
+      const aura = document.getElementById('aura');
+      const mask = document.getElementById('mask');
+      const eyeLeft = document.getElementById('eye-left');
+      const eyeRight = document.getElementById('eye-right');
+      const statusEl = document.getElementById('status');
+      
+      aura.classList.remove('working', 'thinking');
+      mask.classList.remove('working');
+      eyeLeft.classList.remove('working', 'thinking');
+      eyeRight.classList.remove('working', 'thinking');
+      statusEl.classList.remove('working', 'thinking');
+      
+      if (state.mode !== 'idle') {
+        aura.classList.add(state.mode);
+        mask.classList.add(state.mode);
+        eyeLeft.classList.add(state.mode);
+        eyeRight.classList.add(state.mode);
+        statusEl.classList.add(state.mode);
+      }
+      
+      statusEl.textContent = state.status;
+    }
+    
+    // API for external control
+    window.kindred = {
+      setMode: (mode) => {
+        const prevMode = state.mode;
+        state.mode = mode;
+        updateUI();
+        
+        // Play sounds
+        if (soundEnabled) {
+          if (mode === 'working' && prevMode !== 'working') {
+            huntSound.currentTime = 0;
+            huntSound.play().catch(() => {});
+          }
+        }
+      },
+      setStatus: (status) => {
+        state.status = status;
+        updateUI();
+      },
+      addActivity: (text, complete = false) => {
+        const log = document.getElementById('activity-log');
+        const item = document.createElement('div');
+        item.className = 'activity-item';
+        item.innerHTML = `
+          <span class="activity-dot ${complete ? 'complete' : ''}"></span>
+          <span>${text}</span>
+        `;
+        log.insertBefore(item, log.firstChild);
+        if (log.children.length > 5) {
+          log.removeChild(log.lastChild);
+        }
+        
+        // Play mark sound
+        if (soundEnabled) {
+          markSound.currentTime = 0;
+          markSound.play().catch(() => {});
+        }
+      },
+      addSubagent: (emoji, label) => {
+        const container = document.getElementById('subagents');
+        const wrapper = document.createElement('div');
+        wrapper.style.textAlign = 'center';
+        wrapper.innerHTML = `
+          <div class="subagent">${emoji}</div>
+          <div class="subagent-label">${label}</div>
+        `;
+        container.appendChild(wrapper);
+        return () => container.removeChild(wrapper);
+      },
+      clearSubagents: () => {
+        document.getElementById('subagents').innerHTML = '';
+      },
+      playSound: (type) => {
+        if (!soundEnabled) return;
+        if (type === 'hunt') {
+          huntSound.currentTime = 0;
+          huntSound.play().catch(() => {});
+        } else if (type === 'mark') {
+          markSound.currentTime = 0;
+          markSound.play().catch(() => {});
+        }
+      }
+    };
+  </script>
+</body>
+</html>
