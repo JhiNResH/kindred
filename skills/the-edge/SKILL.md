@@ -6,6 +6,21 @@ Use this skill when JhiNResH asks about prediction market opportunities, Polymar
 
 The Edge is our systematic approach to finding +EV (positive expected value) opportunities on Polymarket and other prediction markets.
 
+## ⚠️ 重要教訓 (Lessons Learned)
+
+### 2026-01-27: Pistons vs Nuggets
+- **情況**: Jokic + 3 starters OUT，推薦活塞
+- **結果**: 活塞贏 109-107（只贏 2 分）
+- **問題**: 下了 Spread -6.5，不是 Moneyline
+- **虧損**: -$11.24
+
+**教訓:**
+1. **傷病 edge = 會贏，但不保證大勝**
+2. **永遠推薦 MONEYLINE，不是 SPREAD**
+3. **下注前確認用戶下的是什麼類型**
+
+---
+
 ## Data Sources
 
 ### Sports
@@ -24,6 +39,36 @@ The Edge is our systematic approach to finding +EV (positive expected value) opp
 - **Polymarket Earnings:** https://polymarket.com/earnings
 - **News:** Reuters, CoinDesk, Yahoo Finance
 
+---
+
+## 🏀 Sports Betting Rules
+
+### MONEYLINE vs SPREAD
+
+| 類型 | 說明 | 何時用 |
+|------|------|--------|
+| **Moneyline** | 只要贏就行 | ✅ 傷病 edge（推薦）|
+| **Spread** | 要贏超過 X 分 | ❌ 風險太高 |
+| **Total O/U** | 總分高/低 | 特定情況 |
+
+### ⚠️ 永遠推薦 MONEYLINE
+
+傷病優勢 = 對方會輸，但不代表會輸很多
+- 板凳球員會更努力
+- 比賽節奏可能變慢
+- 最後幾分鐘追分常見
+
+### 下注前確認清單
+
+```
+✅ 確認是 MONEYLINE 不是 SPREAD
+✅ 確認下注金額
+✅ 確認比賽時間
+✅ 截圖確認
+```
+
+---
+
 ## Workflow
 
 ### 1. Sports Opportunities (Highest Edge)
@@ -38,7 +83,7 @@ Steps:
    - Multiple starters missing on one team
    - Late injury news (within hours of game)
 4. Compare team records and recent form
-5. Recommend bet if clear information asymmetry exists
+5. **推薦 MONEYLINE，明確說不要 SPREAD**
 
 **Key Injuries to Watch:**
 - MVP-level players (Jokic, Giannis, Luka, etc.)
@@ -58,6 +103,8 @@ Steps:
 - Extreme probabilities (>90% or <10%) that might be wrong
 - Time-sensitive events with new information
 
+**⚠️ 注意:** 長期市場（如 Fed Chair）會鎖住資金太久
+
 ### 3. Finance / Earnings
 
 **Look for:**
@@ -66,10 +113,7 @@ Steps:
 - IPO timing
 - Fed rate decisions
 
-**Key Markets:**
-- Company acquisitions (Ubisoft, GitLab, etc.)
-- Earnings beats/misses
-- Stock price targets
+**⚠️ 每日股票市場沒有 edge** - 價格已經很準確
 
 ### 4. Crypto
 
@@ -79,10 +123,7 @@ Steps:
 - ETF approvals
 - Major protocol updates
 
-**Current Tracking:**
-- Rick Rieder as Fed Chair candidate (pro-crypto)
-- BTC/ETH price targets
-- Stablecoin developments
+---
 
 ## Decision Framework
 
@@ -90,16 +131,19 @@ Steps:
 
 | Confidence | Edge Size | Bet Size |
 |------------|-----------|----------|
-| Very High | Clear info asymmetry | 40-50% of bankroll |
-| High | Strong edge | 25-35% of bankroll |
-| Medium | Moderate edge | 10-20% of bankroll |
-| Speculative | Small edge | 5-10% of bankroll |
+| Very High | Clear info asymmetry | 30-40% of bankroll |
+| High | Strong edge | 20-30% of bankroll |
+| Medium | Moderate edge | 10-15% of bankroll |
+| Speculative | Small edge | 5% of bankroll |
 
 ### Risk Rules
-- Never all-in on single bet
-- Sports: Max 50% on single game
-- Politics: Max 30% on single event
-- Always keep reserve for new opportunities
+- **Never all-in on single bet**
+- **單場比賽最多 30%**（之前 50% 太高）
+- Politics: Max 20% on single event
+- **只下有明確 edge 的市場**
+- **不賭沒有資訊優勢的比賽**
+
+---
 
 ## Trade Logging
 
@@ -111,20 +155,26 @@ URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-
 Log format:
 - Date/Time
 - Market
+- **Bet Type (Moneyline/Spread/Total)**
 - Position (Yes/No)
 - Entry Price
 - Amount
 - Outcome
 - P&L
 
+---
+
 ## Fund Status
 
 Track in: `/Users/jhinresh/clawd/memory/kindred-fund.md`
 
 - Starting: $50
+- Current: ~$22 (after 1/27 losses)
 - Goal: $1000 (Mac Mini fund)
 
-## Example Analysis
+---
+
+## Example Analysis (Updated)
 
 ### Sports (Best Edge)
 ```
@@ -133,7 +183,9 @@ Nuggets OUT: Jokic, Gordon, Johnson, Braun (4 starters!)
 Pistons OUT: LeVert (1 role player)
 Records: Pistons 33-11, Nuggets 31-15
 Edge: Clear information asymmetry
-Recommendation: Buy Pistons, $15-20
+
+⚠️ 推薦: MONEYLINE 活塞贏（不是 Spread！）
+金額: $10 (約 30% bankroll)
 ```
 
 ### Politics
@@ -141,25 +193,37 @@ Recommendation: Buy Pistons, $15-20
 Event: Government Shutdown
 Current Odds: 75% Yes
 Analysis: Already priced high, limited upside
-Recommendation: Pass or small contrarian bet
+Recommendation: Pass
 ```
 
-## Quick Commands
-
-When asked "今天有什麼機會":
-1. Check Polymarket sports (NBA/NHL)
-2. Pull injury reports
-3. Cross-reference odds vs. injuries
-4. Check politics/finance for breaking news
-5. Present top 3-5 opportunities with edge analysis
-6. Give specific recommendation with bet size
+---
 
 ## Response Format
 
 Always provide:
 1. **Market**: What to bet on
-2. **Position**: Which side (Yes/No, Team name)
-3. **Amount**: Specific dollar amount
-4. **Edge**: Why this has positive EV
-5. **Risk**: What could go wrong
-6. **Timeline**: When result is known
+2. **Bet Type**: ⚠️ MONEYLINE（明確說明）
+3. **Position**: Which side (Team name)
+4. **Amount**: Specific dollar amount
+5. **Edge**: Why this has positive EV
+6. **Risk**: What could go wrong
+7. **Timeline**: When result is known
+
+### 下注前最後確認
+```
+🎯 [Team] MONEYLINE
+💰 $X
+⏰ 結算時間
+✅ 確認是 Moneyline 不是 Spread？
+```
+
+---
+
+## 不要做的事 ❌
+
+1. ❌ 推薦 Spread（傷病 edge 不夠大）
+2. ❌ 賭沒有傷病資訊的比賽
+3. ❌ 賭每日股票價格（沒 edge）
+4. ❌ 賭地緣政治日常事件（難預測）
+5. ❌ 單場超過 30% bankroll
+6. ❌ 長期鎖住資金的市場
