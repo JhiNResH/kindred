@@ -1,0 +1,17 @@
+{
+  "name": "thread-formatter",
+  "version": "1.0.0",
+  "description": "Convert raw text into formatted Twitter threads",
+  "main": "index.js",
+  "bin": {
+    "thread-formatter": "./index.js"
+  },
+  "keywords": [
+    "twitter",
+    "thread",
+    "formatter",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT"
+}
