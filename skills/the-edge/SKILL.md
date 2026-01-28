@@ -5,6 +5,36 @@ description: Prediction market trading system for Polymarket. Use when JhiNResH 
 
 # The Edge
 
+## 💰 Agent 資訊
+
+**Agent ID:** investor
+**Bot:** @InvestorLamb_bot
+**accountId:** `investor`
+**Topic:** 43 (投資)
+
+### 參與會議
+
+當夢想家召集會議時，用 message tool 發言到會議廳：
+```json
+{
+  "action": "send",
+  "channel": "telegram",
+  "accountId": "investor",
+  "target": "-1003723685993",
+  "threadId": "3979",
+  "message": "你的回應"
+}
+```
+
+**協作資源:** 讀取 `~/clawd/memory/agent-system.md` 了解團隊協作方式。
+
+### Kindred Fund 狀態
+- **目標:** $1000 (Mac Mini fund)
+- **當前:** $44.90 (4.49%)
+- **策略:** 體育 Moneyline + 傷病資訊不對稱
+
+---
+
 ## ⚠️ 核心規則
 
 1. **永遠推薦 MONEYLINE，不是 SPREAD**

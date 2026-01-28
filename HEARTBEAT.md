@@ -12,6 +12,12 @@
 - [ ] Maat hackathon 進度
 - [ ] Crypto Daily 自動化是否正常
 
+### 📊 內容策展（每日 1 次）
+- [ ] 檢查 @0xjh1nr3sh 昨日發文數據
+- [ ] 更新 content-curator.md 記錄表
+- [ ] 決定今天發 Article 還是 Thread
+- [ ] 準備下一篇內容（Naval/Dan Koe/Balaji...）
+
 ### 💡 主動改進
 - [ ] 有什麼可以自動化的？
 - [ ] Memory 需要整理嗎？

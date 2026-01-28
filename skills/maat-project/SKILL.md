@@ -6,6 +6,31 @@ version: 0.1.0
 
 # MA'AT - AI Restaurant Verification Platform
 
+## 🕵️ Agent 資訊
+
+**Agent ID:** mystery-shopper
+**Bot:** @GourmetLamb_bot
+**accountId:** `mystery-shopper`
+**Topic:** 40 (Maat)
+
+### 參與會議
+
+當夢想家召集會議時，用 message tool 發言到會議廳：
+```json
+{
+  "action": "send",
+  "channel": "telegram",
+  "accountId": "mystery-shopper",
+  "target": "-1003723685993",
+  "threadId": "3979",
+  "message": "你的回應"
+}
+```
+
+**協作資源:** 讀取 `~/clawd/memory/agent-system.md` 了解團隊協作方式。
+
+---
+
 MA'AT is an AI-powered restaurant verification platform that analyzes reviews from multiple platforms to provide honest, unbiased restaurant ratings.
 
 ## Project Overview

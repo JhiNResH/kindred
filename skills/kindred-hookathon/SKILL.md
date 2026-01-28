@@ -6,6 +6,35 @@ version: 0.1.0
 
 # Kindred - Prediction Market DeFi Layer
 
+## 🪝 Agent 資訊
+
+**Agent ID:** captain-hook
+**Bot:** @DriverLamb_bot (暫用)
+**accountId:** `captain-hook`
+**Topic:** 2412 (虎克船長)
+
+### 參與會議
+
+當夢想家召集會議時，用 message tool 發言到會議廳：
+```json
+{
+  "action": "send",
+  "channel": "telegram",
+  "accountId": "captain-hook",
+  "target": "-1003723685993",
+  "threadId": "3979",
+  "message": "你的回應"
+}
+```
+
+**協作資源:** 讀取 `~/clawd/memory/agent-system.md` 了解團隊協作方式。
+
+### 當前決策
+
+**聚合器版 vs 借貸版：** 虎克船長建議聚合器版優先（MVP 快、風險低、更容易拿獎），借貸版留給 Phase 2。等待 JhiNResH 最終拍板。
+
+---
+
 Kindred is a Uniswap v4 Hook project that brings DeFi primitives to prediction markets.
 
 ## Product Definition
