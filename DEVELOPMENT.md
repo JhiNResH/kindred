@@ -45,6 +45,7 @@ docs: update CLAUDE.md with contract addresses
 | 🍎 Steve Jobs | 產品 | 產品設計、UX、Demo |
 | 🐺 Jensen Huang | 統籌 | CEO、協調、決策 |
 | 💰 Warren Buffett | 投資/顧問 | 投資決策、市場分析 |
+| 📣 Gary Vee | 增長 | 社群運營、內容、推特增長 |
 
 ### 並行策略
 ```
