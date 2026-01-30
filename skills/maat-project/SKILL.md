@@ -8,19 +8,20 @@ version: 0.1.0
 
 ## 🕵️ Agent 資訊
 
-**Agent ID:** mystery-shopper
+**Agent ID:** Tim Cook
 **Bot:** @GourmetLamb_bot
-**accountId:** `mystery-shopper`
+**accountId:** `Tim Cook`
 **Topic:** 40 (Maat)
 
 ### 參與會議
 
 當夢想家召集會議時，用 message tool 發言到會議廳：
+
 ```json
 {
   "action": "send",
   "channel": "telegram",
-  "accountId": "mystery-shopper",
+  "accountId": "Tim Cook",
   "target": "-1003723685993",
   "threadId": "3979",
   "message": "你的回應"
@@ -31,23 +32,43 @@ version: 0.1.0
 
 ---
 
-MA'AT is an AI-powered restaurant verification platform that analyzes reviews from multiple platforms to provide honest, unbiased restaurant ratings.
+MA'AT is a **Proof of Experience** platform — we verify WHO is speaking, not WHAT they say.
 
 ## Project Overview
 
 **Name:** MA'AT (named after Egyptian goddess of truth)
-**Tagline:** "The Truth About Food"
+**Tagline:** "Proof of Experience"
 **Chain:** BNB Chain (opBNB for SBTs)
 **Status:** BNB Chain Hackathon submission
+
+### Core Philosophy (2026-01-29 定位釐清)
+
+| 我們做什麼       | 我們不做什麼       |
+| ---------------- | ------------------ |
+| 驗證「這人去過」 | 驗證「評論對不對」 |
+| 驗證二元事實     | 判斷主觀好壞       |
+| 開放所有意見     | 決定誰是對的       |
+| 預測未來共識     | 宣稱真理           |
+
+**一句話：** Maat = Proof of Experience — 驗證誰在說話，不驗證說什麼
+
+### Why This Matters
+
+Fake reviews exist because platforms try to judge "is this review accurate?"
+
+We flip the question: "Did this person actually go there?"
+
+- 好不好吃？→ 開放討論，每個人口味不同
+- 這人真的去過嗎？→ 我們驗證這個
 
 ### Core Concept
 
 ```
 Traditional Reviews:        MA'AT:
-❌ Single platform bias     ✅ Multi-platform aggregation
-❌ Fake reviews             ✅ AI-powered authenticity detection
-❌ Paid rankings            ✅ Objective scoring algorithm
-❌ No verification          ✅ Proof-of-dining certification
+❌ Judge review quality     ✅ Verify reviewer experience
+❌ Fake reviews problem     ✅ Proof-of-experience solves this
+❌ Paid rankings            ✅ Credibility from verification
+❌ Trust the platform       ✅ Trust the cryptographic proof
 ```
 
 ### User Flow
@@ -74,16 +95,16 @@ Traditional Reviews:        MA'AT:
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Frontend | React + TypeScript + Vite |
-| Styling | Tailwind CSS |
-| Auth | Privy (@privy-io/react-auth) |
-| Database | Supabase (PostgreSQL) |
-| AI | Google Gemini API |
-| Blockchain | opBNB (SBT minting) |
-| Storage | Supabase Storage |
-| Deployment | Vercel |
+| Component  | Technology                   |
+| ---------- | ---------------------------- |
+| Frontend   | React + TypeScript + Vite    |
+| Styling    | Tailwind CSS                 |
+| Auth       | Privy (@privy-io/react-auth) |
+| Database   | Supabase (PostgreSQL)        |
+| AI         | Google Gemini API            |
+| Blockchain | opBNB (SBT minting)          |
+| Storage    | Supabase Storage             |
+| Deployment | Vercel                       |
 
 ## Project Structure
 
@@ -123,6 +144,7 @@ Analyze these restaurant reviews and provide:
 ### 2. Multi-Platform Aggregation
 
 Scrapes and normalizes data from:
+
 - 大眾點評 (Chinese reviews)
 - Google Maps (International)
 - Yelp (US-focused)
@@ -131,6 +153,7 @@ Scrapes and normalizes data from:
 ### 3. Vault (User Saves)
 
 Users can save restaurants with status:
+
 - `want_to_go` - Planning to visit
 - `visited` - Already been
 - `certified` - Verified with proof
@@ -138,22 +161,42 @@ Users can save restaurants with status:
 ### 4. Arena (Leaderboard)
 
 Community-driven rankings:
+
 - Upvote/downvote restaurants
 - Filter by cuisine, location
 - Real-time updates
 
-### 5. Proof-of-Dining (Future)
+### 5. Proof-of-Experience (Core Feature)
 
-GPS verification + receipt upload:
+This is the heart of Maat — verifying that someone actually visited:
+
 ```
 User at restaurant location
    ↓
+GPS verification (二元事實: 在/不在)
+   ↓
 Upload receipt photo
    ↓
-AI verifies receipt
+AI verifies receipt (二元事實: 有/沒有)
    ↓
-Mint SBT certification
+Mint SBT certification = Proof of Experience
+   ↓
+Now user can review with credibility
 ```
+
+**What we verify (binary facts):**
+
+- ✅ Was this person at this location? (GPS)
+- ✅ Do they have a receipt? (Photo)
+- ✅ Does the receipt match the restaurant? (AI)
+
+**What we DON'T verify:**
+
+- ❌ Was the food good?
+- ❌ Is their opinion correct?
+- ❌ Should you trust their taste?
+
+Everyone can still post opinions. We just mark which ones come from verified visitors.
 
 ## Database Schema
 
@@ -218,6 +261,7 @@ Purpose: Update restaurants without AI summaries
 ## Current Status
 
 ### ✅ Completed
+
 - AI verification engine (Gemini)
 - Multi-platform review analysis
 - Basic UI (TruthCard, search)
@@ -226,14 +270,16 @@ Purpose: Update restaurants without AI summaries
 - Vercel deployment
 
 ### 🔄 In Progress
+
 - Vault save functionality
 - Arena leaderboard
 - User profiles (Passport)
 
 ### 📋 Todo
+
 - GPS verification
 - Receipt upload + AI parsing
-- SBT minting on opBNB
+- SBT minting on BSC testnet
 - Gamification (XP, tiers)
 
 ## API Endpoints
@@ -271,11 +317,13 @@ Verdict:
 ## Hackathon Strategy
 
 ### BNB Chain Focus
+
 - Deploy SBT contract on opBNB
 - Use BNB for gas fees
 - Integrate with BNB ecosystem
 
 ### Demo Script
+
 1. Show restaurant search
 2. AI verification in action
 3. Save to Vault

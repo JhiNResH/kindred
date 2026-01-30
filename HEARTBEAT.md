@@ -1,5 +1,16 @@
 # HEARTBEAT.md - 定期檢查清單
 
+## 🚨 緊急待辦 (2026-01-30)
+
+### 早上 8:00+ 通知 JhiNResH 會議摘要
+- [ ] 發送 Agent 會議摘要給 JhiNResH
+- 會議紀錄：`memory/meetings/2026-01-30.md`
+- 關鍵阻礙：Gemini API Key, MVP 範圍, Deadline 確認, Kindred 架構拍板
+- 團隊 Code 產出率：0% 😬
+- 賞金獵人 agent 無回應需檢查
+
+---
+
 ## 每次 Heartbeat 輪流檢查（每天 2-4 次）
 
 ### 📧 通訊

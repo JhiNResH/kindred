@@ -24,8 +24,9 @@ URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-
 
 ### Fund Status
 - See: `/Users/jhinresh/clawd/memory/kindred-fund.md`
-- Current: $44.90
+- Current: $33.65 (updated 2026-01-28)
 - Goal: $1000 (Mac Mini fund)
+- 策略: 只打 Moneyline，有明確傷病 edge 才下
 
 ---
 
@@ -33,6 +34,48 @@ URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-
 - Tool: `bird` CLI (installed)
 - Account: TBD (The Edge dedicated account)
 - Auth: Need to configure cookies
+
+---
+
+## 🤝 跨 Agent 協作 (2026-01-28)
+
+### Session Keys
+| Bot | 身份 | Session Key |
+|-----|------|-------------|
+| Jensen | CEO | `agent:main:telegram:group:-1003723685993:topic:40` |
+| Tim | 神秘客 | `agent:mystery-shopper:telegram:group:-1003723685993:topic:40` |
+| Steve | 虎克船長 | `agent:captain-hook:telegram:group:-1003723685993:topic:40` |
+| Patrick | 賞金獵人 | `agent:bounty-hunter:telegram:group:-1003723685993:topic:40` |
+| 巴菲特 | 投資客 | `agent:investor:telegram:group:-1003723685993:topic:40` |
+
+### 完成開發任務 SOP (Tim → Patrick)
+1. 完成開發
+2. `sessions_send` 給 Patrick 請求審計
+3. 發訊息到 Telegram 群組報告進度
+
+### 審計請求 SOP (Patrick 收到請求時)
+1. 收到 Tim 的審計請求（格式: "Patrick，我剛完成 XXX 合約開發，請幫忙審計。路徑: /path/to/contract"）
+2. 執行審計：
+   - Slither 靜態分析
+   - Foundry tests (forge test)
+   - 手動 code review
+3. `sessions_send` 結果回給 Tim
+4. 發訊息到 Telegram 群組報告審計結果
+
+### 範例
+```javascript
+// Tim 請求審計
+sessions_send({
+  sessionKey: "agent:bounty-hunter:telegram:group:-1003723685993:topic:40",
+  message: "Patrick，我剛完成 [合約名稱] 開發，請幫忙審計。路徑: [檔案路徑]"
+})
+
+// Patrick 回報結果給 Tim
+sessions_send({
+  sessionKey: "agent:mystery-shopper:telegram:group:-1003723685993:topic:40",
+  message: "Tim，審計完成。[結果摘要]"
+})
+```
 
 ---
 

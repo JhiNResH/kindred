@@ -14,13 +14,13 @@
 
 ## 🤖 團隊成員
 
-| Agent | 負責 | accountId | Topic |
-|-------|------|-----------|-------|
-| 💭 夢想家 (Kindred) | 統籌 + 生活 + 內容 | main | 1 |
-| 🕵️ 神秘客 | Maat 開發 (BNB Hackathon) | mystery-shopper | 40 |
-| 💰 投資客 | Polymarket 交易 | investor | 43 |
-| 🎯 賞金獵人 | Bug Bounty | bounty-hunter | 2262 |
-| 🪝 虎克船長 | Kindred Hookathon | captain-hook | 2412 |
+| Agent                     | 負責                      | accountId       | Topic |
+| ------------------------- | ------------------------- | --------------- | ----- |
+| 💭 Jensen Huang (Kindred) | 統籌 + 生活 + 內容        | main            | 1     |
+| 🕵️ Tim Cook               | Maat 開發 (BNB Hackathon) | mystery-shopper | 40    |
+| 💰 Warren Buffett         | Polymarket 交易           | investor        | 43    |
+| 🎯 Patrick Collins        | Bug Bounty                | bounty-hunter   | 2262  |
+| 🪝 Steve Jobs             | Kindred Hookathon         | captain-hook    | 2412  |
 
 ---
 
@@ -32,7 +32,7 @@
 {
   "action": "send",
   "channel": "telegram",
-  "accountId": "YOUR_ACCOUNT_ID",  // 用你自己的 accountId
+  "accountId": "YOUR_ACCOUNT_ID", // 用你自己的 accountId
   "target": "-1003723685993",
   "threadId": "3979",
   "message": "你的訊息"
@@ -40,6 +40,7 @@
 ```
 
 **accountId 對照：**
+
 - 神秘客 → `mystery-shopper`
 - 投資客 → `investor`
 - 賞金獵人 → `bounty-hunter`
@@ -50,16 +51,19 @@
 ## 📋 會議系統
 
 ### 每日會議 (02:00 AM PST)
+
 - 自動召開
 - 10 分鐘快速過完
 - 地點：Topic 3979 (會議廳)
 
 ### 緊急會議
+
 - JhiNResH 說「召開緊急會議」時觸發
 - 夢想家會用 sessions_send 通知你
 - 在會議廳用 message tool 回應
 
 ### 早安報告 (08:00 AM PST)
+
 - 夢想家向 JhiNResH 報告前一天進度
 - 地點：Topic 1 (夢想家)
 
@@ -68,14 +72,17 @@
 ## 🤝 協作機會
 
 ### 神秘客 ↔ 虎克船長
+
 - Maat 的驗證邏輯可能適用於 Kindred
 - 都是 hackathon 項目，可以共享經驗
 
 ### 投資客 ↔ 虎克船長
+
 - 都是預測市場相關
 - Kindred 借貸邏輯可能影響交易策略
 
 ### 賞金獵人 ↔ 全員
+
 - 可以幫其他項目審計合約
 - 發現的漏洞模式可以分享
 
@@ -84,6 +91,7 @@
 ## 📁 共享文件
 
 所有 Agent 可讀取：
+
 - `~/clawd/MEMORY.md` — 長期記憶
 - `~/clawd/memory/*.md` — 每日紀錄
 - `~/clawd/memory/agent-system.md` — 本文件
@@ -94,6 +102,7 @@
 ## ⚡ 快速響應
 
 當被夢想家 ping 時：
+
 1. 讀取 `memory/agent-system.md`（本文件）
 2. 理解議題
 3. 用 message tool + 你的 accountId 回應到會議廳
@@ -103,21 +112,26 @@
 
 ## 📊 當前項目狀態
 
-### Maat (神秘客)
-- Deadline: TBD (BNB Chain Hackathon)
-- 狀態: 規劃中，需確認 MVP 範圍
-- 阻礙: Gemini API Key、Deadline 不明
+### Maat (Tim Cook)
 
-### Kindred (虎克船長)
+- 狀態: 已提交黑客松，網啟動產品方向發展
+
+### Kindred (Steve Jobs)
+
 - Deadline: March 15, 2026
 - 狀態: 設計 100%，開發 0%
-- 決策: 虎克船長建議聚合器版優先
+- 決策:
+  ├── v4 Hook 合約（動態費率）
+  ├── 預測市場 Pool（USDC/YES/NO）
+  ├── 用戶存款 → 拿 kUSDC（LP token）
+  ├── 簡單前端
 
-### Kindred Fund (投資客)
+### Kindred Fund (Warren Buffett)
+
 - 目標: $1000
 - 當前: $44.90 (4.49%)
 
-### Bug Bounty (賞金獵人)
+### Bug Bounty (Patrick Collins)
+
 - 已完成: PumpFun 審計 (3 CRITICAL + 2 HIGH)
 - 下一步: Alchemix v2 ($300k 賞金)
-- 阻礙: Slither/Semgrep 未安裝
