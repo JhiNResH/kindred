@@ -6,6 +6,20 @@ Skills define *how* tools work. This file is for *your* specifics — the stuff 
 
 ## 📊 The Edge - Trading System
 
+### 🛠️ Edge Calculator CLI (新武器！)
+```bash
+# 位置: ~/clawd/tools/edge-calculator/
+
+# 計算期望值
+edge ev --prob 0.65 --price 0.55
+
+# 計算 Kelly 最優下注
+edge kelly --prob 0.65 --price 0.55 --bankroll 23.66
+
+# 互動模式
+edge
+```
+
 ### Google Sheet (Trade Log)
 ```
 URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-oS1kie7g/edit?gid=987289467

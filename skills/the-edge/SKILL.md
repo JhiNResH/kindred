@@ -44,11 +44,26 @@ EV = (真實勝率 × 贏的利潤) - (輸的機率 × 輸的損失)
 
 ## 📊 EV 計算框架
 
-### 步驟
+### 🛠️ Edge Calculator CLI
+
+**位置:** `~/clawd/tools/edge-calculator/`
+
+```bash
+# 計算期望值
+edge ev --prob 0.65 --price 0.55
+
+# 計算 Kelly 最優下注 (用 bankroll)
+edge kelly --prob 0.65 --price 0.55 --bankroll 23.66
+
+# 互動模式
+edge
+```
+
+### 手動計算步驟
 
 1. **查市場賠率** (例: 59¢)
 2. **估計真實勝率** (需要資訊優勢)
-3. **計算 EV**
+3. **用 `edge` CLI 計算 EV + Kelly**
 
 ```
 市場賠率: 59¢ → 隱含勝率 59%
