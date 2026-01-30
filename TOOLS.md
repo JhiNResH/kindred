@@ -24,9 +24,10 @@ URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-
 
 ### Fund Status
 - See: `/Users/jhinresh/clawd/memory/kindred-fund.md`
-- Current: $33.65 (updated 2026-01-28)
+- Current: $23.66 + $10 active bet (updated 2026-01-30)
+- Active: Pistons ML @ 59¢
 - Goal: $1000 (Mac Mini fund)
-- 策略: 只打 Moneyline，有明確傷病 edge 才下
+- 策略 v2.0: 只打 Moneyline，EV>10%，明確傷病 edge 才下
 
 ---
 
@@ -37,16 +38,17 @@ URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-
 
 ---
 
-## 🤝 跨 Agent 協作 (2026-01-28)
+## 🤝 跨 Agent 協作 (Updated 2026-01-30)
 
-### Session Keys
-| Bot | 身份 | Session Key |
-|-----|------|-------------|
-| Jensen | CEO | `agent:main:telegram:group:-1003723685993:topic:40` |
-| Tim | 神秘客 | `agent:mystery-shopper:telegram:group:-1003723685993:topic:40` |
-| Steve | 虎克船長 | `agent:captain-hook:telegram:group:-1003723685993:topic:40` |
-| Patrick | 賞金獵人 | `agent:bounty-hunter:telegram:group:-1003723685993:topic:40` |
-| 巴菲特 | 投資客 | `agent:investor:telegram:group:-1003723685993:topic:40` |
+### Session Keys (會議廳 Topic 3979)
+| Bot | 身份 | accountId | Session Key |
+|-----|------|-----------|-------------|
+| @LambyAI_bot | Jensen Huang 🐺 | main | `agent:main:telegram:group:-1003723685993:topic:3979` |
+| @GourmetLamb_bot | Tim Cook 🏭 | mystery-shopper | `agent:mystery-shopper:telegram:group:-1003723685993:topic:3979` |
+| @DriverLamb_bot | Steve Jobs 🍎 | captain-hook | `agent:captain-hook:telegram:group:-1003723685993:topic:3979` |
+| @BountyHunterLamb_bot | Patrick Collins 🛡️ | bounty-hunter | `agent:bounty-hunter:telegram:group:-1003723685993:topic:3979` |
+| @InvestorLamb_bot | 巴菲特爺爺 💰 | investor | `agent:investor:telegram:group:-1003723685993:topic:3979` |
+| @DreamerLamb_bot | Gary Vee 📝 | growth-hacker | `agent:growth-hacker:telegram:group:-1003723685993:topic:3979` |
 
 ### 完成開發任務 SOP (Tim → Patrick)
 1. 完成開發

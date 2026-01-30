@@ -12,15 +12,16 @@
 
 ---
 
-## 🤖 團隊成員
+## 🤖 團隊成員 (Updated 2026-01-30)
 
 | Agent                     | 負責                      | accountId       | Topic |
 | ------------------------- | ------------------------- | --------------- | ----- |
-| 💭 Jensen Huang (Kindred) | 統籌 + 生活 + 內容        | main            | 1     |
-| 🕵️ Tim Cook               | Maat 開發 (BNB Hackathon) | mystery-shopper | 40    |
-| 💰 Warren Buffett         | Polymarket 交易           | investor        | 43    |
-| 🎯 Patrick Collins        | Bug Bounty                | bounty-hunter   | 2262  |
-| 🪝 Steve Jobs             | Kindred Hookathon         | captain-hook    | 2412  |
+| 🐺 Jensen Huang           | CEO / 統籌管理            | main            | 1, 3979 |
+| 🏭 Tim Cook               | Maat 開發 (BNB Hackathon) | mystery-shopper | 40, 47 |
+| 🍎 Steve Jobs             | Kindred Hookathon         | captain-hook    | 40, 2412, 47 |
+| 🛡️ Patrick Collins        | Bug Bounty / 安全審計     | bounty-hunter   | 2262 |
+| 💰 巴菲特爺爺             | Polymarket 交易           | investor        | 43 |
+| 📝 Gary Vee               | 博主 / 內容創作           | growth-hacker   | 47 |
 
 ---
 
