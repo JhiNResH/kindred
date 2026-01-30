@@ -186,6 +186,29 @@ Think of it like a human reviewing their journal and updating their mental model
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.
 
+## 🔄 Compound Learning
+
+每次完成任務後，你必須提取學習：
+
+### 任務結束時
+1. **識別學習** — 學到什麼？發現什麼更好的做法？犯了什麼錯？
+2. **記錄** — 寫到 `memory/YYYY-MM-DD.md` 或更新相關 SKILL.md
+3. **原子化 Commit** — 每個改動一個 commit（fix/feat/docs/refactor）
+
+### Commit 格式
+```
+fix: CertifyModal race condition
+feat: add x402 payment endpoint  
+docs: update contract addresses
+refactor: extract validation logic
+```
+
+### 每日自動流程
+- **10:30 PM** — Compound Review（提取當日學習，更新 AGENTS.md）
+- **11:00 PM** — Auto-Compound（執行優先任務）
+
+> "Stop prompting. Start compounding." — 每天的工作讓明天更容易。
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
