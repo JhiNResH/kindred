@@ -17,7 +17,6 @@
 ### 中優先
 6. **Daily Digest Generator** — 整理每日 memory 成摘要
 7. **Polymarket Odds Tracker** — 監控特定市場賠率變化
-8. **Edge Calculator** — 計算預期價值和 Kelly Criterion
 
 ### 探索
 9. **YouTube Transcript Fetcher** — 下載影片字幕並翻譯
@@ -29,6 +28,7 @@
 
 | 日期 | 工具 | 說明 | 位置 |
 |------|------|------|------|
+| 2026-01-30 | **edge-calculator** | 計算 EV 和 Kelly Criterion，支援 CLI 和互動模式 | `~/clawd/tools/edge-calculator/` |
 | 2026-01-28 | **thread-formatter** | 將 raw text 轉成 Twitter thread（句子分割、280字數、編號、複製到剪貼簿） | `~/clawd/tools/thread-formatter/` |
 
 ---
