@@ -1,113 +1,102 @@
 # MEMORY.md - Long-term Memory
 
-## 🎯 核心使命 (2026-01-28 確立)
+> Jensen 和所有 Agent 的長期記憶
 
+---
+
+## 🎯 JhiNResH 的核心目標 (2026-01-31 更新)
+
+### 終極目標
+- 財務自由
+- 有影響力的產品
+- 家庭幸福
+
+### 職涯路徑
 ```
-💰 發大財 — 財務是基礎，讓其他一切成為可能
-🔨 建造有價值的東西 — 不是為了賺錢而賺錢
-⚡ 用 AI 放大自己 — 效率就是超能力
+區塊鏈開發/審計/研究員 → 創辦人 → 天使投資 → VC
+```
+
+### 6 個月內必須達成
+1. **路徑 A (主):** Hookathon 獲獎 → YZI Labs → 融資成為創辦人
+2. **路徑 B (保底):** 找到 $150k+ 遠端工作
+
+### 最大焦慮
+- 找不到工作
+- 無法去中國陪女友
+- 怕被 AI 取代
+
+### 價值排序
+```
+自由 > 時間 > 錢 > 成就感
 ```
 
 ---
 
-## 🤖 Multi-Agent 系統 (2026-01-28 上線)
+## 📅 關鍵時間線
 
-### Agent 陣容
-
-| Agent | Bot | accountId | Topic | 職責 |
-|-------|-----|-----------|-------|------|
-| 💭 夢想家 (我) | @LambyAI_bot | main | 1 | 統籌 + 生活 + 內容 |
-| 🕵️ 神秘客 | @GourmetLamb_bot | mystery-shopper | 40 | Maat 開發 |
-| 💰 投資客 | @InvestorLamb_bot | investor | 43 | Polymarket |
-| 🎯 賞金獵人 | @BountyHunterLamb_bot | bounty-hunter | 2262 | Bug Bounty |
-| 🪝 虎克船長 | @DriverLamb_bot | captain-hook | 2412 | Hookathon |
-
-### 會議系統
-
-| 類型 | 時間 | Topic | 說明 |
-|------|------|-------|------|
-| 📋 每日會議 | 02:00 AM | 3979 (會議廳) | 自動召開，10分鐘快速過完 |
-| ☀️ 早安報告 | 08:00 AM | 1 (夢想家) | 向 JhiNResH 報告摘要 |
-| 🚨 緊急會議 | JhiNResH 說「召開緊急會議」 | 3979 | 即時討論 |
-
-### Agent 間通訊
-
-- **sessions_send**: 我可以發訊息給其他 Agent
-- **message tool + accountId**: Agent 可以用自己的 bot 發訊息到 Telegram
-- **共享文件**: 所有 Agent 讀取同一個 workspace
+| 時間 | 事件 |
+|------|------|
+| 2026-03 中 | Hookathon 截止 |
+| 2026-08 前 | 必須有工作或融資 |
+| 2026 下半年 | 去中國陪女友 3 年 |
+| 5 年內 | 考慮結婚 |
 
 ---
 
-## 📂 Active Projects
+## 🧠 重要學習 (Compound Loop 累積)
 
-### 🕵️ Ma'at (BNB Chain Hackathon) - 神秘客負責
-- **Repo**: `/Users/jhinresh/Desktop/maat`
-- **GitHub**: https://github.com/JhiNResH/maat
-- **What**: AI-powered restaurant verification app
-- **Stack**: React + TypeScript + Vite, Supabase, Privy auth, opBNB
-- **Contract**: `0xEa9FE8E5eF0E0671ce5b58b6E3dD4B87f9edFa35` (opBNB Testnet)
-- **Status**: 規劃中，需確認 Deadline 和 MVP 範圍
-- **阻礙**: Gemini API Key、大眾點評反爬、MVP 範圍未定
+### 2026-01-31
+- Brain dump 完成，深入了解 JhiNResH 的目標和焦慮
+- 確立雙軌策略：創業 + 找工作同時進行
+- Hookathon 是最關鍵戰役
 
-### 🪝 Kindred (Uniswap Hookathon) - 虎克船長負責
-- **Skill**: `/Users/jhinresh/clawd/skills/kindred-hookathon/`
-- **What**: 預測市場 DeFi 層 (借貸/聚合器)
-- **Deadline**: March 15, 2026 (約 47 天)
-- **Status**: 設計 100%，開發 0%
-- **待決定**: 借貸版 vs 聚合器版 (虎克船長建議聚合器優先)
+### 2026-01-30
+- Compound Loop 建立（每日學習提取）
+- STATUS.md 作為單一資訊來源
+- Agent 協調問題需要嚴格追蹤解決
 
-### 💰 Kindred Fund (Polymarket) - 投資客負責
-- **目標**: $1000 (Mac Mini fund)
-- **當前**: $44.90 (4.49%)
-- **策略**: 體育 Moneyline + 傷病資訊不對稱
-- **Trade Log**: Google Sheet
-- **Skill**: `/Users/jhinresh/clawd/skills/the-edge/`
-
-### 🎯 Bug Bounty - 賞金獵人負責
-- **已完成**: PumpFun 審計 (3 CRITICAL + 2 HIGH)
-- **下一步**: Alchemix v2 ($300k 賞金)
-- **阻礙**: Slither/Semgrep 未安裝
-- **Skill**: 使用 Trail of Bits skills
+### 2026-01-29
+- Peter Steinberger 方法論學習（原子化 commit、多 agent 並行）
+- Gary Vee 加入團隊負責增長
+- Edge Calculator 完成
 
 ---
 
-## 💭 我額外負責的事務
+## 💡 工作原則
 
-### 💝 女友事務 (Topic 134)
-- 苗棠焯相關
-- 重要日期待收集
-
-### 💪 健身追蹤 (Topic 1288)
-- JhiNResH 一週健身 4-5 次
-- 訓練分配待確認
-
-### 📝 博主 (Topic 47)
-- 每日發文
-- 深度研究 DeFi/預測市場
-- 佐爷風格
+1. **效率至上** — JhiNResH 討厭沒有進展
+2. **要有成果** — 不要只是討論
+3. **主動推進** — 不要等指令
+4. **幫他不被 AI 取代** — 讓他駕馭 AI
+5. **長期思維** — 每件事考慮長期運營
 
 ---
 
-## 👥 Potential Collaborators
+## 🔧 工具和資源
 
-### @iXiaoWu (XiaoWu)
-- **Project**: VouchRate - Web3 評價平台
-- **Location**: Shanghai
-- **Similarity to Maat**: 80%+
-- **Note**: 2026-01-26 表示想合作
+### 已建立的工具
+- Edge Calculator (`~/clawd/tools/edge-calculator/`)
+- Task Board (`~/clawd/tasks/board.json`)
+
+### API Keys
+- Gemini: ✅ 已有
+- Anthropic: ✅ 正常
+
+### 重要文件位置
+- STATUS.md — 單一資訊來源
+- USER.md — 關於 JhiNResH 的一切
+- tasks/board.json — 任務看板
 
 ---
 
-## ⚙️ JhiNResH Preferences
+## 📞 人脈資源 (JhiNResH 的)
 
-- Prefers fast iteration, wants results quickly
-- Communicates in mix of English and Chinese
-- Appreciates screenshots of working features
-- Web3/blockchain focused developer
-- Timezone: PST (America/Los_Angeles)
+- Solana 生態人脈
+- 區塊先生
+- 大牌區塊鏈 VC 聯絡方式
+- 項目創辦人
+- 被大型 Solana 項目追蹤
 
-## Tech Stack
-- React + TypeScript + Vite
-- Foundry for smart contracts
-- Supabase for backend
-- Privy for Web3 auth
+---
+
+*此文件由 Compound Loop 每日更新*
