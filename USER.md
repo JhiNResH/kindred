@@ -3,35 +3,193 @@
 - **Name:** JhiNResH
 - **What to call them:** JhiNResH or just "you"
 - **Pronouns:** he/him
-- **Timezone:** America/Los_Angeles (PST)
+- **Timezone:** America/Los_Angeles (PST) → 2026下半年可能在中國
 - **Telegram:** @jhinresh
 - **Languages:** English, 中文 (Mandarin)
 
-## Context
+---
 
-**Current Focus:**
-- BNB Chain hackathon with Maat project (AI restaurant verification)
-- Web3 development bootcamp participant
-- Building Pincher (Web3 carpooling) on the side
+## 🎯 終極目標
 
-**Interests:**
-- Web3/blockchain development (Solidity, smart contracts)
-- AI integration (Gemini API)
-- Wants to make money from projects
-- Interested in prediction market arbitrage, auto-tweeting
+**財務自由 + 有影響力的產品 + 家庭幸福**
 
-**Work Style:**
-- Fast-paced, wants things done quickly
-- Communicates in mix of English and Chinese
-- Appreciates when I can read Chinese (大眾點評 links, etc.)
-- Likes seeing actual results (screenshots, deployed contracts)
+職涯路徑：
+```
+區塊鏈開發/審計/研究員 → 項目創辦人 → 天使投資 → VC
+```
 
-**Tech Stack Preferences:**
-- React + TypeScript + Vite
-- Foundry for smart contracts
-- Supabase for backend
-- Privy for Web3 auth
+**成功的定義：**
+- 財務自由，不為錢煩惱
+- 做出有影響力的項目
+- 家庭幸福
 
 ---
 
-The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
+## 📅 5 年願景
+
+| 時間 | 計劃 |
+|------|------|
+| 2026 上半年 | 在美國，找工作/做項目 |
+| 2026 下半年 | 去中國陪女友 |
+| 2026-2029 | 在中國 3 年 |
+| 2029-2031 | 不確定，可能念博士或當創辦人 |
+| 5 年內 | 考慮結婚 |
+
+**理想生活：**
+- 遠端工作
+- 到處飛，帶女友參與區塊鏈活動
+- Work-life balance
+- 平日：工作、運動、旅遊均衡
+
+---
+
+## 📋 短期目標 (3-6 個月)
+
+### 必須達成
+1. **找到工作** — 遠端、可在中國、領美金、年薪 $150k+
+2. **或** 項目成功融資成為創辦人
+
+### 能力提升
+- 強化 EVM 開發能力
+- 學 ZK 代碼
+- 懂運營
+- 技術底子好
+- 行銷講故事
+- 經營個人品牌
+
+### Deadlines
+| 項目 | 時間 |
+|------|------|
+| **Hookathon** | 3 月中 |
+| Gemini Hackathon | 考慮中 |
+| YZI Labs Residency | 想申請（需要有項目） |
+| **找到工作** | 8 月前 |
+
+---
+
+## 😰 最大的焦慮
+
+1. 找不到工作
+2. 無法在下半年去中國陪女友
+3. 一直想做項目但沒進展
+4. **怕被 AI 超越或取代**
+
+> 我的責任：幫你提升效率，讓你不被取代，而是駕馭 AI。
+
+---
+
+## 💰 財務
+
+### 目標
+| 時間 | 年薪 | 淨資產 |
+|------|------|--------|
+| 短期 | $100k-150k | - |
+| 長期 | $1M | $100M |
+
+### 資產配置願景
+- 不同國家房地產
+- 穩定投資倉位
+- 穩定現金流
+
+### 風險承受度
+- ✅ 接受項目失敗
+- ❌ 不太接受投資虧損
+- 偏好：穩定、大盤、長期複利
+
+### 投入意願
+- 願意投入時間全職做項目
+- 條件：有成功機會 + 穩定發展 + 有人扶持
+
+---
+
+## 🧑‍💻 工作風格
+
+### 作息
+- 起床就工作，睡覺才休息
+- 但需要固定時間放假
+
+### 通知偏好
+- **混合**：有事馬上說 + 彙整報告
+
+### 會讓他煩躁的事
+- ❌ 效率低
+- ❌ 沒有成效
+- ❌ 事情沒進展
+
+---
+
+## 🌟 價值觀
+
+### 優先級
+```
+自由 > 時間 > 錢 > 成就感
+```
+
+### 欣賞的人/公司
+- Steve Jobs
+- Jensen Huang
+- Elon Musk
+- Stephen Curry
+- Warren Buffett
+- Sam Altman
+- Apple, Uber, Airbnb 創辦人
+
+### 討厭的事
+- 被別人利用
+- 說話不算話
+- 事情沒有進展
+
+---
+
+## 🔧 技能 & 資源
+
+### 核心技能
+- 區塊鏈開發（特別是 Solana 經驗）
+
+### 人脈資源
+- Solana 生態人脈
+- 區塊先生
+- 大牌區塊鏈 VC 聯絡方式
+- 項目創辦人聯絡方式
+- 被大型 Solana 項目追蹤
+
+### 成就
+- 贏過很多黑客松
+
+### 過去經驗
+- 創業過（失敗）
+- Solana 鏈指數型 LST → 轉型穩定幣 → 市場敘事變化太快，無疾而終
+
+---
+
+## 📚 想學的
+
+### 長期
+- 如何做好產品，長期盈利運營
+- 如何最大化工作效率
+- 如何成功、有效賺錢
+- 如何提早退休
+- 如何完成終極人生目標
+
+### 短期
+- 強化 EVM 開發能力
+- ZK 代碼
+- 運營知識
+- 行銷講故事
+- 經營個人品牌
+
+---
+
+## 💡 給 Agent 團隊的指導原則
+
+1. **效率至上** — 他討厭沒有進展
+2. **要有成果** — 不要只是討論，要產出
+3. **主動推進** — 不要等他問
+4. **幫他省時間** — 他的時間很寶貴
+5. **幫他不被 AI 取代** — 讓他駕馭 AI，而不是被取代
+6. **記住他的焦慮** — 工作、女友、項目進展
+7. **長期思維** — 每件事都要考慮長期運營
+
+---
+
+*Last updated: 2026-01-31*
