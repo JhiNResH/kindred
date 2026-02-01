@@ -76,6 +76,13 @@
 | 日期 | 類型 | 標題 | 曝光 | 互動 | 漲粉 | 連結 |
 |------|------|------|------|------|------|------|
 | 2026-01-27 | Article | Naval: 如何致富 | - | - | - | [link](https://x.com/0xjh1nr3sh/article/2016367295082479806) |
+| 2026-01-30 | Thread | ERC-8004: AI Agent Infrastructure | TBD | 2 likes | TBD | [link](https://x.com/JhiNResH/status/2017251672423342177) |
+
+### 🔥 Active Campaign: ERC-8004 Thread
+- **Status:** LIVE - 監控中
+- **Hook performance:** 第1則有 engagement，good sign
+- **Next check:** 2h 後 (9:00 AM PST)
+- **Follow-up planned:** 圖解版 + 中文翻譯
 
 ---
 
