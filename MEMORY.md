@@ -49,6 +49,11 @@
 - Brain dump 完成，深入了解 JhiNResH 的目標和焦慮
 - 確立雙軌策略：創業 + 找工作同時進行
 - Hookathon 是最關鍵戰役
+- **Steve 的 Hookathon 產品決定：**
+  - 方向：極簡借貸 MVP（不是聚合器）
+  - 鏈：Polygon（Polymarket 用戶在那）
+  - Hook 用途：清算 + 利率 + 預言機整合
+  - 聚合器是 feature，借貸是 product
 
 ### 2026-01-30
 - Compound Loop 建立（每日學習提取）
