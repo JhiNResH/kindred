@@ -9,7 +9,9 @@
 ## 🦞 KINDRED — 一週衝刺！
 
 ### 一句話介紹
-> **"Stake to review. Build reputation. Trade with trust."**
+> **"The Trust Layer for Everyone"**
+> 
+> Stake to review. Build reputation. Trade with trust.
 
 ### 核心決定 (2026-02-01/02)
 - **品牌：Kindred** (Maat 合併進來，不再獨立)
