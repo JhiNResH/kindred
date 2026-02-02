@@ -16,6 +16,9 @@ export default function Home() {
           <Link href="/leaderboard" className="text-gray-400 hover:text-white transition">
             Rankings
           </Link>
+          <Link href="/stake" className="text-gray-400 hover:text-white transition">
+            Stake
+          </Link>
           <Link href="/reviews" className="text-gray-400 hover:text-white transition">
             Reviews
           </Link>
