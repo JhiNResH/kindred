@@ -189,6 +189,32 @@ Think of it like a human reviewing their journal and updating their mental model
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.
 
+## 🔄 Agent 同步系統
+
+### 目錄結構
+```
+memory/
+├── YYYY-MM-DD.md          # 共享日誌（所有 agent 寫入）
+├── agents/
+│   ├── jensen.md          # Jensen 的專屬筆記
+│   ├── tim.md             # Tim Cook 的筆記
+│   ├── steve.md           # Steve Jobs 的筆記
+│   ├── patrick.md         # Patrick Collins 的筆記
+│   ├── buffett.md         # 巴菲特的筆記
+│   └── gary.md            # Gary Vee 的筆記
+```
+
+### 每日同步流程 (22:30 PST)
+1. **Jensen 發起同步** — 用 `sessions_send` 通知各 agent
+2. **各 agent 回報** — 寫入今日重點到自己的 `memory/agents/*.md`
+3. **Jensen 整合** — 合併到 `memory/YYYY-MM-DD.md` 並更新 STATUS.md
+
+### 即時協作
+- 重要決策 → 用 `sessions_send` 跨 agent 通知
+- 緊急事項 → 發到會議廳 (Topic 3979)
+
+---
+
 ## 🔄 Compound Learning
 
 每次完成任務後，你必須提取學習：

@@ -38,8 +38,8 @@ URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-
 
 ### Fund Status
 - See: `/Users/jhinresh/clawd/memory/kindred-fund.md`
-- Current: $23.66 + $10 active bet (updated 2026-01-30)
-- Active: Pistons ML @ 59¢
+- Current: $23.66 (updated 2026-02-01)
+- Active: 無
 - Goal: $1000 (Mac Mini fund)
 - 策略 v2.0: 只打 Moneyline，EV>10%，明確傷病 edge 才下
 
