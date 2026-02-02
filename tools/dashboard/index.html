@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐺 Agent Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: '#0d1117',
+            card: '#161b22',
+            border: '#30363d',
+            accent: '#58a6ff',
+            green: '#3fb950',
+            yellow: '#d29922',
+            red: '#f85149',
+            purple: '#a371f7',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background: #0d1117; }
+    .drag-over { border-color: #58a6ff !important; }
+    .task-card { cursor: grab; }
+    .task-card:active { cursor: grabbing; }
+  </style>
+</head>
+<body class="text-gray-200 min-h-screen p-6">
+  <!-- Header -->
+  <header class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold">🐺 Agent Dashboard</h1>
+      <p class="text-gray-500">JhiNResH's AI Team Command Center</p>
+    </div>
+    <div class="flex gap-4 items-center">
+      <div class="text-right">
+        <div class="text-2xl font-bold text-green">$23.66</div>
+        <div class="text-xs text-gray-500">Kindred Fund</div>
+      </div>
+      <div class="text-right">
+        <div class="text-lg font-mono" id="clock">--:--</div>
+        <div class="text-xs text-gray-500">PST</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <div class="grid grid-cols-4 gap-6">
+    
+    <!-- Kanban Board (3 cols) -->
+    <div class="col-span-3">
+      <h2 class="text-xl font-semibold mb-4">📋 Kanban</h2>
+      <div class="grid grid-cols-4 gap-4">
+        
+        <!-- Backlog -->
+        <div class="bg-card rounded-lg p-4 border border-border min-h-[400px]" 
+             ondrop="drop(event, 'backlog')" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+          <h3 class="font-semibold text-gray-400 mb-3 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-gray-500"></span> Backlog
+          </h3>
+          <div id="backlog" class="space-y-2">
+            <!-- Tasks injected here -->
+          </div>
+        </div>
+
+        <!-- Todo -->
+        <div class="bg-card rounded-lg p-4 border border-border min-h-[400px]"
+             ondrop="drop(event, 'todo')" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+          <h3 class="font-semibold text-yellow mb-3 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-yellow"></span> To Do
+          </h3>
+          <div id="todo" class="space-y-2"></div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="bg-card rounded-lg p-4 border border-border min-h-[400px]"
+             ondrop="drop(event, 'progress')" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+          <h3 class="font-semibold text-accent mb-3 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-accent"></span> In Progress
+          </h3>
+          <div id="progress" class="space-y-2"></div>
+        </div>
+
+        <!-- Done -->
+        <div class="bg-card rounded-lg p-4 border border-border min-h-[400px]"
+             ondrop="drop(event, 'done')" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+          <h3 class="font-semibold text-green mb-3 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-green"></span> Done
+          </h3>
+          <div id="done" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+      
+      <!-- Agent Status -->
+      <div class="bg-card rounded-lg p-4 border border-border">
+        <h3 class="font-semibold mb-3">🤖 Agents</h3>
+        <div class="space-y-2" id="agents">
+          <!-- Agent cards -->
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="bg-card rounded-lg p-4 border border-border">
+        <h3 class="font-semibold mb-3">📊 Stats</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-400">Hookathon</span>
+            <span class="text-yellow">44 days</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Code Progress</span>
+            <span class="text-red">0%</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Active Bets</span>
+            <span>0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Task -->
+      <div class="bg-card rounded-lg p-4 border border-border">
+        <h3 class="font-semibold mb-3">➕ Add Task</h3>
+        <input type="text" id="newTask" placeholder="Task name..." 
+               class="w-full bg-dark border border-border rounded px-3 py-2 text-sm mb-2">
+        <select id="newProject" class="w-full bg-dark border border-border rounded px-3 py-2 text-sm mb-2">
+          <option value="kindred">🎣 Kindred</option>
+          <option value="maat">🍜 Maat</option>
+          <option value="edge">💰 The Edge</option>
+          <option value="content">📣 Content</option>
+          <option value="other">📦 Other</option>
+        </select>
+        <select id="newAgent" class="w-full bg-dark border border-border rounded px-3 py-2 text-sm mb-2">
+          <option value="jensen">🐺 Jensen</option>
+          <option value="tim">🏭 Tim</option>
+          <option value="steve">🍎 Steve</option>
+          <option value="patrick">🛡️ Patrick</option>
+          <option value="buffett">💰 Buffett</option>
+          <option value="gary">📝 Gary</option>
+        </select>
+        <button onclick="addTask()" class="w-full bg-accent text-dark font-semibold rounded py-2 hover:bg-blue-400">
+          Add
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data
+    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    
+    // Default tasks if empty
+    if (tasks.length === 0) {
+      tasks = [
+        { id: 1, name: 'Kindred 架構決策', project: 'kindred', agent: 'steve', status: 'todo', priority: 'high' },
+        { id: 2, name: '設定 Gemini API', project: 'maat', agent: 'tim', status: 'todo', priority: 'medium' },
+        { id: 3, name: '每日早盤掃描', project: 'edge', agent: 'buffett', status: 'progress', priority: 'medium' },
+        { id: 4, name: '內容日曆建立', project: 'content', agent: 'gary', status: 'backlog', priority: 'low' },
+        { id: 5, name: 'Agent 同步系統', project: 'other', agent: 'jensen', status: 'done', priority: 'high' },
+        { id: 6, name: 'Uniswap v4 Hook 研究', project: 'kindred', agent: 'steve', status: 'backlog', priority: 'high' },
+        { id: 7, name: 'Slither 審計腳本', project: 'kindred', agent: 'patrick', status: 'backlog', priority: 'medium' },
+      ];
+      saveTasks();
+    }
+
+    const agents = [
+      { id: 'jensen', name: 'Jensen Huang', emoji: '🐺', role: 'CEO', color: 'purple' },
+      { id: 'tim', name: 'Tim Cook', emoji: '🏭', role: '神秘客', color: 'gray' },
+      { id: 'steve', name: 'Steve Jobs', emoji: '🍎', role: '虎克船長', color: 'red' },
+      { id: 'patrick', name: 'Patrick Collins', emoji: '🛡️', role: '賞金獵人', color: 'green' },
+      { id: 'buffett', name: '巴菲特', emoji: '💰', role: '投資客', color: 'yellow' },
+      { id: 'gary', name: 'Gary Vee', emoji: '📝', role: '博主', color: 'accent' },
+    ];
+
+    const projectEmojis = {
+      kindred: '🎣',
+      maat: '🍜',
+      edge: '💰',
+      content: '📣',
+      other: '📦'
+    };
+
+    const priorityColors = {
+      high: 'border-l-red',
+      medium: 'border-l-yellow',
+      low: 'border-l-gray-500'
+    };
+
+    // Render
+    function render() {
+      ['backlog', 'todo', 'progress', 'done'].forEach(status => {
+        const container = document.getElementById(status);
+        container.innerHTML = tasks
+          .filter(t => t.status === status)
+          .map(t => `
+            <div class="task-card bg-dark rounded p-3 border-l-4 ${priorityColors[t.priority] || 'border-l-gray-500'}"
+                 draggable="true" ondragstart="drag(event)" data-id="${t.id}">
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-sm">${t.name}</span>
+                <button onclick="deleteTask(${t.id})" class="text-gray-500 hover:text-red text-xs">✕</button>
+              </div>
+              <div class="flex gap-2 text-xs text-gray-500">
+                <span>${projectEmojis[t.project] || '📦'}</span>
+                <span>${agents.find(a => a.id === t.agent)?.emoji || '🤖'}</span>
+              </div>
+            </div>
+          `).join('');
+      });
+
+      // Render agents
+      document.getElementById('agents').innerHTML = agents.map(a => {
+        const taskCount = tasks.filter(t => t.agent === a.id && t.status !== 'done').length;
+        return `
+          <div class="flex items-center gap-2 text-sm">
+            <span>${a.emoji}</span>
+            <span class="flex-1">${a.name}</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-dark">${taskCount}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Drag & Drop
+    function drag(e) {
+      e.dataTransfer.setData('text', e.target.dataset.id);
+    }
+
+    function allowDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function dragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function drop(e, status) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      const id = parseInt(e.dataTransfer.getData('text'));
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.status = status;
+        saveTasks();
+        render();
+      }
+    }
+
+    // CRUD
+    function addTask() {
+      const name = document.getElementById('newTask').value.trim();
+      if (!name) return;
+      
+      tasks.push({
+        id: Date.now(),
+        name,
+        project: document.getElementById('newProject').value,
+        agent: document.getElementById('newAgent').value,
+        status: 'backlog',
+        priority: 'medium'
+      });
+      
+      document.getElementById('newTask').value = '';
+      saveTasks();
+      render();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      saveTasks();
+      render();
+    }
+
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Clock
+    function updateClock() {
+      const now = new Date().toLocaleTimeString('en-US', { 
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      document.getElementById('clock').textContent = now;
+    }
+
+    // Init
+    render();
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Enter to add task
+    document.getElementById('newTask').addEventListener('keypress', e => {
+      if (e.key === 'Enter') addTask();
+    });
+  </script>
+</body>
+</html>
