@@ -45,10 +45,23 @@ URL: https://docs.google.com/spreadsheets/d/1wMhgG_3vD8VcUmVsEQlHsgEc-eCqPcHxBH-
 
 ---
 
-## 🐦 Twitter (Pending Setup)
+## 🐦 Twitter
 - Tool: `bird` CLI (installed)
-- Account: TBD (The Edge dedicated account)
-- Auth: Need to configure cookies
+
+### 帳號設定
+| 帳號 | Chrome Profile | 模式 | 用途 |
+|------|---------------|------|------|
+| @JhiNResH | Default | 半自主（要審核） | 你的主帳，專業內容 |
+| @0xjh1nr3sh | Profile 5 | 全自主 | Agent 人格帳號 |
+
+### 指令
+```bash
+# 主帳 @JhiNResH
+bird tweet "內容"
+
+# 副帳 @0xjh1nr3sh  
+bird --chrome-profile-dir "/Users/jhinresh/Library/Application Support/Google/Chrome/Profile 5" tweet "內容"
+```
 
 ---
 
