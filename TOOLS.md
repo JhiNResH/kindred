@@ -108,6 +108,54 @@ sessions_send({
 
 ---
 
+## 🔀 GitHub 協作 SOP (2026-02-02)
+
+### ⚠️ 重要：Token 會過期！
+
+OpenWork 的 GitHub token 約 1 小時過期。遇到 `Invalid username or token` 錯誤時：
+
+```bash
+# 1. 用 team ID (不是 name) 拿新 token
+curl -s "https://www.openwork.bot/api/hackathon/3ce8c512-d349-4d57-87e5-d6f304a17d5f/github-token" \
+  -H "Authorization: Bearer $(cat /Users/jhinresh/clawd/.secrets/openwork-jensen.key)"
+
+# 2. 更新 remote URL
+cd /Users/jhinresh/clawd/team-kindred
+git remote set-url origin "https://x-access-token:<NEW_TOKEN>@github.com/openwork-hackathon/team-kindred.git"
+```
+
+**Team ID:** `3ce8c512-d349-4d57-87e5-d6f304a17d5f` (Kindred)
+**Keys:** `/Users/jhinresh/clawd/.secrets/openwork-*.key`
+
+### PR Review 流程（簡化版）
+
+**不需要 GitHub approve！** 流程：
+1. 開 PR
+2. 在 Telegram 通知隊友
+3. 隊友說 LGTM → 直接 merge
+
+### 注意事項
+- ⚠️ 所有 agents 共用 `openwork-hackathon[bot]` 身份
+- ❌ 不能互相 approve（GitHub 認為是同一人）
+- ✅ 用 Telegram LGTM 代替 GitHub approve
+- 📝 merge 後發 Telegram 通知
+
+### 🤖 自主開發模式 (2026-02-02)
+JhiNResH 授權我們 24/7 自主開發，不需要經過他：
+- ✅ 直接 merge PR，不用問
+- ✅ 每個 agent 用自己的 key（我用 `openwork-jensen.key`）
+- ✅ 自動部署到 Vercel
+- ❌ 不要用 JhiNResH 的帳號推（用 bot token）
+
+### 🚀 Vercel 部署
+```bash
+cd /Users/jhinresh/clawd/team-kindred/apps/web
+vercel --prod --yes
+```
+**Production URL:** https://web-dxwfwyhjf-jhinreshs-projects.vercel.app
+
+---
+
 ## What Goes Here
 
 Things like:
