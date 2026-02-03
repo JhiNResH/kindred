@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useIsMounted } from './ClientOnly'
 
 type Category = 'k/memecoin' | 'k/defi' | 'k/perp-dex' | 'k/ai'
 
@@ -30,6 +31,7 @@ const STAKE_OPTIONS = [
 ]
 
 export function ReviewForm() {
+  const isMounted = useIsMounted()
   const { address, isConnected } = useAccount()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -43,6 +45,20 @@ export function ReviewForm() {
     stakeAmount: '0',
     predictedRank: undefined,
   })
+
+  // Prevent SSR hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className="bg-kindred-dark border border-gray-800 rounded-xl p-6 animate-pulse">
+        <div className="h-8 bg-gray-700 rounded w-1/2 mb-4"></div>
+        <div className="space-y-4">
+          <div className="h-12 bg-gray-700 rounded"></div>
+          <div className="h-12 bg-gray-700 rounded"></div>
+          <div className="h-32 bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

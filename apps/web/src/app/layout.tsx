@@ -1,16 +1,10 @@
 import type { Metadata } from 'next'
 import { Inter, DM_Mono } from 'next/font/google'
-import dynamic from 'next/dynamic'
 import './globals.css'
+import dynamic from 'next/dynamic'
 
-// Dynamic import to avoid SSR issues with wagmi/RainbowKit localStorage access
 const Providers = dynamic(() => import('./providers').then(mod => mod.Providers), {
   ssr: false,
-  loading: () => (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="animate-pulse text-white">Loading...</div>
-    </div>
-  ),
 })
 
 const inter = Inter({ 

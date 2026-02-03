@@ -2,6 +2,7 @@
 
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useIsMounted } from './ClientOnly'
 
 interface Prediction {
   id: string
@@ -61,7 +62,22 @@ const MOCK_PREDICTIONS: Prediction[] = [
 ]
 
 export function MyPredictions() {
+  const isMounted = useIsMounted()
   const { isConnected } = useAccount()
+
+  // Prevent SSR hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className="bg-kindred-dark border border-gray-800 rounded-xl p-6 animate-pulse">
+        <div className="h-8 bg-gray-700 rounded w-1/3 mb-4"></div>
+        <div className="grid grid-cols-4 gap-4 mb-4">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="h-16 bg-gray-700 rounded"></div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   if (!isConnected) {
     return (

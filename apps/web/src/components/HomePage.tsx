@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { 
   Home, Compass, Flame, Trophy, Plus, Search, Bot, 
   ChevronDown, PanelLeftClose, PanelLeftOpen,
@@ -59,7 +58,9 @@ export function HomePage() {
             <Bot className="w-4 h-4" />
             <span>Agent</span>
           </button>
-          <ConnectButton />
+          <button className="px-5 py-2.5 rounded-lg text-sm font-medium bg-gradient-to-br from-purple-500 to-purple-700 text-white hover:translate-y-[-2px] hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+            Connect Wallet
+          </button>
         </div>
       </header>
 
