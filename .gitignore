@@ -36,3 +36,11 @@ Thumbs.db
 
 # Backup
 *.bak
+
+/src/generated/prisma
+
+# Database
+prisma/dev.db
+prisma/dev.db-journal
+.env
+.env.local

@@ -1,0 +1,220 @@
+// Kindred Database Schema
+// Platform for DeFi project reviews with prediction markets
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================
+// Core Models
+// ============================================
+
+// User profile and reputation
+model User {
+  id              String    @id @default(cuid())
+  address         String    @unique // wallet address (lowercase)
+  displayName     String?
+  avatarUrl       String?
+  
+  // Reputation metrics
+  reputationScore Int       @default(0)
+  totalReviews    Int       @default(0)
+  totalUpvotes    Int       @default(0)
+  totalStaked     String    @default("0") // BigInt as string
+  totalWon        String    @default("0")
+  totalLost       String    @default("0")
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  reviews         Review[]
+  stakes          Stake[]
+  votes           Vote[]
+  
+  @@index([address])
+  @@index([reputationScore])
+}
+
+// DeFi project being reviewed
+model Project {
+  id              String    @id @default(cuid())
+  address         String    @unique // contract/protocol address
+  name            String
+  description     String?
+  website         String?
+  category        String    @default("defi") // k/defi, k/perp-dex, k/memecoin, k/ai
+  
+  // Aggregated stats
+  avgRating       Float     @default(0)
+  reviewCount     Int       @default(0)
+  totalStaked     String    @default("0")
+  currentRank     Int?
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  reviews         Review[]
+  stakes          Stake[]
+  
+  @@index([address])
+  @@index([category])
+  @@index([currentRank])
+}
+
+// Review of a project
+model Review {
+  id              String    @id @default(cuid())
+  
+  // Content
+  rating          Int       // 1-5
+  content         String
+  photoUrls       String?   // JSON array of URLs
+  
+  // Prediction
+  predictedRank   Int?      // 1-100
+  stakeAmount     String    @default("0")
+  
+  // Engagement
+  upvotes         Int       @default(0)
+  downvotes       Int       @default(0)
+  
+  // Status
+  status          String    @default("active") // active, flagged, removed
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  reviewer        User      @relation(fields: [reviewerId], references: [id])
+  reviewerId      String
+  project         Project   @relation(fields: [projectId], references: [id])
+  projectId       String
+  stakes          Stake[]
+  votes           Vote[]
+  
+  @@index([reviewerId])
+  @@index([projectId])
+  @@index([createdAt])
+}
+
+// Stake on a review/prediction
+model Stake {
+  id              String    @id @default(cuid())
+  
+  // Stake details
+  amount          String    // BigInt as string
+  predictedRank   Int       // 1-100
+  
+  // On-chain reference
+  txHash          String?
+  
+  // Status
+  status          String    @default("active") // active, won, lost, pending, slashed
+  payout          String?   // payout amount if won
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  settledAt       DateTime?
+  
+  // Relations
+  staker          User      @relation(fields: [stakerId], references: [id])
+  stakerId        String
+  project         Project   @relation(fields: [projectId], references: [id])
+  projectId       String
+  review          Review?   @relation(fields: [reviewId], references: [id])
+  reviewId        String?
+  
+  @@index([stakerId])
+  @@index([projectId])
+  @@index([status])
+}
+
+// Vote on a review (upvote/downvote)
+model Vote {
+  id              String    @id @default(cuid())
+  direction       String    // "up" or "down"
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  
+  // Relations
+  voter           User      @relation(fields: [voterId], references: [id])
+  voterId         String
+  review          Review    @relation(fields: [reviewId], references: [id])
+  reviewId        String
+  
+  // Unique constraint: one vote per user per review
+  @@unique([voterId, reviewId])
+  @@index([reviewId])
+}
+
+// ============================================
+// Market/Settlement Models
+// ============================================
+
+// Weekly settlement round
+model SettlementRound {
+  id              String    @id @default(cuid())
+  
+  // Round info
+  weekNumber      Int       // ISO week number
+  year            Int
+  category        String    // k/defi, k/perp-dex, etc.
+  
+  // Status
+  status          String    @default("active") // active, calculating, settled
+  
+  // Results (JSON)
+  finalRankings   String?   // JSON: [{projectId, rank, score}]
+  totalPool       String    @default("0")
+  
+  // Timestamps
+  startedAt       DateTime  @default(now())
+  settledAt       DateTime?
+  
+  @@unique([year, weekNumber, category])
+  @@index([status])
+}
+
+// ============================================
+// Token/Market Models (for Kindred MVP)
+// ============================================
+
+// External market reference (Polymarket, etc.)
+model ExternalMarket {
+  id              String    @id @default(cuid())
+  
+  // Market info
+  source          String    // "polymarket", "manifold", etc.
+  externalId      String    // ID on external platform
+  question        String
+  category        String?
+  
+  // Current state
+  yesPrice        Float     @default(0.5)
+  noPrice         Float     @default(0.5)
+  volume          String    @default("0")
+  liquidity       String    @default("0")
+  
+  // Timing
+  endDate         DateTime?
+  resolved        Boolean   @default(false)
+  outcome         String?   // "yes", "no", null
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@unique([source, externalId])
+  @@index([category])
+  @@index([resolved])
+}
