@@ -1,6 +1,6 @@
 'use client'
 
-import { use } from 'react'
+import { use, useState } from 'react'
 import Link from 'next/link'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
@@ -9,11 +9,16 @@ import {
   DollarSign, Users, Share2, Bell
 } from 'lucide-react'
 import { useMarket } from '@/hooks'
+import { TradeModal } from '@/components/TradeModal'
 
 export default function MarketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const { market, isLoading, error } = useMarket(id)
   const { isConnected } = useAccount()
+  const [tradeModal, setTradeModal] = useState<{ isOpen: boolean; side: 'yes' | 'no' }>({
+    isOpen: false,
+    side: 'yes',
+  })
 
   if (isLoading) {
     return (
@@ -122,7 +127,10 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
             </div>
             
             {isConnected ? (
-              <button className="w-full py-3 bg-green-500 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+              <button 
+                onClick={() => setTradeModal({ isOpen: true, side: 'yes' })}
+                className="w-full py-3 bg-green-500 rounded-lg font-semibold hover:bg-green-600 transition-colors"
+              >
                 Buy Yes
               </button>
             ) : (
@@ -145,7 +153,10 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
             </div>
             
             {isConnected ? (
-              <button className="w-full py-3 bg-red-500 rounded-lg font-semibold hover:bg-red-600 transition-colors">
+              <button 
+                onClick={() => setTradeModal({ isOpen: true, side: 'no' })}
+                className="w-full py-3 bg-red-500 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+              >
                 Buy No
               </button>
             ) : (
@@ -155,6 +166,20 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
             )}
           </div>
         </div>
+
+        {/* Trade Modal */}
+        {market && (
+          <TradeModal
+            market={market}
+            side={tradeModal.side}
+            isOpen={tradeModal.isOpen}
+            onClose={() => setTradeModal({ ...tradeModal, isOpen: false })}
+            onSuccess={(position) => {
+              console.log('Position created:', position)
+              // Could show a success toast here
+            }}
+          />
+        )}
 
         {/* Actions */}
         <div className="flex flex-wrap gap-3 mb-8">
