@@ -1,194 +1,241 @@
 'use client'
 
 import { useState } from 'react'
-import { Flame, Clock, TrendingUp, Award, Filter, PenSquare } from 'lucide-react'
-import { PostCard } from './PostCard'
-import { PurchaseReviewCard } from './PurchaseReviewCard'
+import Link from 'next/link'
+import { Flame, Clock, TrendingUp, Award, Plus, SlidersHorizontal, Coins } from 'lucide-react'
+import { StakeVote } from './StakeVote'
+import { PaywallContent } from './PaywallContent'
+
+type SortOption = 'hot' | 'new' | 'top' | 'controversial'
+
+interface Review {
+  id: string
+  author: string
+  authorReputation: number
+  projectName: string
+  projectAddress: string
+  rating: number
+  previewContent: string
+  fullContent?: string
+  stakeAmount: string
+  upvotes: number
+  downvotes: number
+  totalStaked: string
+  unlockPrice?: string
+  totalUnlocks: number
+  authorEarnings: string
+  timestamp: string
+  isPremium: boolean
+}
 
 interface CategoryFeedProps {
   category: string
-  categoryIcon?: string
-  categoryDescription?: string
+  categoryName: string
+  categoryIcon: string
+  reviews: Review[]
 }
 
-type SortOption = 'hot' | 'new' | 'top' | 'rising'
-
-// Mock data - replace with API call
-const MOCK_POSTS = [
+// Mock data
+const MOCK_REVIEWS: Review[] = [
   {
     id: '1',
-    project: 'Hyperliquid',
-    projectIcon: '⚡',
-    category: 'k/perp-dex',
-    rating: 4.8,
-    author: '0xabcdef1234567890abcdef1234567890abcdef12',
+    author: '0x742d35Cc6634C0532925a3b844Bc9e7595f8fE23',
     authorReputation: 1250,
-    content: 'Best perp DEX by far. Execution is lightning fast, fees are competitive, and the UX is actually good. Been using it for 6 months now and never had any issues with liquidations or order fills.',
-    upvotes: 342,
-    comments: 48,
-    staked: '25',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-    isNFT: true,
-    nftPrice: '0.05',
+    projectName: 'Hyperliquid',
+    projectAddress: '0x1234...5678',
+    rating: 5,
+    previewContent: 'After 6 months of heavy usage, I can confidently say Hyperliquid is the best perp DEX on the market. The execution speed rivals CEXes, and the fee structure is incredibly competitive.',
+    fullContent: 'Deep dive into the architecture: Hyperliquid uses a custom L1 that achieves ~100k TPS with sub-second finality. The order book is fully on-chain with MEV protection built in. Key advantages over competitors: 1) No bridging required for deposits, 2) Portfolio margin system allows capital efficiency, 3) The vesting mechanism aligns long-term incentives...',
+    stakeAmount: '2.5',
+    upvotes: 156,
+    downvotes: 12,
+    totalStaked: '45.2',
+    unlockPrice: '0.05',
+    totalUnlocks: 89,
+    authorEarnings: '4.45',
+    timestamp: '2025-02-02T10:30:00Z',
+    isPremium: true,
   },
   {
     id: '2',
-    project: 'Aave',
-    projectIcon: '👻',
-    category: 'k/defi',
-    rating: 4.6,
-    author: '0x1111222233334444555566667777888899990000',
-    authorReputation: 850,
-    content: 'Solid lending protocol with proven track record. V3 on multiple chains has been great. Only downside is gas fees on mainnet during congestion.',
-    upvotes: 189,
-    comments: 32,
-    staked: '10',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
-    isNFT: false,
+    author: '0x8ba1f109551bD432803012645Hac136c22b27',
+    authorReputation: 890,
+    projectName: 'GMX V2',
+    projectAddress: '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a',
+    rating: 4,
+    previewContent: 'GMX V2 brings significant improvements over V1. The new GM pools offer better capital efficiency and the UI has been completely revamped. However, there are still some concerns about IL...',
+    stakeAmount: '1.0',
+    upvotes: 89,
+    downvotes: 23,
+    totalStaked: '23.1',
+    totalUnlocks: 0,
+    authorEarnings: '0',
+    timestamp: '2025-02-01T15:45:00Z',
+    isPremium: false,
   },
   {
     id: '3',
-    project: 'GMX',
-    projectIcon: '📊',
-    category: 'k/perp-dex',
-    rating: 4.3,
-    author: '0xdeadbeef1234567890abcdef1234567890abcdef',
-    authorReputation: 420,
-    content: 'Good for spot trading with leverage but the funding rates can be brutal during volatile periods. GLP has been a solid yield source though.',
-    upvotes: 127,
-    comments: 21,
-    staked: '5',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-    isNFT: true,
-    nftPrice: '0.02',
+    author: '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed',
+    authorReputation: 2100,
+    projectName: 'dYdX V4',
+    projectAddress: '0x92D6C1e31e14520e676a687F0a93788B716BEff5',
+    rating: 4,
+    previewContent: 'The move to Cosmos was bold. dYdX V4 now operates as its own chain with full sovereignty. Trading experience is smooth but the ecosystem is still maturing compared to alternatives.',
+    fullContent: 'Technical analysis of the dYdX Chain: Running on Tendermint consensus with custom modules for order book management. The native token accrues real value from trading fees. Migration from V3 was smooth for most users. Concerns: 1) Validator set concentration, 2) Bridge security for incoming assets, 3) Liquidity fragmentation across markets...',
+    stakeAmount: '3.0',
+    upvotes: 234,
+    downvotes: 45,
+    totalStaked: '67.8',
+    unlockPrice: '0.08',
+    totalUnlocks: 156,
+    authorEarnings: '12.48',
+    timestamp: '2025-01-30T22:00:00Z',
+    isPremium: true,
   },
 ]
 
-const MOCK_PREMIUM_POST = {
-  id: 'premium-1',
-  project: 'Ethena',
-  projectIcon: '🌊',
-  category: 'k/defi',
-  rating: 4.2,
-  author: '0xresearcher1234567890abcdef1234567890ab',
-  authorReputation: 2100,
-  previewContent: 'Deep dive into Ethena\'s USDe mechanism and risk analysis. This protocol has been controversial but the numbers are interesting...',
-  fullContent: 'Full analysis: Ethena generates yield through delta-neutral strategies on centralized exchanges. Key risks include: 1) Custodial risk with CEXs, 2) Funding rate inversion risk, 3) Regulatory uncertainty. However, current APY of 27% is attractive if you understand the risks. My recommendation: allocate max 5% of portfolio with close monitoring.',
-  isUnlocked: false,
-  unlockPrice: '2',
-  totalUnlocks: 156,
-  upvotes: 89,
-  totalStaked: '45',
-  timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-  earlyVoterBonus: 15,
-}
-
-export function CategoryFeed({ 
-  category, 
-  categoryIcon = '📁',
-  categoryDescription = 'Community reviews and predictions'
-}: CategoryFeedProps) {
+export function CategoryFeed({ category, categoryName, categoryIcon }: CategoryFeedProps) {
   const [sortBy, setSortBy] = useState<SortOption>('hot')
-  const [showPremiumOnly, setShowPremiumOnly] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
 
   const sortOptions: { value: SortOption; label: string; icon: React.ReactNode }[] = [
     { value: 'hot', label: 'Hot', icon: <Flame className="w-4 h-4" /> },
     { value: 'new', label: 'New', icon: <Clock className="w-4 h-4" /> },
-    { value: 'top', label: 'Top', icon: <TrendingUp className="w-4 h-4" /> },
-    { value: 'rising', label: 'Rising', icon: <Award className="w-4 h-4" /> },
+    { value: 'top', label: 'Top Staked', icon: <TrendingUp className="w-4 h-4" /> },
+    { value: 'controversial', label: 'Controversial', icon: <Award className="w-4 h-4" /> },
   ]
 
-  // Filter posts by category
-  const filteredPosts = MOCK_POSTS.filter(post => 
-    category === 'all' || post.category === category
-  )
+  const formatTimestamp = (ts: string) => {
+    const date = new Date(ts)
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const days = Math.floor(hours / 24)
+    
+    if (hours < 1) return 'just now'
+    if (hours < 24) return `${hours}h ago`
+    if (days < 7) return `${days}d ago`
+    return date.toLocaleDateString()
+  }
+
+  const getReputationBadge = (rep: number) => {
+    if (rep >= 2000) return { label: 'Legend', color: 'text-yellow-400 bg-yellow-500/10' }
+    if (rep >= 1000) return { label: 'Expert', color: 'text-purple-400 bg-purple-500/10' }
+    if (rep >= 500) return { label: 'Trusted', color: 'text-blue-400 bg-blue-500/10' }
+    return { label: 'Active', color: 'text-green-400 bg-green-500/10' }
+  }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="space-y-4">
       {/* Category Header */}
-      <div className="bg-[#111113] border border-[#2a2a2e] rounded-xl p-6 mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span className="text-4xl">{categoryIcon}</span>
-            <div>
-              <h1 className="text-2xl font-bold text-white">{category}</h1>
-              <p className="text-[#6b6b70]">{categoryDescription}</p>
-            </div>
-          </div>
-          <a
-            href="/review"
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors"
-          >
-            <PenSquare className="w-4 h-4" />
-            Write Review
-          </a>
-        </div>
-
-        {/* Stats */}
-        <div className="flex gap-6 mt-4 pt-4 border-t border-[#2a2a2e]">
+      <div className="flex items-center justify-between p-4 bg-[#111113] border border-[#1f1f23] rounded-xl">
+        <div className="flex items-center gap-3">
+          <span className="text-3xl">{categoryIcon}</span>
           <div>
-            <span className="text-xl font-bold text-white">1.2k</span>
-            <span className="text-sm text-[#6b6b70] ml-1">Reviews</span>
-          </div>
-          <div>
-            <span className="text-xl font-bold text-white">8.5k</span>
-            <span className="text-sm text-[#6b6b70] ml-1">Members</span>
-          </div>
-          <div>
-            <span className="text-xl font-bold text-white">$45k</span>
-            <span className="text-sm text-[#6b6b70] ml-1">Total Staked</span>
+            <h1 className="text-xl font-bold">{categoryName}</h1>
+            <p className="text-sm text-[#6b6b70]">{MOCK_REVIEWS.length} reviews • {category}</p>
           </div>
         </div>
-      </div>
-
-      {/* Sort & Filter Bar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-1 bg-[#111113] border border-[#2a2a2e] rounded-lg p-1">
-          {sortOptions.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => setSortBy(option.value)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                sortBy === option.value
-                  ? 'bg-purple-500/20 text-purple-400'
-                  : 'text-[#6b6b70] hover:text-white'
-              }`}
-            >
-              {option.icon}
-              {option.label}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={() => setShowPremiumOnly(!showPremiumOnly)}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
-            showPremiumOnly
-              ? 'border-purple-500 bg-purple-500/10 text-purple-400'
-              : 'border-[#2a2a2e] text-[#6b6b70] hover:border-[#3a3a3e]'
-          }`}
+        <Link
+          href={`/review?category=${category}`}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-700 rounded-lg text-white font-medium hover:translate-y-[-1px] hover:shadow-lg hover:shadow-purple-500/30 transition-all"
         >
-          <Filter className="w-4 h-4" />
-          Premium Only
+          <Plus className="w-4 h-4" />
+          Write Review
+        </Link>
+      </div>
+
+      {/* Sort Bar */}
+      <div className="flex items-center gap-2 p-2 bg-[#111113] border border-[#1f1f23] rounded-lg">
+        {sortOptions.map((option) => (
+          <button
+            key={option.value}
+            onClick={() => setSortBy(option.value)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              sortBy === option.value
+                ? 'bg-[#1f1f23] text-white'
+                : 'text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0]'
+            }`}
+          >
+            {option.icon}
+            {option.label}
+          </button>
+        ))}
+        
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0] transition-colors"
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+          Filters
         </button>
       </div>
 
-      {/* Feed */}
+      {/* Reviews List */}
       <div className="space-y-4">
-        {/* Featured Premium Post */}
-        {!showPremiumOnly && (
-          <PurchaseReviewCard {...MOCK_PREMIUM_POST} />
-        )}
+        {MOCK_REVIEWS.map((review) => {
+          const repBadge = getReputationBadge(review.authorReputation)
+          
+          return (
+            <div key={review.id} className="flex gap-4 bg-[#111113] border border-[#1f1f23] rounded-xl p-4 hover:border-[#2a2a2e] transition-colors">
+              {/* Vote Column */}
+              <StakeVote
+                reviewId={review.id}
+                initialUpvotes={review.upvotes}
+                initialDownvotes={review.downvotes}
+                totalStaked={review.totalStaked}
+                earlyBird={review.upvotes + review.downvotes < 20}
+              />
 
-        {/* Regular Posts */}
-        {filteredPosts.map((post) => (
-          <PostCard key={post.id} {...post} />
-        ))}
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                {/* Header */}
+                <div className="flex items-center gap-2 text-xs text-[#6b6b70] mb-2 flex-wrap">
+                  <span className="font-semibold text-[#adadb0]">{review.projectName}</span>
+                  <span>•</span>
+                  <span>by {review.author.slice(0, 6)}...{review.author.slice(-4)}</span>
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${repBadge.color}`}>
+                    {repBadge.label}
+                  </span>
+                  <span>•</span>
+                  <span>{formatTimestamp(review.timestamp)}</span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1 text-purple-400">
+                    <Coins className="w-3 h-3" />
+                    {review.stakeAmount} ETH staked
+                  </span>
+                </div>
 
-        {/* Load More */}
-        <button className="w-full py-3 bg-[#111113] border border-[#2a2a2e] rounded-lg text-[#6b6b70] hover:text-white hover:border-[#3a3a3e] transition-colors">
-          Load More
-        </button>
+                {/* Rating */}
+                <div className="flex items-center gap-1 mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span key={star} className={star <= review.rating ? 'text-yellow-400' : 'text-[#2a2a2e]'}>
+                      ★
+                    </span>
+                  ))}
+                  <span className="text-sm text-[#6b6b70] ml-1">{review.rating}/5</span>
+                </div>
+
+                {/* Content */}
+                {review.isPremium ? (
+                  <PaywallContent
+                    reviewId={review.id}
+                    previewContent={review.previewContent}
+                    fullContent={review.fullContent}
+                    unlockPrice={review.unlockPrice || '0.05'}
+                    author={review.author}
+                    authorEarnings={review.authorEarnings}
+                    totalUnlocks={review.totalUnlocks}
+                  />
+                ) : (
+                  <p className="text-[#adadb0] text-sm leading-relaxed">
+                    {review.previewContent}
+                  </p>
+                )}
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
