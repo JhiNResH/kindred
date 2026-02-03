@@ -1,0 +1,10 @@
+// Kindred Components
+export { Navigation } from './Navigation'
+export { Landing } from './Landing'
+export { HomePage } from './HomePage'
+export { BuyToken, KindPrice } from './BuyToken'
+export { Leaderboard } from './Leaderboard'
+export { ReviewCard } from './ReviewCard'
+export { ReviewForm } from './ReviewForm'
+export { StakeCard } from './StakeCard'
+export { MyPredictions } from './MyPredictions'
