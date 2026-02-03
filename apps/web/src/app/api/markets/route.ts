@@ -1,240 +1,139 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { fetchMarkets, searchMarkets, getMarketsByCategory } from '@/lib/polymarket'
+import { getAllMockMarkets, getMockMarketsByCategory, searchMockMarkets } from '@/lib/mock-markets'
 
 export const dynamic = 'force-dynamic'
-
-// Types
-interface Market {
-  id: string
-  question: string
-  slug: string
-  category: string
-  source: 'polymarket' | 'prediction-market'
-  outcomes: Outcome[]
-  volume: string
-  liquidity: string
-  endDate: string | null
-  resolved: boolean
-  createdAt: string
-}
-
-interface Outcome {
-  id: string
-  name: string
-  price: number // 0-1 representing probability
-  volume: string
-}
-
-// Polymarket CLOB API endpoints
-const POLYMARKET_API = {
-  GAMMA: 'https://gamma-api.polymarket.com',
-  CLOB: 'https://clob.polymarket.com',
-}
-
-// Fetch markets from Polymarket
-async function fetchPolymarketMarkets(category?: string, limit = 20): Promise<Market[]> {
-  try {
-    // Use Gamma API for market discovery
-    const url = new URL(`${POLYMARKET_API.GAMMA}/markets`)
-    url.searchParams.set('limit', limit.toString())
-    url.searchParams.set('active', 'true')
-    url.searchParams.set('closed', 'false')
-    
-    if (category) {
-      url.searchParams.set('tag', category)
-    }
-
-    const response = await fetch(url.toString(), {
-      headers: {
-        'Accept': 'application/json',
-      },
-      next: { revalidate: 60 }, // Cache for 60 seconds
-    })
-
-    if (!response.ok) {
-      console.error('Polymarket API error:', response.status)
-      return []
-    }
-
-    const data = await response.json()
-    
-    // Transform to our format
-    return (data || []).map((m: any) => ({
-      id: m.conditionId || m.id,
-      question: m.question,
-      slug: m.slug,
-      category: m.tags?.[0] || 'other',
-      source: 'polymarket' as const,
-      outcomes: (m.outcomes || []).map((o: any, i: number) => ({
-        id: `${m.id}-${i}`,
-        name: o,
-        price: m.outcomePrices?.[i] ? parseFloat(m.outcomePrices[i]) : 0.5,
-        volume: '0',
-      })),
-      volume: m.volume?.toString() || '0',
-      liquidity: m.liquidity?.toString() || '0',
-      endDate: m.endDate || null,
-      resolved: m.resolved || false,
-      createdAt: m.createdAt || new Date().toISOString(),
-    }))
-  } catch (error) {
-    console.error('Failed to fetch Polymarket markets:', error)
-    return []
-  }
-}
-
-// Mock markets for development/fallback
-const MOCK_MARKETS: Market[] = [
-  {
-    id: 'mock-1',
-    question: 'Will Bitcoin reach $100,000 by end of 2026?',
-    slug: 'bitcoin-100k-2026',
-    category: 'crypto',
-    source: 'prediction-market',
-    outcomes: [
-      { id: 'mock-1-yes', name: 'Yes', price: 0.65, volume: '1500000' },
-      { id: 'mock-1-no', name: 'No', price: 0.35, volume: '800000' },
-    ],
-    volume: '2300000',
-    liquidity: '500000',
-    endDate: '2026-12-31T23:59:59Z',
-    resolved: false,
-    createdAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: 'mock-2',
-    question: 'Will Ethereum flip Bitcoin market cap in 2026?',
-    slug: 'eth-flip-btc-2026',
-    category: 'crypto',
-    source: 'prediction-market',
-    outcomes: [
-      { id: 'mock-2-yes', name: 'Yes', price: 0.15, volume: '500000' },
-      { id: 'mock-2-no', name: 'No', price: 0.85, volume: '2800000' },
-    ],
-    volume: '3300000',
-    liquidity: '800000',
-    endDate: '2026-12-31T23:59:59Z',
-    resolved: false,
-    createdAt: '2024-01-15T00:00:00Z',
-  },
-  {
-    id: 'mock-3',
-    question: 'Will Uniswap v4 launch in Q1 2026?',
-    slug: 'uniswap-v4-q1-2026',
-    category: 'defi',
-    source: 'prediction-market',
-    outcomes: [
-      { id: 'mock-3-yes', name: 'Yes', price: 0.72, volume: '200000' },
-      { id: 'mock-3-no', name: 'No', price: 0.28, volume: '78000' },
-    ],
-    volume: '278000',
-    liquidity: '50000',
-    endDate: '2026-03-31T23:59:59Z',
-    resolved: false,
-    createdAt: '2025-12-01T00:00:00Z',
-  },
-]
 
 // GET /api/markets
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const category = searchParams.get('category')
-  const source = searchParams.get('source')
+  const source = searchParams.get('source') // polymarket, kindred, all
   const limit = parseInt(searchParams.get('limit') || '20')
+  const offset = parseInt(searchParams.get('offset') || '0')
   const search = searchParams.get('q')
 
-  let markets: Market[] = []
+  let allMarkets: any[] = []
 
-  // Fetch from Polymarket if not filtering to mock only
-  if (source !== 'mock') {
-    const polymarketMarkets = await fetchPolymarketMarkets(category || undefined, limit)
-    markets = [...markets, ...polymarketMarkets]
+  try {
+    // Fetch from Polymarket (unless source=kindred)
+    if (source !== 'kindred') {
+      let polymarketMarkets: any[] = []
+      
+      if (search) {
+        polymarketMarkets = await searchMarkets(search, limit)
+      } else if (category && category !== 'all') {
+        polymarketMarkets = await getMarketsByCategory(category, limit)
+      } else {
+        polymarketMarkets = await fetchMarkets({ limit, offset })
+      }
+      
+      allMarkets = [...allMarkets, ...polymarketMarkets]
+    }
+
+    // Add mock/Kindred markets (unless source=polymarket)
+    if (source !== 'polymarket') {
+      let kindredMarkets: any[]
+      
+      if (search) {
+        kindredMarkets = searchMockMarkets(search)
+      } else if (category && category !== 'all') {
+        kindredMarkets = getMockMarketsByCategory(category)
+      } else {
+        kindredMarkets = getAllMockMarkets()
+      }
+      
+      allMarkets = [...allMarkets, ...kindredMarkets]
+    }
+
+    // Remove duplicates (by slug or id)
+    const seen = new Set()
+    allMarkets = allMarkets.filter(m => {
+      const key = m.slug || m.id
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+
+    // Sort by volume (highest first)
+    allMarkets.sort((a, b) => {
+      const volA = parseFloat(a.volume || '0')
+      const volB = parseFloat(b.volume || '0')
+      return volB - volA
+    })
+
+    // Apply limit
+    const paginatedMarkets = allMarkets.slice(0, limit)
+
+    return NextResponse.json({
+      markets: paginatedMarkets,
+      total: allMarkets.length,
+      returned: paginatedMarkets.length,
+      categories: ['crypto', 'defi', 'politics', 'sports', 'tech', 'other'],
+      sources: ['polymarket', 'kindred'],
+      filters: { category, source, search, limit, offset },
+      lastUpdated: new Date().toISOString(),
+    })
+  } catch (error) {
+    console.error('Markets API error:', error)
+    
+    // Fallback to mock markets on error
+    const fallbackMarkets = category 
+      ? getMockMarketsByCategory(category)
+      : getAllMockMarkets()
+
+    return NextResponse.json({
+      markets: fallbackMarkets.slice(0, limit),
+      total: fallbackMarkets.length,
+      returned: Math.min(fallbackMarkets.length, limit),
+      categories: ['crypto', 'defi', 'politics', 'sports', 'tech', 'other'],
+      sources: ['kindred'],
+      error: 'Polymarket API unavailable, showing Kindred markets only',
+      lastUpdated: new Date().toISOString(),
+    })
   }
-
-  // Add mock markets if no real data or explicitly requested
-  if (markets.length === 0 || source === 'mock' || source === 'all') {
-    markets = [...markets, ...MOCK_MARKETS]
-  }
-
-  // Filter by category
-  if (category) {
-    markets = markets.filter(m => 
-      m.category.toLowerCase() === category.toLowerCase()
-    )
-  }
-
-  // Search
-  if (search) {
-    const searchLower = search.toLowerCase()
-    markets = markets.filter(m =>
-      m.question.toLowerCase().includes(searchLower) ||
-      m.slug.toLowerCase().includes(searchLower)
-    )
-  }
-
-  // Sort by volume (highest first)
-  markets.sort((a, b) => parseFloat(b.volume) - parseFloat(a.volume))
-
-  // Limit
-  markets = markets.slice(0, limit)
-
-  return NextResponse.json({
-    markets,
-    total: markets.length,
-    categories: ['crypto', 'defi', 'politics', 'sports', 'other'],
-    sources: ['polymarket', 'prediction-market'],
-    lastUpdated: new Date().toISOString(),
-  })
 }
 
-// GET /api/markets/[id] - Get single market details
+// POST /api/markets - Search or get market by ID
 export async function POST(request: NextRequest) {
-  // This handles fetching a specific market by ID
-  // Used for detailed view with order book, etc.
   try {
     const body = await request.json()
-    const { marketId } = body
+    const { marketId, search } = body
 
-    if (!marketId) {
-      return NextResponse.json({ error: 'marketId required' }, { status: 400 })
-    }
-
-    // Try to fetch from Polymarket
-    try {
-      const response = await fetch(
-        `${POLYMARKET_API.GAMMA}/markets/${marketId}`,
-        { next: { revalidate: 30 } }
-      )
-
-      if (response.ok) {
-        const data = await response.json()
-        return NextResponse.json({
-          market: {
-            id: data.conditionId || data.id,
-            question: data.question,
-            description: data.description,
-            outcomes: data.outcomes,
-            volume: data.volume,
-            liquidity: data.liquidity,
-            endDate: data.endDate,
-          },
-          source: 'polymarket',
-        })
-      }
-    } catch (e) {
-      // Fall through to mock
-    }
-
-    // Check mock markets
-    const mockMarket = MOCK_MARKETS.find(m => m.id === marketId)
-    if (mockMarket) {
+    if (search) {
+      // Search mode
+      const polymarketResults = await searchMarkets(search, 10)
+      const kindredResults = searchMockMarkets(search)
+      
       return NextResponse.json({
-        market: mockMarket,
-        source: 'mock',
+        results: [...polymarketResults, ...kindredResults].slice(0, 20),
+        query: search,
       })
     }
 
-    return NextResponse.json({ error: 'Market not found' }, { status: 404 })
+    if (marketId) {
+      // Single market lookup
+      const { fetchMarket } = await import('@/lib/polymarket')
+      const { getMockMarketById } = await import('@/lib/mock-markets')
+      
+      // Try Polymarket first
+      const polymarket = await fetchMarket(marketId)
+      if (polymarket) {
+        return NextResponse.json({ market: polymarket, source: 'polymarket' })
+      }
+
+      // Try mock markets
+      const mockMarket = getMockMarketById(marketId)
+      if (mockMarket) {
+        return NextResponse.json({ market: mockMarket, source: 'kindred' })
+      }
+
+      return NextResponse.json({ error: 'Market not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ error: 'marketId or search required' }, { status: 400 })
   } catch (error) {
+    console.error('Markets POST error:', error)
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }
 }
