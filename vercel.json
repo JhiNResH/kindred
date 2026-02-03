@@ -1,8 +1,4 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "turbo run build --filter=@kindred/web",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "pnpm install",
   "framework": "nextjs",
   "headers": [
     {
