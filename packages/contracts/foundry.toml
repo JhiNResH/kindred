@@ -16,5 +16,5 @@ remappings = [
 base = "https://mainnet.base.org"
 base_sepolia = "https://sepolia.base.org"
 
-[etherscan]
-base = { key = "${BASESCAN_API_KEY}", url = "https://api.basescan.org/api" }
+# [etherscan]
+# base = { key = "${BASESCAN_API_KEY}", url = "https://api.basescan.org/api" }
