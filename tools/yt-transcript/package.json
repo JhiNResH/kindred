@@ -1,0 +1,24 @@
+{
+  "name": "yt-transcript",
+  "version": "1.0.0",
+  "description": "CLI tool to fetch YouTube video transcripts",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "yt": "./index.js"
+  },
+  "scripts": {
+    "test": "node index.js --help"
+  },
+  "keywords": [
+    "youtube",
+    "transcript",
+    "subtitles",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0"
+  }
+}

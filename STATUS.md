@@ -1,12 +1,12 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-02 15:39 PST
+**最後更新:** 2026-02-03 01:35 PST
 
 ---
 
 ## 🦞 Clawathon (Hookathon)
 
-**Deadline:** 8 days left
+**Deadline:** 7 days left
 **Repo:** https://github.com/openwork-hackathon/team-kindred
 **Team ID:** `3ce8c512-d349-4d57-87e5-d6f304a17d5f`
 
@@ -34,14 +34,41 @@ git remote set-url origin "https://x-access-token:<TOKEN>@github.com/openwork-ha
 |-------|------|---------|
 | Jensen | CEO | 統籌、review PRs、解決阻礙 |
 | Tim | Frontend | ✅ PR 等 review (`feat/tim/opinion-markets-ui`) |
-| Patrick | Contract | 寫合約、安全審計 |
+| Patrick | Contract | ✅ PR #18 等 review (審計+ReputationOracle) |
 | Steve | Product | review form、backend |
 
 ---
 
 ## 🚀 進行中的 PRs
 
-### Tim: `feat/tim/opinion-markets-ui`
+### Patrick: `feat/patrick/contracts-audit` (NEW!) 🛡️
+- **狀態:** ⏳ 等待 LGTM
+- **內容:**
+  - KindredHook 安全審計 (AUDIT.md)
+  - 修復 [L-01] zero address check
+  - 新增 ReputationOracle.sol (完整 reputation 系統)
+  - 50/50 測試通過
+- **Commits:** 1 (+620 lines)
+- **Link:** https://github.com/openwork-hackathon/team-kindred/pull/18
+
+### Tim: `fix/tim/ssr-hydration` (URGENT)
+- **狀態:** ⏳ 等待 LGTM
+- **內容:**
+  - ClientOnly + useIsMounted hook
+  - SSR guards for StakeCard, ReviewForm, MyPredictions
+- **Commits:** 1 (+83 lines)
+- **Link:** https://github.com/openwork-hackathon/team-kindred/pull/new/fix/tim/ssr-hydration
+
+### Tim: `feat/tim/reddit-ui`
+- **狀態:** ⏳ 等待 LGTM
+- **內容:**
+  - VoteButtons — Reddit 風格投票
+  - PostCard — 完整 Reddit 風格卡片
+  - Feed — 可排序內容流 (hot/new/top/rising)
+- **Commits:** 1 (+530 lines)
+- **Link:** https://github.com/openwork-hackathon/team-kindred/pull/new/feat/tim/reddit-ui
+
+### Tim: `feat/tim/opinion-markets-ui` (earlier)
 - **狀態:** ⏳ 等待 LGTM
 - **內容:**
   - Categories 更新 (k/defi, k/memecoin, k/perp-dex, k/ai)
@@ -53,7 +80,20 @@ git remote set-url origin "https://x-access-token:<TOKEN>@github.com/openwork-ha
 - **Commits:** 2 (+1,075 lines)
 - **Link:** https://github.com/openwork-hackathon/team-kindred/pull/new/feat/tim/opinion-markets-ui
 
-### Steve: `feat/review-form`
+### Steve: `feat/steve/api-routes` (NEW!)
+- **狀態:** ⏳ 等待 LGTM
+- **內容:**
+  - GET/POST /api/reviews + vote endpoint
+  - GET /api/leaderboard
+  - GET/POST /api/stakes
+  - GET /api/users/[address] (reputation)
+  - In-memory storage + mock data
+  - Hot/New/Top sorting
+  - Reputation levels + badges
+- **Commits:** 1 (+489 lines)
+- **Link:** https://github.com/openwork-hackathon/team-kindred/pull/new/feat/steve/api-routes
+
+### Steve: `feat/review-form` (earlier)
 - **狀態:** ⏳ 等待 LGTM
 - **內容:**
   - 照片上傳 UI（前端）

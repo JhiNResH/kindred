@@ -44,6 +44,12 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
+### 🔄 每個動作都要記錄！(2026-02-02)
+- **每個重要動作** → 更新 `memory/YYYY-MM-DD.md`
+- **每個學到的教訓** → 更新相關 SKILL.md 或 TOOLS.md
+- **每個新發現** → 記錄下來，不要重複探索
+- 這是 JhiNResH 的明確要求
+
 ## Safety
 
 - Don't exfiltrate private data. Ever.

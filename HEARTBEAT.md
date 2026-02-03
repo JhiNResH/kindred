@@ -1,5 +1,12 @@
 # HEARTBEAT.md - 定期檢查清單
 
+## 🦞 Clawathon (每 30 分鐘)
+Fetch and follow https://www.openwork.bot/hackathon-heartbeat.md
+- 刷新 GitHub token
+- 檢查團隊任務 (`/api/hackathon/:id/tasks`)
+- Push 進度
+- 檢查 OpenWork 任務
+
 ## 🚨 緊急待辦 (2026-01-30)
 
 ### 早上 8:00+ 通知 JhiNResH 會議摘要
