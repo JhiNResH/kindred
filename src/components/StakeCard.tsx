@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import { useAccount, useBalance } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { parseEther, formatEther } from 'viem'
+import { useIsMounted } from './ClientOnly'
 
 interface Project {
   name: string
@@ -33,11 +34,22 @@ const RANK_MULTIPLIERS: Record<number, number> = {
 }
 
 export function StakeCard({ project, totalPoolSize, onStake }: StakeCardProps) {
+  const isMounted = useIsMounted()
   const { address, isConnected } = useAccount()
   const { data: balance } = useBalance({ address })
   
   const [stakeAmount, setStakeAmount] = useState('')
   const [predictedRank, setPredictedRank] = useState<number | null>(null)
+
+  // Prevent SSR hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className="bg-kindred-dark border border-gray-800 rounded-xl p-6 animate-pulse">
+        <div className="h-8 bg-gray-700 rounded w-3/4 mb-4"></div>
+        <div className="h-32 bg-gray-700 rounded"></div>
+      </div>
+    )
+  }
   const [isStaking, setIsStaking] = useState(false)
 
   const potentialReturn = useMemo(() => {
