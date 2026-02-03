@@ -11,7 +11,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 const queryClient = new QueryClient()
 
 // Privy App ID - get from https://console.privy.io
-const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'clxxxxxxxxxxxxxxxxxx'
+const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
@@ -20,34 +20,41 @@ export function Providers({ children }: { children: React.ReactNode }) {
     setMounted(true)
   }, [])
 
-  return (
-    <PrivyProvider
-      appId={PRIVY_APP_ID}
-      config={{
-        // Customize Privy appearance
-        appearance: {
-          theme: 'dark',
+  // If no Privy App ID, skip PrivyProvider (fallback to RainbowKit only)
+  const content = (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider theme={darkTheme({
           accentColor: '#FF6B35',
-          logo: '/kindred-logo.png',
-        },
-        // Login methods
-        loginMethods: ['email', 'wallet', 'google', 'twitter'],
-        // Embedded wallets (auto-create wallet for email/social users)
-        embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
-        },
-      }}
-    >
-      <WagmiProvider config={config}>
-        <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider theme={darkTheme({
-            accentColor: '#FF6B35',
-            accentColorForeground: 'white',
-          })}>
-            {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
-          </RainbowKitProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
-    </PrivyProvider>
+          accentColorForeground: 'white',
+        })}>
+          {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   )
+
+  // Only wrap with Privy if App ID is configured
+  if (PRIVY_APP_ID && PRIVY_APP_ID.startsWith('cl')) {
+    return (
+      <PrivyProvider
+        appId={PRIVY_APP_ID}
+        config={{
+          appearance: {
+            theme: 'dark',
+            accentColor: '#FF6B35',
+            logo: '/kindred-logo.png',
+          },
+          loginMethods: ['email', 'wallet', 'google', 'twitter'],
+          embeddedWallets: {
+            createOnLogin: 'users-without-wallets',
+          },
+        }}
+      >
+        {content}
+      </PrivyProvider>
+    )
+  }
+
+  return content
 }
