@@ -75,7 +75,6 @@ export default function StakePage() {
           <Link href="/reviews" className="text-gray-400 hover:text-white transition">
             Reviews
           </Link>
-          <ConnectButton />
         </div>
       </nav>
 

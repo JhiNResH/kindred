@@ -91,7 +91,6 @@ export default function ReviewsPage() {
           >
             Write Review
           </Link>
-          <ConnectButton />
         </div>
       </nav>
 

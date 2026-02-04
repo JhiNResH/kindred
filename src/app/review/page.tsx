@@ -20,7 +20,6 @@ export default function ReviewPage() {
           >
             Browse Reviews
           </Link>
-          <ConnectButton />
         </div>
       </nav>
 
