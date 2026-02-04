@@ -51,7 +51,7 @@ CRITICAL RULES:
 2. VERIFY THE PROJECT: Make sure the project matches the query. Check official sources.
 3. Check for security audits, team background, and TVL data.
 4. Look for any red flags: rug pulls, hacks, or suspicious activity.
-5. RESPONSE LANGUAGE: All text fields (summary, features, warnings, etc.) MUST be in Traditional Chinese (繁體中文).
+5. RESPONSE LANGUAGE: All text fields (summary, features, warnings, etc.) MUST be in English.
 
 RETURN JSON FORMAT ONLY:
 {
@@ -69,8 +69,8 @@ RETURN JSON FORMAT ONLY:
   "tokenPrice": "$1.23",
   "launchDate": "2023-01",
   "investors": ["a16z", "Binance Labs"],
-  "features": ["永續合約交易", "最高100x槓桿", "低手續費"],
-  "warnings": ["過去曾遭駭客攻擊", "團隊匿名"],
+  "features": ["Perpetual trading", "Up to 100x leverage", "Low fees"],
+  "warnings": ["Previously hacked", "Anonymous team"],
   "audits": [
     {"auditor": "CertiK", "date": "2024-01"},
     {"auditor": "SlowMist", "date": "2023-12"}
