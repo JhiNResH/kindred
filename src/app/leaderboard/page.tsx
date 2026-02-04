@@ -23,7 +23,6 @@ export default function LeaderboardPage() {
           >
             Predict & Review
           </Link>
-          <ConnectButton />
         </div>
       </nav>
 
