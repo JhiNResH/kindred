@@ -118,31 +118,12 @@ export function Feed() {
 
   return (
     <div className="space-y-4">
-      {/* Sort Bar */}
+      {/* Sort Bar Hidden (Using external one) */}
+      {/* 
       <div className="flex items-center gap-2 p-2 bg-[#111113] border border-[#1f1f23] rounded-lg">
-        {sortOptions.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => setSortBy(option.value)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              sortBy === option.value
-                ? 'bg-[#1f1f23] text-white'
-                : 'text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0]'
-            }`}
-          >
-            {option.icon}
-            {option.label}
-          </button>
-        ))}
-        
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0] transition-colors"
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-          Filters
-        </button>
+        ...
       </div>
+      */}
 
       {/* Filter Panel */}
       {showFilters && (
