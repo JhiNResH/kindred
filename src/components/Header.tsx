@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Search, Bell, Bot } from 'lucide-react'
+import { Menu, X, Search, Bell, Bot, SquarePen } from 'lucide-react'
 import { WalletButton } from './WalletButton'
 
 const NAV_LINKS = [
@@ -49,6 +49,14 @@ export function Header() {
               type="text"
               placeholder="Search boards, projects, reviews..."
               className="w-full bg-[#111113] border border-[#1f1f23] rounded-lg py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-[#6b6b70] focus:outline-none focus:border-purple-500 focus:bg-[#0d0d0e] transition-all"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const target = e.target as HTMLInputElement
+                  if (target.value.trim()) {
+                    window.location.href = `/project/${target.value.toLowerCase()}`
+                  }
+                }
+              }}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
               <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-[#2a2a2e] bg-[#1a1a1d] px-1.5 font-mono text-[10px] font-medium text-[#adadb0]">
@@ -60,6 +68,13 @@ export function Header() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-3">
+          <Link 
+            href="/review"
+            className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 text-black text-[13px] font-medium hover:bg-gray-200 transition-colors"
+          >
+            <SquarePen className="w-4 h-4" />
+            <span>Post</span>
+          </Link>
           <button className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg border border-[#2a2a2e] text-[#adadb0] text-[13px] font-medium hover:bg-[#111113] hover:text-white transition-colors">
             <Bot className="w-4 h-4" />
             <span>Agent</span>
