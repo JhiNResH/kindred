@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const category = searchParams.get('category')
   const target = searchParams.get('target')
+  const q = searchParams.get('q') // Full-text search on content
   const sort = searchParams.get('sort') || 'hot' // hot, new, top
 
   try {
@@ -15,10 +16,15 @@ export async function GET(request: NextRequest) {
       where.project = { category }
     }
     if (target) {
+      const lowerTarget = target.toLowerCase()
       where.OR = [
-        { project: { address: { equals: target, mode: 'insensitive' } } },
-        { project: { name: { contains: target, mode: 'insensitive' } } },
+        { project: { address: lowerTarget } },
+        { project: { name: { contains: lowerTarget } } },
       ]
+    }
+    // Full-text search on review content (SQLite: contains is case-insensitive)
+    if (q) {
+      where.content = { contains: q.toLowerCase() }
     }
 
     let reviews = await prisma.review.findMany({

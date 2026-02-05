@@ -12,10 +12,10 @@ export async function GET(request: NextRequest) {
     const where: any = {}
 
     if (address) {
-      where.staker = { address: { equals: address, mode: 'insensitive' } }
+      where.staker = { address: address.toLowerCase() }
     }
     if (project) {
-      where.project = { address: { equals: project, mode: 'insensitive' } }
+      where.project = { address: project.toLowerCase() }
     }
     if (status) {
       where.status = status

@@ -1,89 +1,92 @@
-import { NextRequest } from 'next/server'
-import { withAuth, apiResponse, apiError, corsHeaders } from '@/lib/api-auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-// Handle CORS preflight
-export async function OPTIONS() {
-  return new Response(null, { headers: corsHeaders })
-}
+export const dynamic = 'force-dynamic'
 
-// Mock project data (in production, this would come from a database)
-const MOCK_PROJECTS = [
-  {
-    id: 'hyperliquid',
-    name: 'Hyperliquid',
-    ticker: 'HYPE',
-    category: 'k/perp-dex',
-    score: 92,
-    tvl: '$1.2B',
-    change24h: '+5.2%',
-    reviewsCount: 47,
-  },
-  {
-    id: 'uniswap',
-    name: 'Uniswap',
-    ticker: 'UNI',
-    category: 'k/defi',
-    score: 88,
-    tvl: '$4.8B',
-    change24h: '+2.1%',
-    reviewsCount: 156,
-  },
-  {
-    id: 'ai16z',
-    name: 'ai16z',
-    ticker: 'AI16Z',
-    category: 'k/ai',
-    score: 85,
-    tvl: '$890M',
-    change24h: '+12.4%',
-    reviewsCount: 89,
-  },
-  {
-    id: 'pepe',
-    name: 'PEPE',
-    ticker: 'PEPE',
-    category: 'k/memecoin',
-    score: 78,
-    tvl: '$2.1B',
-    change24h: '-3.2%',
-    reviewsCount: 234,
-  },
-]
-
-// GET /api/projects - List/search projects
+// GET /api/projects - List/search projects from database
 export async function GET(request: NextRequest) {
-  return withAuth(request, async (req, agent) => {
-    const { searchParams } = new URL(req.url)
-    const query = searchParams.get('q')?.toLowerCase()
-    const category = searchParams.get('category')?.toLowerCase()
-    const limit = parseInt(searchParams.get('limit') || '20')
-    const offset = parseInt(searchParams.get('offset') || '0')
+  const { searchParams } = new URL(request.url)
+  const query = searchParams.get('q')?.toLowerCase()
+  const category = searchParams.get('category')?.toLowerCase()
+  const limit = parseInt(searchParams.get('limit') || '20')
+  const offset = parseInt(searchParams.get('offset') || '0')
+  const sort = searchParams.get('sort') || 'rating' // rating, reviews, rank, newest
 
-    let projects = [...MOCK_PROJECTS]
-
-    // Filter by search query
+  try {
+    // Build where clause
+    const where: any = {}
+    
     if (query) {
-      projects = projects.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        p.ticker.toLowerCase().includes(query) ||
-        p.id.toLowerCase().includes(query)
-      )
+      where.OR = [
+        { name: { contains: query } },
+        { address: { contains: query } },
+        { description: { contains: query } },
+      ]
     }
-
-    // Filter by category
+    
     if (category) {
-      projects = projects.filter(p =>
-        p.category.toLowerCase() === category ||
-        p.category.toLowerCase().includes(category)
-      )
+      // Support both "defi" and "k/defi" formats
+      const normalizedCategory = category.startsWith('k/') ? category : `k/${category}`
+      where.category = normalizedCategory
     }
 
-    // Paginate
-    const total = projects.length
-    projects = projects.slice(offset, offset + limit)
+    // Build orderBy
+    let orderBy: any = { avgRating: 'desc' }
+    switch (sort) {
+      case 'reviews':
+        orderBy = { reviewCount: 'desc' }
+        break
+      case 'rank':
+        orderBy = { currentRank: 'asc' }
+        break
+      case 'newest':
+        orderBy = { createdAt: 'desc' }
+        break
+      case 'staked':
+        orderBy = { totalStaked: 'desc' }
+        break
+    }
 
-    return apiResponse({
-      projects,
+    // Get total count
+    const total = await prisma.project.count({ where })
+
+    // Get projects
+    const projects = await prisma.project.findMany({
+      where,
+      orderBy,
+      skip: offset,
+      take: limit,
+      select: {
+        id: true,
+        address: true,
+        name: true,
+        description: true,
+        website: true,
+        category: true,
+        avgRating: true,
+        reviewCount: true,
+        totalStaked: true,
+        currentRank: true,
+        createdAt: true,
+      },
+    })
+
+    // Transform to expected format
+    const transformed = projects.map(p => ({
+      id: p.id,
+      address: p.address,
+      name: p.name,
+      description: p.description,
+      website: p.website,
+      category: p.category,
+      score: p.avgRating,
+      reviewsCount: p.reviewCount,
+      totalStaked: p.totalStaked,
+      rank: p.currentRank,
+    }))
+
+    return NextResponse.json({
+      projects: transformed,
       pagination: {
         total,
         limit,
@@ -91,5 +94,57 @@ export async function GET(request: NextRequest) {
         hasMore: offset + projects.length < total,
       },
     })
-  })
+  } catch (error) {
+    console.error('[Projects API] Error:', error)
+    return NextResponse.json({ error: 'Failed to fetch projects' }, { status: 500 })
+  }
+}
+
+// POST /api/projects - Create a new project
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    
+    // Validation
+    if (!body.address?.match(/^0x[a-fA-F0-9]{40}$/)) {
+      return NextResponse.json({ error: 'Invalid address format' }, { status: 400 })
+    }
+    if (!body.name || body.name.length < 2) {
+      return NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 })
+    }
+
+    // Check if project already exists
+    const existing = await prisma.project.findUnique({
+      where: { address: body.address.toLowerCase() },
+    })
+    
+    if (existing) {
+      return NextResponse.json({ error: 'Project already exists', project: existing }, { status: 409 })
+    }
+
+    // Create project
+    const project = await prisma.project.create({
+      data: {
+        address: body.address.toLowerCase(),
+        name: body.name,
+        description: body.description || null,
+        website: body.website || null,
+        category: body.category || 'k/defi',
+      },
+    })
+
+    return NextResponse.json({
+      id: project.id,
+      address: project.address,
+      name: project.name,
+      description: project.description,
+      website: project.website,
+      category: project.category,
+      score: project.avgRating,
+      reviewsCount: project.reviewCount,
+    }, { status: 201 })
+  } catch (error) {
+    console.error('[Projects API] Create error:', error)
+    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 })
+  }
 }
