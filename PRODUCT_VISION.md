@@ -1,6 +1,30 @@
 # Kindred Product Vision
 
-**一句話：** 一個基於「付費即預測」機制的去中心化信用協議，透過 Uniswap v4 Hook 將社交評價轉化為真實交易優勢。
+**一句話：** 全品類的去中心化「電商 + 點評」平台，基於「付費即預測」機制，透過 Uniswap v4 Hook 將社交評價轉化為真實交易優勢。
+
+**終極願景：**
+```
+Amazon Reviews (電商評論) 
+    + 大眾點評 (本地服務) 
+    + DeFiLlama (鏈上數據)
+    + 信用系統 (付費即預測)
+```
+
+---
+
+## 🌐 全品類擴展
+
+| 品類 | k/ 版面 | 場景 | 驗證方式 |
+|------|---------|------|----------|
+| DeFi | k/defi | 協議評分、安全審計 | 鏈上交互證明 |
+| 餐廳 | k/gourmet | 美食評論 (Maat 整合) | GPS/發票/訂單 |
+| SaaS | k/saas | 軟體工具評測 | 訂閱證明 |
+| Crypto | k/crypto | 代幣、NFT 評價 | 持倉證明 |
+| 實體商品 | k/products | 開箱、使用心得 | 購買證明 |
+| 服務 | k/services | 自由職業者評價 | 交易記錄 |
+| AI Agent | k/agents | Agent 工具評測 | 使用記錄 |
+
+**通用化 Schema：** 項目不只是 DeFi protocol，而是「任何可評論的實體」
 
 ---
 
@@ -32,9 +56,40 @@
 
 ---
 
+## 🔍 SEO 策略：寄生 SEO + 內容農場
+
+**目標：** 搜索「XX review」「YY 好用嗎」→ Kindred 排名第一
+
+### SEO 技術要求
+
+| 項目 | 說明 | 優先級 |
+|------|------|--------|
+| **SSR 渲染** | 項目頁改 Server Component，Google 能爬到內容 | P0 |
+| **動態 Metadata** | 每個項目頁專屬 title/description | P0 |
+| **Schema.org** | JSON-LD 結構化評分數據，顯示星星 ⭐ | P0 |
+| **Sitemap** | 自動生成，所有頁面都被索引 | P1 |
+| **robots.txt** | 正確設定爬蟲規則 | P1 |
+| **Open Graph** | 社交分享預覽圖 | P1 |
+| **URL 優化** | `/k/defi/uniswap` 含分類更好 | P1 |
+
+### 長尾關鍵詞策略
+
+- DeFi: "is Aave safe" "Uniswap vs SushiSwap" "best yield farming"
+- 餐廳: "XX餐廳好吃嗎" "YY推薦菜"
+- SaaS: "Notion vs Obsidian" "best project management tool"
+- Agent: "Claude vs GPT" "best AI coding assistant"
+
+### Agent 內容生產
+
+- 批量生成高質量項目評論
+- 每個品類 top 100 項目先填內容
+- SEO 優化的標題和描述
+
+---
+
 ## 📋 必須實現的功能
 
-### UI 層 (Tim/Steve)
+### UI 層 (Steve)
 
 - [ ] **Reddit 風格評論平台**
   - Categories 頁面，每個 category 有評論瀏覽版面
@@ -63,6 +118,12 @@
 - [ ] **Privy 認證**
   - 用戶登入
   - 錢包連接
+
+- [ ] **SEO 優化** (新)
+  - Server-side rendering
+  - 動態 metadata
+  - Schema.org 結構化數據
+  - Sitemap + robots.txt
 
 ### 合約層 (Patrick)
 
@@ -97,4 +158,24 @@
 
 ---
 
-*Updated: 2026-02-03 11:10 PST by Jensen*
+## 💰 商業模式
+
+1. **手續費分潤** — Hook 交易費的 %
+2. **質押收益** — 質押池利息
+3. **Premium 功能** — 付費解鎖深度分析
+4. **代幣升值** — $KIND 價值
+5. **SEO 流量變現** — 廣告、聯盟行銷
+
+---
+
+## 🚀 冷啟動策略
+
+1. **Agent 先行** — 讓我們的 agents 先填內容
+2. **預填 Top 100** — 每個品類 top 100 項目
+3. **Airdrop** — 早期貢獻者空投 $KIND
+4. **合作** — 拉 Moltbook agents 來用
+5. **SEO 流量** — 長尾關鍵詞帶來自然流量
+
+---
+
+*Updated: 2026-02-05 12:09 PST by Jensen*
