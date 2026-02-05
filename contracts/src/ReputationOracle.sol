@@ -22,6 +22,7 @@ contract ReputationOracle is Ownable {
     error ScoreTooHigh(uint256 score);
     error ZeroAddress();
     error BatchTooLarge(uint256 size);
+    error ArrayLengthMismatch();
     
     modifier onlyUpdater() {
         if (!updaters[msg.sender] && msg.sender != owner()) revert NotAuthorized();
@@ -33,9 +34,12 @@ contract ReputationOracle is Ownable {
     }
     
     function getScore(address account) external view returns (uint256) {
+        // Blocked accounts always return 0 (explicit behavior)
+        if (blocked[account]) return 0;
+        
+        // Return stored score, or DEFAULT_SCORE if never set
         uint256 score = scores[account];
-        if (score == 0 && !blocked[account]) return DEFAULT_SCORE;
-        return score;
+        return score == 0 ? DEFAULT_SCORE : score;
     }
     
     function isBlocked(address account) external view returns (bool) { 
@@ -71,7 +75,7 @@ contract ReputationOracle is Ownable {
     }
     
     function batchSetScores(address[] calldata accounts, uint256[] calldata _scores) external onlyUpdater {
-        require(accounts.length == _scores.length, "Length mismatch");
+        if (accounts.length != _scores.length) revert ArrayLengthMismatch();
         if (accounts.length > MAX_BATCH_SIZE) revert BatchTooLarge(accounts.length);
         for (uint256 i = 0; i < accounts.length; i++) {
             if (accounts[i] == address(0)) revert ZeroAddress();
@@ -96,20 +100,31 @@ contract ReputationOracle is Ownable {
     
     function increaseScore(address account, uint256 delta) external onlyUpdater {
         if (account == address(0)) revert ZeroAddress();
-        uint256 oldScore = scores[account];
-        if (oldScore == 0) oldScore = DEFAULT_SCORE;
-        uint256 newScore = oldScore + delta;
+        
+        // Use getScore() logic for consistency (blocked accounts can't increase score)
+        if (blocked[account]) return; // Skip increasing score for blocked accounts
+        
+        uint256 currentScore = scores[account];
+        if (currentScore == 0) currentScore = DEFAULT_SCORE;
+        
+        uint256 newScore = currentScore + delta;
         if (newScore > MAX_SCORE) newScore = MAX_SCORE;
+        
         scores[account] = newScore;
-        emit ScoreUpdated(account, oldScore, newScore, msg.sender);
+        emit ScoreUpdated(account, currentScore, newScore, msg.sender);
     }
     
     function decreaseScore(address account, uint256 delta) external onlyUpdater {
         if (account == address(0)) revert ZeroAddress();
-        uint256 oldScore = scores[account];
-        if (oldScore == 0) oldScore = DEFAULT_SCORE;
-        uint256 newScore = oldScore > delta ? oldScore - delta : 0;
+        
+        // Use getScore() logic for consistency
+        if (blocked[account]) return; // Skip decreasing score for blocked accounts
+        
+        uint256 currentScore = scores[account];
+        if (currentScore == 0) currentScore = DEFAULT_SCORE;
+        
+        uint256 newScore = currentScore > delta ? currentScore - delta : 0;
         scores[account] = newScore;
-        emit ScoreUpdated(account, oldScore, newScore, msg.sender);
+        emit ScoreUpdated(account, currentScore, newScore, msg.sender);
     }
 }

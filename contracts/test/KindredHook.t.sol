@@ -122,8 +122,9 @@ contract KindredHookTest is Test {
     }
     
     function test_BeforeSwap_RevertBlocked() public {
+        // After M-2 fix: blocked accounts return score = 0 from getScore()
         vm.expectEmit(true, true, true, true);
-        emit TradeBlocked(blockedUser, 800, "Account blocked by oracle");
+        emit TradeBlocked(blockedUser, 0, "Account blocked by oracle");
         
         vm.expectRevert(abi.encodeWithSelector(KindredHook.AccountBlocked.selector, blockedUser));
         hook.beforeSwap(blockedUser, "", "");
