@@ -1,16 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false, // Disable strict mode in dev to reduce double-renders
-  transpilePackages: ['@kindred/ui'],
+  reactStrictMode: false,
+  swcMinify: true,
+  pageExtensions: ['tsx', 'ts'],
+  
   webpack: (config) => {
     config.resolve.alias['@react-native-async-storage/async-storage'] = false
     return config
   },
-  // Optimize for faster builds
+  
   experimental: {
     optimizePackageImports: ['lucide-react', '@rainbow-me/rainbowkit'],
   },
-  // Ignore TypeScript/ESLint errors in production builds
+  
+  // 開發環境優化
+  ...(process.env.NODE_ENV === 'development' && {
+    onDemandEntries: {
+      maxInactiveAge: 25 * 1000,
+      pagesBufferLength: 2,
+    },
+  }),
+  
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -20,4 +30,3 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
-

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { ReviewForm } from '@/components/ReviewForm'
+import { ReviewForm } from '@/components/reviews/ReviewForm'
 
 export default function ReviewPage() {
   return (

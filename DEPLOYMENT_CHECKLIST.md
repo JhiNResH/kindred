@@ -6,15 +6,15 @@
 
 ## ⏰ Timeline
 
-| Time | Task | Owner | Status |
-|------|------|-------|--------|
-| **Now** | Get PRIVATE_KEY from JhiNResH | JhiNResH | ⏳ BLOCKER |
-| **+15 min** | Deploy contracts to Base Sepolia | Steve | ⏳ |
-| **+30 min** | Update frontend config + test | Steve | ⏳ |
-| **+1 hour** | Record demo video (2-3 min) | Jensen | ⏳ |
-| **+1.5 hours** | Vote on 5 projects (requirement) | Jensen | ⏳ |
-| **+2 hours** | Submit to m/usdc (SmartContract) | Jensen | ⏳ |
-| **+2.5 hours** | Submit to m/usdc (AgenticCommerce) | Jensen | ⏳ |
+| Time           | Task                               | Owner    | Status     |
+| -------------- | ---------------------------------- | -------- | ---------- |
+| **Now**        | Get PRIVATE_KEY from JhiNResH      | JhiNResH | ⏳ BLOCKER |
+| **+15 min**    | Deploy contracts to Base Sepolia   | Steve    | ⏳         |
+| **+30 min**    | Update frontend config + test      | Steve    | ⏳         |
+| **+1 hour**    | Record demo video (2-3 min)        | Jensen   | ⏳         |
+| **+1.5 hours** | Vote on 5 projects (requirement)   | Jensen   | ⏳         |
+| **+2 hours**   | Submit to m/usdc (SmartContract)   | Jensen   | ⏳         |
+| **+2.5 hours** | Submit to m/usdc (AgenticCommerce) | Jensen   | ⏳         |
 
 ---
 
@@ -69,20 +69,21 @@ forge script script/Deploy.s.sol:DeployScript \
 ```
 
 **File to edit:**
+
 ```typescript
 // src/lib/contracts.ts
 export const CONTRACTS = {
   baseSepolia: {
     kindToken: {
-      address: '0xABCD...' as `0x${string}`, // ← PASTE HERE
+      address: "0xABCD..." as `0x${string}`, // ← PASTE HERE
       abi: KindTokenABI,
     },
     kindredComment: {
-      address: '0xEFGH...' as `0x${string}`, // ← PASTE HERE
+      address: "0xEFGH..." as `0x${string}`, // ← PASTE HERE
       abi: KindredCommentABI,
     },
   },
-}
+};
 ```
 
 ### 4. Test On-Chain Flow (Steve)
@@ -101,6 +102,7 @@ npm run dev
 ```
 
 **Expected Results:**
+
 - ✅ Transaction succeeds on Base Sepolia
 - ✅ NFT shows up in wallet
 - ✅ Review appears on frontend
@@ -135,24 +137,24 @@ forge verify-contract \
 
 ```
 [00:00-00:15] Introduction
-"Hey, I'm JhiNResH from Team Kindred. We built a social-financial 
+"Hey, I'm JhiNResH from Team Kindred. We built a social-financial
 hybrid protocol where reviews are NFTs with pay-to-unlock."
 
 [00:15-00:45] Show the Problem
-"Traditional reviews have no skin in the game - anyone can spam. 
+"Traditional reviews have no skin in the game - anyone can spam.
 And early discoverers of great content get no rewards."
 
 [00:45-01:30] Demo Flow
 1. Connect wallet
 2. "I'm going to review this project. To post, I stake 100 KIND tokens."
 3. Mint review → show transaction on Basescan
-4. "Now someone upvotes - they're not just liking, they're betting this 
+4. "Now someone upvotes - they're not just liking, they're betting this
    review will be valuable."
 5. Show upvote transaction
 6. "When others unlock premium content, we both earn."
 
 [01:30-02:00] Technical Highlights
-"Under the hood: ERC-721 NFTs, x402 pay-to-unlock, and a Uniswap v4 
+"Under the hood: ERC-721 NFTs, x402 pay-to-unlock, and a Uniswap v4
 hook that gives high-reputation users lower swap fees."
 
 [02:00-02:30] Future Vision
@@ -164,6 +166,7 @@ then using that reputation to get better rates across DeFi. That's Kindred."
 ```
 
 **Tools:**
+
 - Screen recording: QuickTime / OBS
 - Voice: Built-in mic (or AirPods)
 - Upload: YouTube (unlisted) or Loom
@@ -175,10 +178,11 @@ then using that reputation to get better rates across DeFi. That's Kindred."
 ### Before Submitting
 
 **Requirements:**
+
 - [ ] Vote on 5 other projects (go to m/usdc and browse)
 - [ ] Demo video uploaded (get YouTube/Loom link)
 - [ ] Contracts deployed to Base Sepolia ✅
-- [ ] Frontend live at https://web-dxwfwyhjf-jhinreshs-projects.vercel.app
+- [ ] Frontend live at https://team-kindred-eta.vercel.app
 
 ### Submission Template
 
@@ -190,24 +194,27 @@ then using that reputation to get better rates across DeFi. That's Kindred."
 
 🦞 **Kindred** - Social-Financial Hybrid Protocol
 
-**One-liner:** A decentralized reputation protocol where reviews are 
-ERC-721 NFTs with x402 pay-to-unlock, transforming social signals into 
+**One-liner:** A decentralized reputation protocol where reviews are
+ERC-721 NFTs with x402 pay-to-unlock, transforming social signals into
 financial value.
 
 **Why it's novel:**
+
 - First protocol to make every review a tradeable NFT
 - Pay-to-comment (stake required) → no spam
 - Upvote = bet (early voters earn from unlock fees)
 - Reputation → DeFi fee discounts (Uniswap v4 Hook)
 
 **Demo:** [YouTube link]
-**Live:** https://web-dxwfwyhjf-jhinreshs-projects.vercel.app
+**Live:** https://team-kindred-eta.vercel.app
 **Code:** https://github.com/openwork-hackathon/team-kindred
-**Contracts:** 
+**Contracts:**
+
 - KindToken: 0x... (Base Sepolia)
 - KindredComment: 0x... (Base Sepolia)
 
 **Tech:**
+
 - Solidity + Foundry (80+ tests)
 - Uniswap v4 Hooks
 - ERC-721 + x402
@@ -223,16 +230,18 @@ Built by @jhinresh during OpenClaw Hookathon 🐺
 
 🦞 **Kindred** - Agentic Commerce Protocol
 
-**One-liner:** Agents earn passive income by staking to review, betting on 
+**One-liner:** Agents earn passive income by staking to review, betting on
 quality content, and building onchain reputation.
 
 **How agents use it:**
+
 1. Stake USDC → Post high-quality analysis
 2. Earn unlock fees when traders read insights
 3. Build reputation → Get lower DeFi fees
 4. Self-sustaining: no human intervention needed
 
 **Use cases:**
+
 - Research agents monetize reports
 - Discovery agents earn by finding undervalued projects
 - Arbitrage agents get better rates through reputation
@@ -268,11 +277,13 @@ Built for the agentic economy of the future 🤖
 ### Issue: Deployment fails
 
 **Check:**
+
 - Do you have enough ETH? (Need ~0.5 ETH for gas)
 - Is PRIVATE_KEY set correctly? (No 0x prefix)
 - Is RPC_URL correct? (`https://sepolia.base.org`)
 
 **Solution:**
+
 ```bash
 # Check balance
 cast balance $YOUR_ADDRESS --rpc-url $RPC_URL
@@ -284,11 +295,13 @@ cast block-number --rpc-url $RPC_URL
 ### Issue: Frontend can't connect to contracts
 
 **Check:**
+
 - Did you update `src/lib/contracts.ts` with real addresses?
 - Is wallet connected to Base Sepolia? (Check MetaMask network)
 - Do you have KIND tokens? (Deployer gets initial supply)
 
 **Solution:**
+
 ```bash
 # Check if contract exists
 cast code <CONTRACT_ADDRESS> --rpc-url $RPC_URL
@@ -300,16 +313,18 @@ cast call <KIND_TOKEN_ADDRESS> "balanceOf(address)(uint256)" $YOUR_ADDRESS --rpc
 ### Issue: Transaction fails
 
 **Check:**
+
 - Did you approve KIND tokens first? (Need to approve before mint)
 - Do you have enough KIND? (Need 100 KIND to mint review)
 - Is gas price too low? (Use default, don't customize)
 
 **Solution:**
+
 ```typescript
 // On frontend, check approval first:
-const allowance = await kindToken.allowance(userAddress, commentAddress)
+const allowance = await kindToken.allowance(userAddress, commentAddress);
 if (allowance < stakeAmount) {
-  await kindToken.approve(commentAddress, MAX_UINT256)
+  await kindToken.approve(commentAddress, MAX_UINT256);
 }
 ```
 
@@ -318,6 +333,7 @@ if (allowance < stakeAmount) {
 ## 📊 Success Criteria
 
 **Minimum (P0):**
+
 - [x] Contracts deployed ✅
 - [ ] 1 successful review mint on-chain
 - [ ] 1 successful upvote on-chain
@@ -325,12 +341,14 @@ if (allowance < stakeAmount) {
 - [ ] Submission posted to m/usdc
 
 **Nice to Have (P1):**
+
 - [ ] Contracts verified on Basescan
 - [ ] Premium unlock tested
 - [ ] 5+ test reviews created
 - [ ] Tweet thread about submission
 
 **Stretch (P2):**
+
 - [ ] Get community votes on Moltbook
 - [ ] Win USDC Hackathon 🏆
 - [ ] Get contacted by judges

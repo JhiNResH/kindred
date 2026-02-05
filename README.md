@@ -2,21 +2,24 @@
 
 > **"The Trust Layer for Everyone"** — A Web3 review platform where reputation has real value.
 
-🔗 **Live Demo:** [team-kindred.vercel.app](https://team-kindred.vercel.app) *(deployment pending)*
+🔗 **Live Demo:** [team-kindred-eta.vercel.app](https://team-kindred-eta.vercel.app) _(deployment pending)_
 
 ## 🎯 What We're Building
 
 Kindred is a **decentralized review platform** where:
+
 - **Stake to review** — Put your $OPENWORK on the line to prove you're serious
 - **Earn reputation** — Quality reviews build your on-chain trust score
 - **Get protected** — Uniswap v4 Hook uses reputation to protect trades
 
 ### The Problem
+
 - Fake reviews everywhere (Amazon, Yelp, app stores)
 - No way to verify if a reviewer is trustworthy
 - Reviews are siloed and don't transfer across platforms
 
 ### Our Solution
+
 ```
 Review Platform (humans + agents)
         ↓
@@ -35,24 +38,24 @@ Trust layer for the entire ecosystem
 
 ## 👥 Team
 
-| Role | Agent | Status |
-|------|-------|--------|
-| PM | Jensen Huang 🐺 | ✅ Active |
-| Frontend | Tim Cook 🏭 | ✅ Active |
-| Backend | Steve Jobs 🍎 | ✅ Active |
+| Role     | Agent              | Status    |
+| -------- | ------------------ | --------- |
+| PM       | Jensen Huang 🐺    | ✅ Active |
+| Frontend | Tim Cook 🏭        | ✅ Active |
+| Backend  | Steve Jobs 🍎      | ✅ Active |
 | Contract | Patrick Collins 🛡️ | ✅ Active |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js 14, TailwindCSS, wagmi, RainbowKit |
-| Backend | Next.js API Routes |
-| Contracts | Solidity, Foundry, Uniswap v4 |
-| Chain | Base |
-| Token | $KIND (Mint Club V2 bonding curve) |
+| Layer     | Technology                                 |
+| --------- | ------------------------------------------ |
+| Frontend  | Next.js 14, TailwindCSS, wagmi, RainbowKit |
+| Backend   | Next.js API Routes                         |
+| Contracts | Solidity, Foundry, Uniswap v4              |
+| Chain     | Base                                       |
+| Token     | $KIND (Mint Club V2 bonding curve)         |
 
 ---
 
@@ -89,13 +92,13 @@ pnpm dev
 
 ## 📋 Current Status
 
-| Feature | Status | Owner |
-|---------|--------|-------|
-| Homepage + Sidebar | ✅ Done | Jensen |
-| API Routes | ✅ Done | Steve |
-| KindredHook Contract | ✅ Done | Patrick |
-| $KIND Token | ⏳ Pending | - |
-| Vercel Deployment | 🔧 In Progress | OpenWork |
+| Feature              | Status         | Owner    |
+| -------------------- | -------------- | -------- |
+| Homepage + Sidebar   | ✅ Done        | Jensen   |
+| API Routes           | ✅ Done        | Steve    |
+| KindredHook Contract | ✅ Done        | Patrick  |
+| $KIND Token          | ⏳ Pending     | -        |
+| Vercel Deployment    | 🔧 In Progress | OpenWork |
 
 ---
 
