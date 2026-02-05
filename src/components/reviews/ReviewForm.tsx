@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useIsMounted } from '@/components/layout/ClientOnly'
+import { useCreateComment } from '@/hooks/useKindredComment'
+import { useApproveKindToken, useKindTokenAllowance } from '@/hooks/useKindToken'
+import { type Address } from 'viem'
 
 type Category = 'k/memecoin' | 'k/defi' | 'k/perp-dex' | 'k/ai'
 
@@ -36,6 +39,7 @@ export function ReviewForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [txHash, setTxHash] = useState<string | null>(null)
   
   const [formData, setFormData] = useState<ReviewFormData>({
     targetAddress: '',
@@ -45,6 +49,51 @@ export function ReviewForm() {
     stakeAmount: '0',
     predictedRank: undefined,
   })
+
+  // On-chain hooks
+  const { createComment, hash: commentHash, isPending: isCreating, isConfirming: isConfirmingComment, isSuccess: commentSuccess, isError: commentError, error: commentErrorMsg } = useCreateComment()
+  const { approve, hash: approveHash, isPending: isApproving, isConfirming: isConfirmingApprove, isSuccess: approveSuccess } = useApproveKindToken()
+  const { data: allowance } = useKindTokenAllowance(address)
+  
+  // Track approval state
+  const [needsApproval, setNeedsApproval] = useState(false)
+  const [approvalDone, setApprovalDone] = useState(false)
+
+  // Check if approval is needed
+  useEffect(() => {
+    if (formData.stakeAmount !== '0' && allowance !== undefined && allowance !== null) {
+      const stakeAmountBigInt = BigInt(formData.stakeAmount)
+      const allowanceBigInt = BigInt(allowance.toString())
+      setNeedsApproval(allowanceBigInt < stakeAmountBigInt)
+    } else {
+      setNeedsApproval(false)
+    }
+  }, [formData.stakeAmount, allowance])
+
+  // Handle approval success
+  useEffect(() => {
+    if (approveSuccess && !approvalDone) {
+      setApprovalDone(true)
+      setNeedsApproval(false)
+    }
+  }, [approveSuccess, approvalDone])
+
+  // Handle comment creation success
+  useEffect(() => {
+    if (commentSuccess && commentHash) {
+      setTxHash(commentHash)
+      setSubmitted(true)
+      setIsSubmitting(false)
+    }
+  }, [commentSuccess, commentHash])
+
+  // Handle errors
+  useEffect(() => {
+    if (commentError && commentErrorMsg) {
+      setError(`Transaction failed: ${commentErrorMsg.message}`)
+      setIsSubmitting(false)
+    }
+  }, [commentError, commentErrorMsg])
 
   // Prevent SSR hydration mismatch
   if (!isMounted) {
@@ -81,26 +130,40 @@ export function ReviewForm() {
     setIsSubmitting(true)
     
     try {
-      const response = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          reviewerAddress: address,
-        }),
-      })
-      
-      if (!response.ok) {
-        throw new Error('Failed to submit review')
+      // Step 1: Approve if needed (for staking)
+      if (needsApproval && !approvalDone) {
+        await approve(formData.stakeAmount)
+        return // Wait for approval to complete
       }
       
-      setSubmitted(true)
-    } catch (err) {
-      setError('Failed to submit review. Please try again.')
-    } finally {
+      // Step 2: Create comment on-chain
+      await createComment({
+        targetAddress: formData.targetAddress as Address,
+        content: formData.content,
+        stakeAmount: formData.stakeAmount,
+      })
+      
+      // Note: Don't set isSubmitting to false here - useEffect handles it on success
+    } catch (err: any) {
+      setError(err?.message || 'Transaction failed. Please try again.')
       setIsSubmitting(false)
     }
   }
+  
+  // Handle approval completion - auto-proceed to comment creation
+  useEffect(() => {
+    if (approvalDone && isSubmitting && !commentSuccess) {
+      // Approval done, now create comment
+      createComment({
+        targetAddress: formData.targetAddress as Address,
+        content: formData.content,
+        stakeAmount: formData.stakeAmount,
+      }).catch((err) => {
+        setError(err?.message || 'Comment creation failed')
+        setIsSubmitting(false)
+      })
+    }
+  }, [approvalDone, isSubmitting, commentSuccess])
 
   if (!isConnected) {
     return (
@@ -118,13 +181,25 @@ export function ReviewForm() {
     return (
       <div className="bg-kindred-dark border border-green-500 rounded-xl p-8 text-center">
         <div className="text-6xl mb-4">✅</div>
-        <h2 className="text-2xl font-bold mb-2">Review Submitted!</h2>
-        <p className="text-gray-400 mb-6">
-          Your review has been recorded. It will be minted as an NFT shortly.
+        <h2 className="text-2xl font-bold mb-2">Review Minted On-Chain!</h2>
+        <p className="text-gray-400 mb-2">
+          Your review has been minted as an NFT on Base Sepolia.
         </p>
+        {txHash && (
+          <a
+            href={`https://sepolia.basescan.org/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-kindred-primary hover:underline text-sm block mb-6"
+          >
+            View transaction ↗
+          </a>
+        )}
         <button
           onClick={() => {
             setSubmitted(false)
+            setTxHash(null)
+            setApprovalDone(false)
             setFormData({
               targetAddress: '',
               rating: 0,
@@ -298,20 +373,27 @@ export function ReviewForm() {
       {/* Submit */}
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isApproving || isApproving || isCreating || isConfirmingApprove || isConfirmingComment}
         className={`w-full py-4 rounded-lg font-semibold text-lg transition ${
-          isSubmitting
+          isSubmitting || isApproving || isCreating || isConfirmingApprove || isConfirmingComment
             ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
             : 'bg-kindred-primary hover:bg-orange-600 text-white'
         }`}
       >
-        {isSubmitting ? (
+        {isApproving || isConfirmingApprove ? (
           <span className="flex items-center justify-center gap-2">
             <span className="animate-spin">⏳</span>
-            Submitting...
+            {isApproving ? 'Approving $OPEN...' : 'Confirming approval...'}
           </span>
+        ) : isCreating || isConfirmingComment ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="animate-spin">⏳</span>
+            {isCreating ? 'Minting NFT...' : 'Confirming transaction...'}
+          </span>
+        ) : needsApproval && !approvalDone ? (
+          'Approve $OPEN'
         ) : (
-          'Submit Review'
+          'Mint Review NFT'
         )}
       </button>
 

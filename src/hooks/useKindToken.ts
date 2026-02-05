@@ -1,59 +1,35 @@
 /**
- * React hooks for interacting with KindToken (ERC-20)
+ * On-chain interaction hooks for KindToken (ERC20)
  */
 
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { baseSepolia } from 'wagmi/chains'
-import { getContract } from '@/lib/contracts'
-import { parseUnits } from 'viem'
+import { type Address } from 'viem'
+import { CONTRACTS } from '@/lib/contracts'
 
-const chain = baseSepolia
-const contract = getContract('baseSepolia', 'kindToken')
-const commentContract = getContract('baseSepolia', 'kindredComment')
+const TOKEN_CONTRACT = CONTRACTS.baseSepolia.kindToken
+const COMMENT_CONTRACT = CONTRACTS.baseSepolia.kindredComment
 
 /**
- * Get token balance
+ * Hook for approving KindToken spending
  */
-export function useKindBalance(address: `0x${string}` | undefined) {
-  return useReadContract({
-    address: contract.address,
-    abi: contract.abi,
-    functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-    query: {
-      enabled: !!address,
-    },
+export function useApproveKindToken() {
+  const { writeContract, data: hash, isPending, isError, error } = useWriteContract()
+  
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
   })
-}
 
-/**
- * Get allowance for KindredComment contract
- */
-export function useKindAllowance(owner: `0x${string}` | undefined) {
-  return useReadContract({
-    address: contract.address,
-    abi: contract.abi,
-    functionName: 'allowance',
-    args: owner ? [owner, commentContract.address] : undefined,
-    query: {
-      enabled: !!owner,
-    },
-  })
-}
-
-/**
- * Approve KindredComment contract to spend tokens
- */
-export function useApproveKind() {
-  const { writeContract, data: hash, isPending } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
-
-  const approve = (amount: bigint) => {
+  const approve = async (amount: string) => {
     writeContract({
-      address: contract.address,
-      abi: contract.abi,
+      address: TOKEN_CONTRACT.address,
+      abi: TOKEN_CONTRACT.abi,
       functionName: 'approve',
-      args: [commentContract.address, amount],
+      args: [
+        COMMENT_CONTRACT.address, // spender
+        BigInt(amount), // amount in wei
+      ],
+      chainId: baseSepolia.id,
     })
   }
 
@@ -63,67 +39,37 @@ export function useApproveKind() {
     isPending,
     isConfirming,
     isSuccess,
+    isError,
+    error,
   }
 }
 
 /**
- * Helper: Approve max amount
+ * Hook for checking allowance
  */
-export function useApproveKindMax() {
-  const { approve, ...rest } = useApproveKind()
-
-  const approveMax = () => {
-    // Max uint256
-    approve(BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'))
-  }
-
-  return {
-    approveMax,
-    ...rest,
-  }
-}
-
-/**
- * Get token decimals
- */
-export function useKindDecimals() {
+export function useKindTokenAllowance(owner: Address | undefined) {
   return useReadContract({
-    address: contract.address,
-    abi: contract.abi,
-    functionName: 'decimals',
+    address: TOKEN_CONTRACT.address,
+    abi: TOKEN_CONTRACT.abi,
+    functionName: 'allowance',
+    args: owner ? [owner, COMMENT_CONTRACT.address] : undefined,
+    query: {
+      enabled: !!owner,
+    },
   })
 }
 
 /**
- * Get token symbol
+ * Hook for checking balance
  */
-export function useKindSymbol() {
+export function useKindTokenBalance(address: Address | undefined) {
   return useReadContract({
-    address: contract.address,
-    abi: contract.abi,
-    functionName: 'symbol',
+    address: TOKEN_CONTRACT.address,
+    abi: TOKEN_CONTRACT.abi,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address,
+    },
   })
-}
-
-/**
- * Helper: Format token amount
- */
-export function formatKind(amount: bigint, decimals: number = 18): string {
-  const divisor = BigInt(10 ** decimals)
-  const whole = amount / divisor
-  const fraction = amount % divisor
-  
-  if (fraction === BigInt(0)) {
-    return whole.toString()
-  }
-  
-  const fractionStr = fraction.toString().padStart(decimals, '0')
-  return `${whole}.${fractionStr.slice(0, 4)}` // Show 4 decimal places
-}
-
-/**
- * Helper: Parse token amount
- */
-export function parseKind(amount: string, decimals: number = 18): bigint {
-  return parseUnits(amount, decimals)
 }

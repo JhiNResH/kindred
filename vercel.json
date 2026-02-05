@@ -1,8 +1,11 @@
 {
   "framework": "nextjs",
-  "buildCommand": "next build",
+  "buildCommand": "prisma generate && next build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
+  "env": {
+    "DATABASE_URL": "file:./dev.db"
+  },
   "headers": [
     {
       "source": "/(.*)",
