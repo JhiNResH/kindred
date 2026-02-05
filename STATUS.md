@@ -1,6 +1,6 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-04 21:50 PST (Steve)
+**最後更新:** 2026-02-05 04:15 PST (Steve)
 
 ---
 
@@ -165,25 +165,41 @@ echo "<TOKEN>" | gh auth login --with-token
 
 ## 📋 待解決問題
 
-### 1. 🚀 合約部署 (BLOCKER - 需要 JhiNResH)
+### 1. ✅ 合約恢復完成 (Steve - 2026-02-05 04:00)
 
-**狀態：** 等待 JhiNResH 提供私鑰
-**為什麼重要：** ReviewForm 已整合合約，但無法測試鏈上功能
+**修復內容：**
+- ✅ 從 git history 恢復 KindToken.sol (108 lines)
+- ✅ 從 git history 恢復 KindredComment.sol (374 lines)
+- ✅ 從 git history 恢復 KindredComment.t.sol (383 lines)
+- ✅ 30 tests 全部通過 (10 KindredHook + 20 KindredComment)
+- ✅ 創建 Foundry 部署腳本 (contracts/script/Deploy.s.sol)
+
+**Commits:**
+- 868d8fc: 恢復合約
+- 3a51489: 更新 AUDIT.md
+- 628e129: 部署腳本
+
+### 2. 🔴 合約部署 (BLOCKER - 需要 JhiNResH)
+
+**狀態：** 等待 JhiNResH 提供 PRIVATE_KEY
+**為什麼緊急：** USDC Hackathon deadline Feb 8 (剩 3.5 天)
 
 **部署步驟：**
 ```bash
-cd packages/contracts
-export PRIVATE_KEY="JhiNResH 的錢包私鑰"
+cd /Users/jhinresh/clawd/team-kindred/contracts
+export PRIVATE_KEY="你的錢包私鑰"
 export RPC_URL="https://sepolia.base.org"
-forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast --verify
+forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast
 ```
 
 **部署後需要：**
 1. 更新 `src/lib/contracts.ts` 中的合約地址
-2. 測試 approve → mint 流程
-3. 確保交易成功上鏈
+2. 測試 ReviewForm approve → mint 流程
+3. 測試 Voting UI upvote/downvote
+4. 錄製 demo 影片
+5. 提交 USDC Hackathon
 
-### 2. Database 整合 ✅ (Steve 完成)
+### 3. Database 整合 ✅ (Steve 完成)
 
 - [x] Prisma schema 定義
 - [x] DATABASE_URL 設定
