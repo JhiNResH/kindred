@@ -199,6 +199,26 @@ model SettlementRound {
 // Token/Market Models (for Kindred MVP)
 // ============================================
 
+// Cache for Ma'at AI analysis results (reduces Gemini API calls)
+model ProjectAnalysisCache {
+  id              String    @id @default(cuid())
+  
+  // Query identifier (lowercase project name or URL)
+  query           String    @unique
+  
+  // Cached analysis result (JSON)
+  result          String    // Full Web3ProjectResult as JSON
+  
+  // Cache metadata
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  expiresAt       DateTime  // Cache TTL (e.g., 24 hours)
+  hitCount        Int       @default(0)
+  
+  @@index([query])
+  @@index([expiresAt])
+}
+
 // External market reference (Polymarket, etc.)
 model ExternalMarket {
   id              String    @id @default(cuid())

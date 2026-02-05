@@ -1,9 +1,13 @@
 'use server'
 
 import { GoogleGenerativeAI } from "@google/generative-ai"
+import { prisma } from "@/lib/prisma"
 
 // Initialize Google GenAI with the API Key
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || '')
+
+// Cache TTL: 24 hours
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 
 export interface Web3ProjectResult {
   name: string
@@ -24,9 +28,85 @@ export interface Web3ProjectResult {
   warnings: string[]
   audits?: { auditor: string; date?: string }[]
   recentNews?: { title: string; date?: string }[]
+  _cached?: boolean // Flag to indicate if result is from cache
+  _cacheAge?: number // Cache age in minutes
+}
+
+/**
+ * Check cache for existing analysis
+ */
+async function getCachedAnalysis(query: string): Promise<Web3ProjectResult | null> {
+  try {
+    const cacheKey = query.toLowerCase().trim()
+    const cached = await prisma.projectAnalysisCache.findUnique({
+      where: { query: cacheKey }
+    })
+    
+    if (!cached) return null
+    
+    // Check if cache is expired
+    if (new Date() > cached.expiresAt) {
+      // Cache expired, delete it
+      await prisma.projectAnalysisCache.delete({ where: { query: cacheKey } })
+      return null
+    }
+    
+    // Update hit count
+    await prisma.projectAnalysisCache.update({
+      where: { query: cacheKey },
+      data: { hitCount: { increment: 1 } }
+    })
+    
+    const result = JSON.parse(cached.result) as Web3ProjectResult
+    result._cached = true
+    result._cacheAge = Math.round((Date.now() - cached.createdAt.getTime()) / 60000)
+    
+    console.log(`[Ma'at] Cache HIT for "${query}" (age: ${result._cacheAge}min, hits: ${cached.hitCount + 1})`)
+    return result
+  } catch (error) {
+    console.error('[Ma\'at] Cache read error:', error)
+    return null
+  }
+}
+
+/**
+ * Save analysis to cache
+ */
+async function cacheAnalysis(query: string, result: Web3ProjectResult): Promise<void> {
+  try {
+    const cacheKey = query.toLowerCase().trim()
+    const expiresAt = new Date(Date.now() + CACHE_TTL_MS)
+    
+    await prisma.projectAnalysisCache.upsert({
+      where: { query: cacheKey },
+      update: {
+        result: JSON.stringify(result),
+        expiresAt,
+        updatedAt: new Date()
+      },
+      create: {
+        query: cacheKey,
+        result: JSON.stringify(result),
+        expiresAt
+      }
+    })
+    
+    console.log(`[Ma'at] Cached analysis for "${query}" (expires: ${expiresAt.toISOString()})`)
+  } catch (error) {
+    console.error('[Ma\'at] Cache write error:', error)
+  }
 }
 
 export async function analyzeProject(query: string): Promise<Web3ProjectResult> {
+  // 1. Check cache first (instant return if hit)
+  const cached = await getCachedAnalysis(query)
+  if (cached) {
+    return cached
+  }
+  
+  // 2. Cache miss - call Gemini API
+  console.log(`[Ma'at] Cache MISS for "${query}" - calling Gemini API...`)
+  
   try {
     const isUrl = /^https?:\/\//i.test(query.trim())
     
@@ -39,7 +119,7 @@ export async function analyzeProject(query: string): Promise<Web3ProjectResult> 
 
     // Use Gemini 3.0 Flash Preview for fastest, grounded results
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash-preview", 
+      model: "gemini-2.0-flash", 
       tools: [{ googleSearch: {} } as any] 
     })
 
@@ -116,7 +196,7 @@ IMPORTANT:
     const score = data.score || 0
     const status = data.status || (score >= 4.0 ? 'VERIFIED' : score < 2.5 ? 'RISKY' : 'UNSTABLE')
 
-    return {
+    const analysisResult: Web3ProjectResult = {
       name: data.name || query,
       type: data.type || 'Other',
       chain: data.chain || [],
@@ -136,6 +216,11 @@ IMPORTANT:
       audits: data.audits || [],
       recentNews: data.recentNews || [],
     }
+    
+    // 3. Cache the result for future requests
+    await cacheAnalysis(query, analysisResult)
+    
+    return analysisResult
   } catch (error) {
     console.error('[Ma\'at] Verification Failed:', error)
     
@@ -169,4 +254,38 @@ IMPORTANT:
       warnings: errorDetails,
     } as Web3ProjectResult
   }
+}
+
+/**
+ * Force refresh analysis (bypass cache)
+ */
+export async function refreshProjectAnalysis(query: string): Promise<Web3ProjectResult> {
+  // Delete existing cache
+  try {
+    await prisma.projectAnalysisCache.delete({
+      where: { query: query.toLowerCase().trim() }
+    })
+  } catch (e) {
+    // Cache entry might not exist
+  }
+  
+  // Run fresh analysis
+  return analyzeProject(query)
+}
+
+/**
+ * Get cache stats
+ */
+export async function getCacheStats() {
+  const total = await prisma.projectAnalysisCache.count()
+  const expired = await prisma.projectAnalysisCache.count({
+    where: { expiresAt: { lt: new Date() } }
+  })
+  const topHits = await prisma.projectAnalysisCache.findMany({
+    orderBy: { hitCount: 'desc' },
+    take: 10,
+    select: { query: true, hitCount: true, createdAt: true }
+  })
+  
+  return { total, expired, active: total - expired, topHits }
 }
