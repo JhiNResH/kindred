@@ -1,38 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-// POST /api/reviews/[id]/vote
+/**
+ * POST /api/reviews/[id]/vote
+ * Update upvote/downvote count after on-chain vote transaction
+ */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params
-  
   try {
     const body = await request.json()
-    const { direction, voterAddress } = body
-
-    // Validation
+    const { direction, amount } = body // direction: "up" | "down", amount: vote weight (optional)
+    
     if (!['up', 'down'].includes(direction)) {
-      return NextResponse.json({ error: 'Direction must be "up" or "down"' }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid vote direction' }, { status: 400 })
     }
-    if (!voterAddress?.match(/^0x[a-fA-F0-9]{40}$/)) {
-      return NextResponse.json({ error: 'Invalid voter address' }, { status: 400 })
+    
+    const review = await prisma.review.findUnique({
+      where: { id: params.id },
+    })
+    
+    if (!review) {
+      return NextResponse.json({ error: 'Review not found' }, { status: 404 })
     }
-
-    // TODO: In real implementation:
-    // 1. Check if user already voted
-    // 2. Update vote in database
-    // 3. Update review's upvotes/downvotes count
-    // 4. Update reviewer's reputation
-
+    
+    // Update vote count
+    const updatedReview = await prisma.review.update({
+      where: { id: params.id },
+      data: {
+        upvotes: direction === 'up' ? review.upvotes + 1 : review.upvotes,
+        downvotes: direction === 'down' ? review.downvotes + 1 : review.downvotes,
+      },
+    })
+    
     return NextResponse.json({
-      success: true,
-      reviewId: id,
-      direction,
-      voterAddress,
-      message: `Vote recorded: ${direction}vote on review ${id}`,
+      id: updatedReview.id,
+      upvotes: updatedReview.upvotes,
+      downvotes: updatedReview.downvotes,
+      netScore: updatedReview.upvotes - updatedReview.downvotes,
     })
   } catch (error) {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    console.error('Error updating vote:', error)
+    return NextResponse.json({ error: 'Failed to update vote' }, { status: 500 })
   }
 }

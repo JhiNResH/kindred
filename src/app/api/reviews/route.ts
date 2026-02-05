@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
       upvotes: r.upvotes,
       downvotes: r.downvotes,
       createdAt: r.createdAt.toISOString(),
+      nftTokenId: r.nftTokenId, // ERC-721 token ID from KindredComment contract
     }))
 
     // Sort by hot if requested
@@ -147,6 +148,7 @@ export async function POST(request: NextRequest) {
       upvotes: review.upvotes,
       downvotes: review.downvotes,
       createdAt: review.createdAt.toISOString(),
+      nftTokenId: review.nftTokenId, // ERC-721 token ID from KindredComment contract
     }, { status: 201 })
   } catch (error) {
     console.error('Error creating review:', error)
