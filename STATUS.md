@@ -1,6 +1,6 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-04 19:20 PST (Steve)
+**最後更新:** 2026-02-04 20:15 PST (Steve)
 
 ---
 
@@ -92,20 +92,23 @@ echo "<TOKEN>" | gh auth login --with-token
    - [x] /api/users/[address] 使用 Prisma ✓
    - [x] Seed data (可手動通過 API 創建，Prisma 7 adapter 問題已繞過)
 
-2. **完整 Demo Flow** 🔴
-   - [ ] 登入 → 質押評論 → 投票 → 排行榜
-   - [ ] 真實錢包連接測試
+2. **完整 Demo Flow** 🟡 (80% 完成，等待部署)
+   - [x] 登入流程 (Privy + RainbowKit)
+   - [x] 質押評論 UI + 合約整合 (PR #42)
+   - [ ] 部署合約到 Base Sepolia → 測試鏈上交易
+   - [ ] 投票功能整合
+   - [ ] 排行榜更新
    - [ ] 錄製 Demo 影片
 
-3. **合約 → UI 整合** ✅ (Steve 完成)
+3. **合約 → UI 整合** ✅ (Steve 完成 - PR #42)
    - [x] UI components (StakeVoteButtons, StakeReviewForm)
    - [x] Contract hooks (useKindToken, useKindredComment)
    - [x] Contract config (contracts.ts + ABI)
    - [x] Deployment script (Deploy.s.sol)
    - [x] Example integration page (/examples/contract-integration)
-   - [ ] Deploy to Base Sepolia (需要 JhiNResH 的錢包)
+   - [x] **ReviewForm 整合真實合約** (PR #42 - 等待部署)
+   - [ ] Deploy to Base Sepolia (需要 JhiNResH 的錢包 PRIVATE_KEY)
    - [ ] 測試真實鏈上交易
-   - [ ] 整合到現有 UI (StakeReviewForm, etc.)
 
 4. **週結算系統** 🟡
    - [ ] SettlementRound 自動化
@@ -138,7 +141,25 @@ echo "<TOKEN>" | gh auth login --with-token
 
 ## 📋 待解決問題
 
-### 1. Database 整合 ✅ (Steve 完成)
+### 1. 🚀 合約部署 (BLOCKER - 需要 JhiNResH)
+
+**狀態：** 等待 JhiNResH 提供私鑰
+**為什麼重要：** ReviewForm 已整合合約，但無法測試鏈上功能
+
+**部署步驟：**
+```bash
+cd packages/contracts
+export PRIVATE_KEY="JhiNResH 的錢包私鑰"
+export RPC_URL="https://sepolia.base.org"
+forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast --verify
+```
+
+**部署後需要：**
+1. 更新 `src/lib/contracts.ts` 中的合約地址
+2. 測試 approve → mint 流程
+3. 確保交易成功上鏈
+
+### 2. Database 整合 ✅ (Steve 完成)
 
 - [x] Prisma schema 定義
 - [x] DATABASE_URL 設定
@@ -146,13 +167,13 @@ echo "<TOKEN>" | gh auth login --with-token
 - [x] API routes 移植到 Prisma (reviews, leaderboard, stakes, users)
 - [x] 可通過 API 創建測試數據
 
-### 2. Privy 配置 ✅
+### 3. Privy 配置 ✅
 
 - [x] NEXT_PUBLIC_PRIVY_APP_ID 已設定
 - [x] PrivyProvider 整合完成
-- [ ] 測試真實錢包連接
+- [x] 測試真實錢包連接（本地可連，待鏈上測試）
 
-### 3. 產品方向對齊
+### 4. 產品方向對齊
 
 **⚠️ 重要：** Polymarket 整合已 pivot，不再是產品方向。請參考 PRODUCT_VISION.md 和 Issue #3 的核心功能：
 
