@@ -1,6 +1,6 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-05 08:05 PST (Steve)
+**最後更新:** 2026-02-05 12:10 PST (Steve)
 
 ---
 
@@ -95,9 +95,10 @@ echo "<TOKEN>" | gh auth login --with-token
 - ✅ ReputationOracle
 - ✅ KindredComment (ERC-721 NFT + Pay-to-Comment)
 - ✅ KindToken (ERC-20 with Permit)
-- ✅ 80+ tests passing (20 for KindredComment)
+- ✅ 30/30 tests passing (20 KindredComment + 10 KindredHook)
 - ✅ Gas benchmarks
 - ✅ Security audit (AUDIT.md)
+- ✅ **M-1 & M-2 fixed** (SafeERC20 + CEI pattern) - 2026-02-05 12:10
 
 ---
 
@@ -206,7 +207,19 @@ forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast -vv
 
 👉 **詳細步驟見：** `DEPLOYMENT_CHECKLIST.md`
 
-### 3. Database 整合 ✅ (Steve 完成)
+### 3. ✅ 合約安全修復完成 (Steve - 2026-02-05 12:10)
+
+**修復內容：**
+- ✅ M-1: Unchecked Transfer → 全部改用 SafeERC20
+- ✅ M-2: CEI Pattern Violation → 重構 _vote(), createComment(), unlockPremium()
+- ✅ 30/30 tests 通過
+- ✅ 已 push 到 main
+
+**準備就緒：** 等待 JhiNResH 部署到 Base Sepolia
+
+---
+
+### 4. Database 整合 ✅ (Steve 完成)
 
 - [x] Prisma schema 定義
 - [x] DATABASE_URL 設定
@@ -214,13 +227,13 @@ forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast -vv
 - [x] API routes 移植到 Prisma (reviews, leaderboard, stakes, users)
 - [x] 可通過 API 創建測試數據
 
-### 3. Privy 配置 ✅
+### 5. Privy 配置 ✅
 
 - [x] NEXT_PUBLIC_PRIVY_APP_ID 已設定
 - [x] PrivyProvider 整合完成
 - [x] 測試真實錢包連接（本地可連，待鏈上測試）
 
-### 4. 產品方向對齊
+### 6. 產品方向對齊
 
 **⚠️ 重要：** Polymarket 整合已 pivot，不再是產品方向。請參考 PRODUCT_VISION.md 和 Issue #3 的核心功能：
 
