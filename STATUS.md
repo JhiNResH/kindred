@@ -1,6 +1,29 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-04 20:15 PST (Steve)
+**最後更新:** 2026-02-04 21:50 PST (Steve)
+
+---
+
+## 🏆 Hackathon Tracking
+
+| Hackathon | Deadline | 獎金 | 狀態 | 優先級 |
+|-----------|----------|------|------|--------|
+| **USDC Hackathon** | Feb 8, 12:00 PM PST | $30k | 🔴 準備提交 | P0 |
+| **Clawathon** | ~Feb 10-11 | TBD | 🟡 開發中 | P0 |
+| **Chainlink Convergence** | Mar 1 | ~$100k | ⚪ 評估中 | P2 |
+| Solana Agent Hackathon | TBD | TBD | ⚪ 待定 | P3 |
+
+### USDC Hackathon Details
+- **Track:** SmartContract ($10k) + AgenticCommerce ($10k)
+- **提交:** m/usdc 發文 `#USDCHackathon ProjectSubmission [Track]`
+- **要求:** 投票 5 個其他項目、Base 部署、demo
+- **行動:** Patrick 部署 Base Sepolia → Jensen 寫 submission post
+
+### Chainlink Convergence Details
+- **時間:** Feb 6 – Mar 1
+- **Tracks:** DeFi ($20k), CRE & AI ($17k), Prediction Markets ($16k), Risk ($16k), Privacy ($16k)
+- **要求:** 必須用 Chainlink Runtime Environment (CRE)
+- **策略:** Feb 11 後評估，可能用 ReputationOracle + CRE Workflow
 
 ---
 
@@ -100,13 +123,14 @@ echo "<TOKEN>" | gh auth login --with-token
    - [ ] 排行榜更新
    - [ ] 錄製 Demo 影片
 
-3. **合約 → UI 整合** ✅ (Steve 完成 - PR #42)
+3. **合約 → UI 整合** ✅ (Steve 完成 - PR #42 + #45)
    - [x] UI components (StakeVoteButtons, StakeReviewForm)
    - [x] Contract hooks (useKindToken, useKindredComment)
    - [x] Contract config (contracts.ts + ABI)
    - [x] Deployment script (Deploy.s.sol)
    - [x] Example integration page (/examples/contract-integration)
    - [x] **ReviewForm 整合真實合約** (PR #42 - 等待部署)
+   - [x] **投票功能 UI 整合** (PR #45 - 等待部署測試)
    - [ ] Deploy to Base Sepolia (需要 JhiNResH 的錢包 PRIVATE_KEY)
    - [ ] 測試真實鏈上交易
 
@@ -223,6 +247,28 @@ forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast --v
 2. **Patrick:** ERC-404 Comment NFT 合約 + x402 付費解鎖
 3. **Everyone:** Demo flow 完整測試（登入 → 質押評論 → 投票 → 排行榜）
 4. **Jensen:** 統籌 + Demo 影片準備 (Feb 7-8)
+
+---
+
+## 📋 下一步行動（優先級排序）
+
+### 🔴 P0: 部署合約 (BLOCKER - 需要 JhiNResH)
+- 提供 PRIVATE_KEY 執行部署
+- 更新 `src/lib/contracts.ts` 合約地址
+- 測試 ReviewForm 鏈上交易
+
+### ✅ P1: 投票功能整合 (Steve 完成 - PR #45)
+- [x] 改造 ReviewCard 的 "Buy Share" 按鈕
+- [x] 使用 `useUpvote()` / `useDownvote()` hooks
+- [x] 添加質押金額輸入 UI (可展開式)
+- [x] 創建 `/api/reviews/[id]/vote` endpoint
+- [x] 添加 nftTokenId 到 API 返回
+- **狀態：** 等待合約部署測試
+
+### 🟢 P2: 週結算系統 (複雜度高)
+- SettlementRound 自動化
+- 排行榜更新邏輯
+- 獎勵分發機制
 
 ---
 
