@@ -53,24 +53,21 @@ export function useCreateComment() {
 /**
  * Hook for upvoting a comment
  */
-export function useUpvoteComment() {
+export function useUpvote() {
   const { writeContract, data: hash, isPending, isError, error } = useWriteContract()
   
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
   })
 
-  const upvote = async (params: {
-    tokenId: bigint
-    stakeAmount: string // Wei string
-  }) => {
+  const upvote = async (tokenId: bigint, stakeAmount: bigint) => {
     // TODO: First approve KindToken spending if stakeAmount > 0
     
     writeContract({
       address: CONTRACT.address,
       abi: CONTRACT.abi,
       functionName: 'upvote',
-      args: [params.tokenId, BigInt(params.stakeAmount)],
+      args: [tokenId, stakeAmount],
       chainId: baseSepolia.id,
     })
   }
@@ -89,24 +86,21 @@ export function useUpvoteComment() {
 /**
  * Hook for downvoting a comment
  */
-export function useDownvoteComment() {
+export function useDownvote() {
   const { writeContract, data: hash, isPending, isError, error } = useWriteContract()
   
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
   })
 
-  const downvote = async (params: {
-    tokenId: bigint
-    stakeAmount: string // Wei string
-  }) => {
+  const downvote = async (tokenId: bigint, stakeAmount: bigint) => {
     // TODO: First approve KindToken spending if stakeAmount > 0
     
     writeContract({
       address: CONTRACT.address,
       abi: CONTRACT.abi,
       functionName: 'downvote',
-      args: [params.tokenId, BigInt(params.stakeAmount)],
+      args: [tokenId, stakeAmount],
       chainId: baseSepolia.id,
     })
   }
@@ -121,6 +115,10 @@ export function useDownvoteComment() {
     error,
   }
 }
+
+// Legacy aliases (for backwards compatibility)
+export const useUpvoteComment = useUpvote
+export const useDownvoteComment = useDownvote
 
 /**
  * Hook for reading comment data
