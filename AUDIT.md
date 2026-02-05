@@ -220,123 +220,326 @@ forge test --gas-report
 
 ---
 
-## 🕐 Hourly Audit Report (2026-02-05 04:00 PST)
+## 🕐 Hourly Audit Report (2026-02-05 04:30 PST)
 
-**Status:** ✅ CRITICAL FIX DEPLOYED - All contracts restored  
-**Recent Commits:** Contract restoration from git history  
-**Tests:** ✅ All 30 tests passing (32.65ms runtime) — 10 KindredHook + 20 KindredComment  
+**Status:** 🟡 MEDIUM ISSUES FOUND - Reentrancy & Transfer Issues  
+**Slither Run:** ✅ Completed - 15 findings  
+**Tests:** ✅ All 30 tests passing (34.08ms runtime) — 10 KindredHook + 20 KindredComment  
 **Build:** ✅ Compilation successful
 
-### ✅ RESOLVED: Missing Contract Source Files (Fixed in 868d8fc)
+### 🔴 NEW: Critical Findings from Slither
 
-**Severity:** 🔴 CRITICAL → ✅ RESOLVED  
-**Impact:** Deployment blocker → Ready for deployment
+#### C-1: Unchecked ERC20 Transfer Return Values (HIGH → MEDIUM)
 
-**Discovery:**
-While auditing, I noticed that `KindredComment.sol` and `KindToken.sol` are missing from `contracts/src/`, but their ABIs and React hooks exist in the frontend:
+**Affected Contract:** `KindredComment.sol`  
+**Severity:** 🟡 Medium (already using ReentrancyGuard + transferFrom has revert check)  
+**Lines:** 281, 287, 295, 303, 314, 322, 372
 
-```bash
-# Frontend has these:
-✅ src/lib/abi/KindredComment.json
-✅ src/lib/abi/KindredComment.json
-✅ src/hooks/useKindredComment.ts
-✅ src/hooks/useKindToken.ts
+**Issue:**
+Multiple `kindToken.transfer()` calls ignore return values. While `transferFrom` is checked with `if (!success) revert`, `transfer()` is not.
 
-# But contracts directory is missing:
-❌ contracts/src/KindredComment.sol
-❌ contracts/src/KindToken.sol
-❌ contracts/test/KindredComment.t.sol
-❌ contracts/test/KindToken.t.sol
+**Vulnerable Code:**
+```solidity
+// Line 281 - _distributeRewards
+kindToken.transfer(comment.author, authorReward);
+
+// Line 287
+kindToken.transfer(treasury, protocolFee);
+
+// Line 314 - _distributeToVoters (in loop!)
+kindToken.transfer(voterList[i], share);
+
+// Line 372 - emergencyWithdraw
+IERC20(token).transfer(treasury, amount);
 ```
 
-**Root Cause:**
-These contracts were added in commit `05b5514` but got lost during the directory flatten refactor (`e00f075`).
+**Impact:**
+- If KindToken's `transfer()` fails silently (unlikely with standard ERC20, but possible with weird tokens)
+- Users might not receive rewards
+- Protocol fee might not be collected
 
-**Evidence:**
-```bash
-git show 05b5514:packages/contracts/src/KindredComment.sol  # ✅ Exists (374 lines)
-git show 05b5514:packages/contracts/test/KindredComment.t.sol  # ✅ Exists (383 lines)
+**Recommendation:**
+```solidity
+// Wrap all transfers with success check
+bool success = kindToken.transfer(comment.author, authorReward);
+if (!success) revert TransferFailed();
+
+// Or use SafeERC20 from OpenZeppelin
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+using SafeERC20 for IERC20;
+
+kindToken.safeTransfer(comment.author, authorReward);
 ```
 
-**Resolution Applied (Commit 868d8fc):**
-```bash
-✅ Restored contracts from commit 05b5514
-✅ All 30 tests passing (10 KindredHook + 20 KindredComment)
-✅ Compilation successful
-✅ Ready for Base Sepolia deployment
-```
-
-**Why This Was Critical:**
-- Frontend code expects these contracts
-- ReviewForm uses `useKindredComment` hook
-- Voting system uses `useKindToken` hook
-- Without these contracts, cannot deploy to Base Sepolia
-
-**Next Steps:**
-1. ✅ **Restore contracts** — DONE
-2. ✅ **Run full test suite** — DONE (30 tests passing)
-3. 🔄 **Deploy to Base Sepolia** — Waiting for JhiNResH's PRIVATE_KEY
-4. 🔄 **USDC Hackathon submission** — Deploy first, then submit
+**Why Medium not High:**
+- KindToken is a standard ERC20 (OpenZeppelin) that reverts on failure
+- Only affects external tokens in `emergencyWithdraw` (already emergency case)
+- ReentrancyGuard prevents exploitation
 
 ---
 
-### Current Contract Status
+#### C-2: Reentrancy Vulnerability in _vote() (MEDIUM)
 
-| Contract | Status | Tests | Notes |
-|----------|--------|-------|-------|
-| `ReputationOracle.sol` | ✅ Stable | 10 passing | No changes |
-| `KindredHook.sol` | ✅ Stable | 10 passing | No changes |
-| `KindredComment.sol` | ✅ RESTORED | 20 passing | Recovered from git |
-| `KindToken.sol` | ✅ RESTORED | Included in Comment tests | Recovered from git |
+**Affected Contract:** `KindredComment.sol`  
+**Severity:** 🟡 Medium (has ReentrancyGuard but state modified after external call)  
+**Lines:** 201-243
 
-### Test Results (Updated)
+**Issue:**
+State variables (`comment.upvoteValue`, `comment.downvoteValue`) are modified AFTER external `transferFrom` call in `_vote()`.
 
-```
-KindredHookTest (10 tests):
-[PASS] testFuzz_CalculateFee_Valid(uint256) (runs: 256, μ: 5745, ~: 5734)
-[PASS] testFuzz_Monotonic(uint256,uint256) (runs: 256, μ: 3348, ~: 357)
-[PASS] test_CalculateFee_AllTiers() (gas: 12282)
-[PASS] test_CanTrade() (gas: 41438)
-[PASS] test_Constructor_RevertsOnZeroAddress() (gas: 35952)
-[PASS] test_GetFeeForAccount() (gas: 32157)
-[PASS] test_Integration_ReputationUpgrade() (gas: 56957)
-[PASS] test_ValidateTrade_RevertBlocked() (gas: 16735)
-[PASS] test_ValidateTrade_RevertLowScore() (gas: 19965)
-[PASS] test_ValidateTrade_Success() (gas: 16525)
-
-KindredCommentTest (20 tests):
-[PASS] testFuzz_CreateComment_StakeAmount(uint256) (runs: 256, μ: 351202, ~: 350926)
-[PASS] testFuzz_Upvote_Amount(uint256) (runs: 256, μ: 499229, ~: 498931)
-[PASS] test_CanAccessPremium_Author() (gas: 410903)
-[PASS] test_CanAccessPremium_NFTOwner() (gas: 416822)
-[PASS] test_CreateComment_Success() (gas: 354280)
-[PASS] test_CreateComment_WithExtraStake() (gas: 349749)
-[PASS] test_CreateComment_WithPremium() (gas: 411122)
-[PASS] test_Downvote_Success() (gas: 480148)
-[PASS] test_GetNetScore_Positive() (gas: 600905)
-[PASS] test_UnlockPremium_Success() (gas: 517821)
-[PASS] test_UnlockPremium_WithUpvoters() (gas: 656890)
-[PASS] test_Upvote_MultipleVoters() (gas: 607008)
-[PASS] test_Upvote_Success() (gas: 501921)
-... and 7 more tests
-
-Total: 30 tests passed, 0 failed (32.65ms CPU time)
+**Vulnerable Code:**
+```solidity
+function _vote(uint256 tokenId, uint256 amount, bool isUpvote) internal {
+    Comment storage comment = comments[tokenId];
+    
+    // ❌ EXTERNAL CALL FIRST
+    bool success = kindToken.transferFrom(msg.sender, address(this), amount);
+    if (!success) revert TransferFailed();
+    
+    // ⚠️ STATE MODIFIED AFTER
+    if (existingVote.isUpvote) {
+        comment.upvoteValue -= existingVote.amount;  // Line 220
+    } else {
+        comment.downvoteValue -= existingVote.amount;  // Line 222
+    }
+    
+    if (isUpvote) {
+        comment.upvoteValue += newAmount;  // Line 235
+    } else {
+        comment.downvoteValue += newAmount;  // Line 238
+    }
+    totalStaked += amount;  // Line 242
+}
 ```
 
-### Gas Report
+**Attack Vector:**
+If `kindToken` is a malicious ERC20 with a `transferFrom` hook, attacker could:
+1. Call `upvote()` with malicious token
+2. During `transferFrom`, re-enter `upvote()` before `comment.upvoteValue` is updated
+3. Vote counted multiple times
 
-| Contract | Deployment Cost | Deployment Size |
-|----------|----------------|-----------------|
-| KindredHook | 387,873 | 1,780 bytes |
-| ReputationOracle | 890,255 | 3,831 bytes |
+**Why Not Critical:**
+- `nonReentrant` modifier on `upvote()` and `downvote()` prevents re-entry
+- KindToken is controlled and doesn't have hooks
+
+**Recommendation (Defense in Depth):**
+```solidity
+function _vote(uint256 tokenId, uint256 amount, bool isUpvote) internal {
+    Comment storage comment = comments[tokenId];
+    if (comment.author == address(0)) revert CommentNotFound();
+    
+    // ✅ UPDATE STATE FIRST (Checks-Effects-Interactions)
+    Vote storage existingVote = votes[tokenId][msg.sender];
+    
+    if (existingVote.amount > 0) {
+        if (existingVote.isUpvote) {
+            comment.upvoteValue -= existingVote.amount;
+        } else {
+            comment.downvoteValue -= existingVote.amount;
+        }
+    }
+    
+    uint256 newAmount = existingVote.amount + amount;
+    votes[tokenId][msg.sender] = Vote({
+        isUpvote: isUpvote,
+        amount: newAmount,
+        timestamp: block.timestamp
+    });
+    
+    if (isUpvote) {
+        comment.upvoteValue += newAmount;
+    } else {
+        comment.downvoteValue += newAmount;
+    }
+    totalStaked += amount;
+    
+    // ✅ EXTERNAL CALL LAST
+    bool success = kindToken.transferFrom(msg.sender, address(this), amount);
+    if (!success) revert TransferFailed();
+    
+    if (existingVote.amount == 0) {
+        voters[tokenId].push(msg.sender);
+    }
+}
+```
+
+**Follow CEI Pattern:** Checks → Effects → Interactions
 
 ---
 
-## 📝 Next Audit (2026-02-05 01:30 PST)
+#### C-3: External Calls in Loop (MEDIUM → LOW)
+
+**Affected Contract:** `KindredComment.sol`  
+**Function:** `_distributeToVoters()` (Line 292-324)  
+**Severity:** 🟢 Low (but gas inefficient)
+
+**Issue:**
+```solidity
+for (uint256 i = 0; i < voterList.length; i++) {
+    Vote storage vote = votes[tokenId][voterList[i]];
+    if (vote.isUpvote && vote.amount > 0) {
+        uint256 share = (totalReward * vote.amount) / totalUpvotes;
+        if (share > 0) {
+            kindToken.transfer(voterList[i], share);  // ❌ External call in loop
+            distributed += share;
+        }
+    }
+}
+```
+
+**Impact:**
+- High gas cost for many voters
+- DoS if voter count is unbounded
+- Transfer failures could block entire distribution
+
+**Why Not Higher:**
+- Controlled by number of upvoters (naturally limited by gas cost to vote)
+- Standard ERC20 transfer is cheap
+- Failure of one transfer doesn't block others (continues loop)
+
+**Recommendation (Future Optimization):**
+```solidity
+// Option 1: Batch transfers (if supported)
+// Option 2: Pull-based rewards (users claim their own)
+mapping(address => uint256) public pendingRewards;
+
+function claimRewards(uint256 tokenId) external {
+    uint256 amount = pendingRewards[tokenId][msg.sender];
+    if (amount > 0) {
+        pendingRewards[tokenId][msg.sender] = 0;
+        kindToken.transfer(msg.sender, amount);
+    }
+}
+```
+
+---
+
+### 🟢 Low Issues
+
+#### L-1: Missing Zero Address Check in Treasury Setter
+
+**Contract:** `KindredComment.sol`  
+**Lines:** 125, 363
+
+**Issue:**
+```solidity
+constructor(address _kindToken, address _treasury) {
+    // ...
+    treasury = _treasury;  // ❌ No zero check
+}
+
+function setTreasury(address _treasury) external onlyOwner {
+    treasury = _treasury;  // ❌ No zero check
+}
+```
+
+**Recommendation:**
+```solidity
+error ZeroAddress();
+
+constructor(address _kindToken, address _treasury) {
+    if (_treasury == address(0)) revert ZeroAddress();
+    treasury = _treasury;
+}
+
+function setTreasury(address _treasury) external onlyOwner {
+    if (_treasury == address(0)) revert ZeroAddress();
+    treasury = _treasury;
+}
+```
+
+---
+
+#### L-2: Timestamp Dependence in Faucet (Informational)
+
+**Contract:** `KindTokenTestnet.sol`  
+**Line:** 94
+
+**Issue:**
+```solidity
+if (block.timestamp < lastFaucetRequest[msg.sender] + FAUCET_COOLDOWN) {
+    revert FaucetCooldown();
+}
+```
+
+**Impact:** Miners can manipulate timestamp by ~15 seconds  
+**Severity:** Informational (testnet only, low stakes)  
+**Mitigation:** Use block.number instead if precision matters
+
+---
+
+### ✅ Positive Findings (What's Good)
+
+1. ✅ **ReentrancyGuard** - Properly applied to all external entry points
+2. ✅ **Custom Errors** - Gas efficient error handling
+3. ✅ **Immutable Oracle** - KindredHook uses immutable for gas savings
+4. ✅ **SafeMath Not Needed** - Solidity 0.8+ has built-in overflow protection
+5. ✅ **Access Control** - Proper use of Ownable
+6. ✅ **Event Emission** - All state changes emit events
+7. ✅ **ERC721 Standard** - Comments as NFTs (composable!)
+
+---
+
+### 📊 Test Coverage Analysis
+
+**Current Tests:** 30 passing (100% success rate)
+
+**Missing Edge Cases:**
+1. ❌ Reentrancy attack simulation (try with malicious ERC20)
+2. ❌ Transfer failure scenarios (mock failing token)
+3. ❌ Loop DoS with 100+ voters
+4. ❌ Zero address in treasury setter
+5. ❌ Integer overflow edge cases (max uint256)
+6. ❌ Vote direction change multiple times
+7. ❌ Premium unlock after NFT transfer
+
+**Recommendation:**
+```bash
+# Add tests for:
+forge test --match-test test_Reentrancy
+forge test --match-test test_TransferFail
+forge test --match-test test_MassVoters
+```
+
+---
+
+### 🎯 Priority Action Items
+
+**Before Base Sepolia Deploy:**
+1. 🔥 **Fix unchecked transfers** - Use SafeERC20 or add success checks
+2. 🔥 **Apply CEI pattern in _vote()** - Move state updates before external calls
+3. 🟡 **Add zero address checks** - Constructor and setTreasury
+4. 🟢 **Add transfer failure tests** - Mock failing ERC20
+
+**Can Deploy With (Low Risk):**
+- External calls in loop (gas optimization, not security critical)
+- Timestamp in testnet faucet (low stakes)
+
+**Gas Optimizations (Future):**
+- Pull-based reward claiming
+- Batch voter rewards
+- Unchecked arithmetic where safe
+
+---
+
+### Contract Status Summary
+
+| Contract | Security | Tests | Deploy Ready? |
+|----------|----------|-------|---------------|
+| `KindredHook.sol` | ✅ Clean | 10/10 | ✅ YES |
+| `ReputationOracle.sol` | ✅ Clean | (in Hook tests) | ✅ YES |
+| `KindToken.sol` | ✅ Clean | (in Comment tests) | ✅ YES |
+| `KindredComment.sol` | 🟡 2 Medium | 20/20 | 🟡 **FIX FIRST** |
+
+**Verdict:** KindredComment needs fixes before mainnet, but testnet deploy acceptable with warnings.
+
+---
+
+## 📝 Next Audit (2026-02-05 05:30 PST)
 
 **Priority:**
-1. 🔥 **Verify KindredComment & KindToken restoration** (URGENT)
-2. Run full test suite (expect 20+ tests from KindredComment)
-3. Review KindredComment security (pay-to-comment, x402, reward distribution)
-4. Check if v4 hook interface implementation started
-5. Track Base Sepolia deployment progress
+1. 🔥 **Track fix implementation** for C-1 and C-2
+2. Verify CEI pattern applied in _vote()
+3. Confirm SafeERC20 usage
+4. Re-run Slither after fixes
+5. Check if Base Sepolia deployment happened
