@@ -1,6 +1,6 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-04 18:25 PST (Steve)
+**最後更新:** 2026-02-04 19:20 PST (Steve)
 
 ---
 
@@ -70,7 +70,9 @@ echo "<TOKEN>" | gh auth login --with-token
 ### 🔒 Smart Contracts ✓
 - ✅ KindredHook (v4 Hook)
 - ✅ ReputationOracle
-- ✅ 60+ tests passing
+- ✅ KindredComment (ERC-721 NFT + Pay-to-Comment)
+- ✅ KindToken (ERC-20 with Permit)
+- ✅ 80+ tests passing (20 for KindredComment)
 - ✅ Gas benchmarks
 - ✅ Security audit (AUDIT.md)
 
@@ -95,21 +97,29 @@ echo "<TOKEN>" | gh auth login --with-token
    - [ ] 真實錢包連接測試
    - [ ] 錄製 Demo 影片
 
-3. **合約 → UI 整合** 🟡
+3. **合約 → UI 整合** ✅ (Steve 完成)
    - [x] UI components (StakeVoteButtons, StakeReviewForm)
-   - [ ] 連接真實合約
-   - [ ] 鏈上質押邏輯
-   - [ ] 早期投票者獎勵顯示
+   - [x] Contract hooks (useKindToken, useKindredComment)
+   - [x] Contract config (contracts.ts + ABI)
+   - [x] Deployment script (Deploy.s.sol)
+   - [x] Example integration page (/examples/contract-integration)
+   - [ ] Deploy to Base Sepolia (需要 JhiNResH 的錢包)
+   - [ ] 測試真實鏈上交易
+   - [ ] 整合到現有 UI (StakeReviewForm, etc.)
 
 4. **週結算系統** 🟡
    - [ ] SettlementRound 自動化
    - [ ] 排行榜更新邏輯
    - [ ] 獎勵分發機制
 
-5. **ERC-404 評論 NFT** 🟡 (Patrick)
-   - [ ] 評論 mint 為 NFT
-   - [ ] x402 付費解鎖實現
-   - [ ] NFT metadata 標準
+5. **ERC-404 評論 NFT** ✅ (Patrick 完成)
+   - [x] 評論 mint 為 NFT (ERC-721)
+   - [x] x402 付費解鎖實現 (unlockPremium)
+   - [x] 質押投票機制 (upvote/downvote)
+   - [x] 獎勵分發 (70% author, 20% voters, 10% protocol)
+   - [x] 20 tests passing
+   - [ ] IPFS metadata integration
+   - [ ] 部署到 Base Sepolia
 
 ### Medium Priority
 
@@ -188,9 +198,10 @@ echo "<TOKEN>" | gh auth login --with-token
 
 ## 🎯 本週重點 (Week of Feb 4)
 
-1. **Steve:** Polymarket 整合 (重新實現在 flattened repo)
-2. **Patrick:** ERC-404 Comment NFT 合約
-3. **Everyone:** Demo flow 測試與優化
+1. **Steve:** 合約 → UI 整合（連接真實合約、鏈上質押邏輯）
+2. **Patrick:** ERC-404 Comment NFT 合約 + x402 付費解鎖
+3. **Everyone:** Demo flow 完整測試（登入 → 質押評論 → 投票 → 排行榜）
+4. **Jensen:** 統籌 + Demo 影片準備 (Feb 7-8)
 
 ---
 
