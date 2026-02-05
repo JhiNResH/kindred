@@ -1,55 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Types
-interface Review {
-  id: string
-  targetAddress: string
-  targetName: string
-  reviewerAddress: string
-  rating: number
-  content: string
-  category: 'k/defi' | 'k/memecoin' | 'k/perp-dex' | 'k/ai'
-  predictedRank: number | null
-  stakeAmount: string
-  photoUrls: string[]
-  upvotes: number
-  downvotes: number
-  createdAt: string
-}
-
-// In-memory store (replace with DB later)
-const reviews: Review[] = [
-  {
-    id: 'rev_1',
-    targetAddress: '0x1234567890abcdef1234567890abcdef12345678',
-    targetName: 'Hyperliquid',
-    reviewerAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
-    rating: 5,
-    content: 'Best perp DEX by far. Low fees, fast execution, great UX.',
-    category: 'k/perp-dex',
-    predictedRank: 1,
-    stakeAmount: '5000000000000000000',
-    photoUrls: [],
-    upvotes: 42,
-    downvotes: 3,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'rev_2',
-    targetAddress: '0xdeadbeef1234567890abcdef1234567890abcdef',
-    targetName: 'Aave',
-    reviewerAddress: '0x1111222233334444555566667777888899990000',
-    rating: 4,
-    content: 'Solid lending protocol. Been using it for 2 years without issues.',
-    category: 'k/defi',
-    predictedRank: 2,
-    stakeAmount: '10000000000000000000',
-    photoUrls: [],
-    upvotes: 28,
-    downvotes: 5,
-    createdAt: new Date().toISOString(),
-  },
-]
+import { prisma } from '@/lib/prisma'
 
 // GET /api/reviews
 export async function GET(request: NextRequest) {
@@ -58,40 +8,66 @@ export async function GET(request: NextRequest) {
   const target = searchParams.get('target')
   const sort = searchParams.get('sort') || 'hot' // hot, new, top
 
-  let filtered = [...reviews]
+  try {
+    const where: any = {}
+    
+    if (category) {
+      where.project = { category }
+    }
+    if (target) {
+      where.OR = [
+        { project: { address: { equals: target, mode: 'insensitive' } } },
+        { project: { name: { contains: target, mode: 'insensitive' } } },
+      ]
+    }
 
-  if (category) {
-    filtered = filtered.filter(r => r.category === category)
-  }
-  if (target) {
-    filtered = filtered.filter(r => 
-      r.targetAddress.toLowerCase() === target.toLowerCase() ||
-      r.targetName.toLowerCase().includes(target.toLowerCase())
-    )
-  }
+    let reviews = await prisma.review.findMany({
+      where,
+      include: {
+        reviewer: { select: { address: true, displayName: true, avatarUrl: true } },
+        project: { select: { address: true, name: true, category: true } },
+      },
+      orderBy: sort === 'new' 
+        ? { createdAt: 'desc' }
+        : sort === 'top'
+        ? [{ upvotes: 'desc' }, { downvotes: 'asc' }]
+        : { createdAt: 'desc' }, // Hot algorithm done client-side for simplicity
+    })
 
-  // Sort
-  switch (sort) {
-    case 'new':
-      filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      break
-    case 'top':
-      filtered.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
-      break
-    case 'hot':
-    default:
-      // Hot = score decay over time
-      filtered.sort((a, b) => {
+    // Transform to match expected format
+    const transformed = reviews.map(r => ({
+      id: r.id,
+      targetAddress: r.project.address,
+      targetName: r.project.name,
+      reviewerAddress: r.reviewer.address,
+      rating: r.rating,
+      content: r.content,
+      category: r.project.category,
+      predictedRank: r.predictedRank,
+      stakeAmount: r.stakeAmount,
+      photoUrls: r.photoUrls ? JSON.parse(r.photoUrls) : [],
+      upvotes: r.upvotes,
+      downvotes: r.downvotes,
+      createdAt: r.createdAt.toISOString(),
+    }))
+
+    // Sort by hot if requested
+    if (sort === 'hot') {
+      transformed.sort((a, b) => {
         const scoreA = (a.upvotes - a.downvotes) / Math.pow((Date.now() - new Date(a.createdAt).getTime()) / 3600000 + 2, 1.5)
         const scoreB = (b.upvotes - b.downvotes) / Math.pow((Date.now() - new Date(b.createdAt).getTime()) / 3600000 + 2, 1.5)
         return scoreB - scoreA
       })
-  }
+    }
 
-  return NextResponse.json({
-    reviews: filtered,
-    total: filtered.length,
-  })
+    return NextResponse.json({
+      reviews: transformed,
+      total: transformed.length,
+    })
+  } catch (error) {
+    console.error('Error fetching reviews:', error)
+    return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 })
+  }
 }
 
 // POST /api/reviews
@@ -109,27 +85,71 @@ export async function POST(request: NextRequest) {
     if (!body.content || body.content.length < 10) {
       return NextResponse.json({ error: 'Content must be at least 10 characters' }, { status: 400 })
     }
-
-    const review: Review = {
-      id: `rev_${Date.now()}`,
-      targetAddress: body.targetAddress,
-      targetName: body.targetName || 'Unknown',
-      reviewerAddress: body.reviewerAddress || '0x0000000000000000000000000000000000000000',
-      rating: body.rating,
-      content: body.content,
-      category: body.category || 'k/defi',
-      predictedRank: body.predictedRank || null,
-      stakeAmount: body.stakeAmount || '0',
-      photoUrls: body.photoUrls || [],
-      upvotes: 0,
-      downvotes: 0,
-      createdAt: new Date().toISOString(),
+    if (!body.reviewerAddress?.match(/^0x[a-fA-F0-9]{40}$/)) {
+      return NextResponse.json({ error: 'Invalid reviewer address' }, { status: 400 })
     }
 
-    reviews.push(review)
+    // Find or create user
+    let user = await prisma.user.findUnique({
+      where: { address: body.reviewerAddress.toLowerCase() },
+    })
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          address: body.reviewerAddress.toLowerCase(),
+          displayName: body.reviewerAddress.substring(0, 10),
+        },
+      })
+    }
 
-    return NextResponse.json(review, { status: 201 })
+    // Find or create project
+    let project = await prisma.project.findUnique({
+      where: { address: body.targetAddress.toLowerCase() },
+    })
+    if (!project) {
+      project = await prisma.project.create({
+        data: {
+          address: body.targetAddress.toLowerCase(),
+          name: body.targetName || 'Unknown Project',
+          category: body.category || 'k/defi',
+        },
+      })
+    }
+
+    // Create review
+    const review = await prisma.review.create({
+      data: {
+        rating: body.rating,
+        content: body.content,
+        predictedRank: body.predictedRank || null,
+        stakeAmount: body.stakeAmount || '0',
+        photoUrls: body.photoUrls ? JSON.stringify(body.photoUrls) : null,
+        reviewerId: user.id,
+        projectId: project.id,
+      },
+      include: {
+        reviewer: { select: { address: true, displayName: true } },
+        project: { select: { address: true, name: true, category: true } },
+      },
+    })
+
+    return NextResponse.json({
+      id: review.id,
+      targetAddress: review.project.address,
+      targetName: review.project.name,
+      reviewerAddress: review.reviewer.address,
+      rating: review.rating,
+      content: review.content,
+      category: review.project.category,
+      predictedRank: review.predictedRank,
+      stakeAmount: review.stakeAmount,
+      photoUrls: review.photoUrls ? JSON.parse(review.photoUrls) : [],
+      upvotes: review.upvotes,
+      downvotes: review.downvotes,
+      createdAt: review.createdAt.toISOString(),
+    }, { status: 201 })
   } catch (error) {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    console.error('Error creating review:', error)
+    return NextResponse.json({ error: 'Failed to create review' }, { status: 500 })
   }
 }
