@@ -64,8 +64,8 @@ export default function ContractIntegrationExample() {
   }
 
   const MIN_STAKE = parseKind('100') // 100 KIND tokens
-  const needsApproval = !allowance || allowance < MIN_STAKE
-  const hasBalance = balance && balance >= MIN_STAKE
+  const needsApproval = !allowance || (allowance as bigint) < MIN_STAKE
+  const hasBalance = balance && (balance as bigint) >= MIN_STAKE
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
@@ -76,7 +76,7 @@ export default function ContractIntegrationExample() {
           Connected: {address?.slice(0, 6)}...{address?.slice(-4)}
         </p>
         <p className="text-sm text-gray-500">
-          Balance: {balance ? formatKind(balance) : '0'} KIND
+          Balance: {balance ? formatKind(balance as bigint) : '0'} KIND
         </p>
       </div>
 
@@ -152,7 +152,7 @@ export default function ContractIntegrationExample() {
                 return
               }
               const extraStake = parseKind(stakeAmount) - MIN_STAKE
-              createComment(projectId, content, '', 0n, extraStake)
+              createComment(projectId, content, '', BigInt(0), extraStake)
             }}
             disabled={isCreating || needsApproval || !hasBalance}
             className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
@@ -231,18 +231,21 @@ export default function ContractIntegrationExample() {
             />
           </div>
 
-          {commentData && (
-            <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
-              <div><strong>Author:</strong> {commentData[0]}</div>
-              <div><strong>Project ID:</strong> {commentData[1]}</div>
-              <div><strong>Content Hash:</strong> {commentData[2]}</div>
-              <div><strong>Stake:</strong> {formatKind(commentData[4])} KIND</div>
-              <div><strong>Upvote Value:</strong> {formatKind(commentData[5])} KIND</div>
-              <div><strong>Downvote Value:</strong> {formatKind(commentData[6])} KIND</div>
-              <div><strong>Net Score:</strong> {netScore?.toString() || 'N/A'}</div>
-              <div><strong>Created:</strong> {new Date(Number(commentData[9]) * 1000).toLocaleString()}</div>
-            </div>
-          )}
+          {commentData ? (() => {
+            const data = commentData as any[]
+            return (
+              <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
+                <div><strong>Author:</strong> {String(data[0])}</div>
+                <div><strong>Project ID:</strong> {String(data[1])}</div>
+                <div><strong>Content Hash:</strong> {String(data[2])}</div>
+                <div><strong>Stake:</strong> {formatKind(data[4] as bigint)} KIND</div>
+                <div><strong>Upvote Value:</strong> {formatKind(data[5] as bigint)} KIND</div>
+                <div><strong>Downvote Value:</strong> {formatKind(data[6] as bigint)} KIND</div>
+                <div><strong>Net Score:</strong> {netScore?.toString() || 'N/A'}</div>
+                <div><strong>Created:</strong> {new Date(Number(data[9]) * 1000).toLocaleString()}</div>
+              </div>
+            )
+          })() : null}
         </div>
       </div>
     </div>

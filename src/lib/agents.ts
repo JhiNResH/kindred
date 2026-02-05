@@ -42,7 +42,7 @@ export function registerAgent(
   }
 
   // Check if wallet already registered
-  for (const agent of agents.values()) {
+  for (const agent of Array.from(agents.values())) {
     if (agent.walletAddress.toLowerCase() === walletAddress.toLowerCase()) {
       return { error: 'Wallet already registered' }
     }

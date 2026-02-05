@@ -36,8 +36,8 @@ export function useCreateComment() {
     projectId: string,
     contentHash: string,
     premiumHash: string = '',
-    unlockPrice: bigint = 0n,
-    extraStake: bigint = 0n
+    unlockPrice: bigint = BigInt(0),
+    extraStake: bigint = BigInt(0)
   ) => {
     // Convert projectId to bytes32
     const projectIdBytes32 = `0x${Buffer.from(projectId).toString('hex').padEnd(64, '0')}` as `0x${string}`
