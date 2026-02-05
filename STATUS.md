@@ -1,6 +1,6 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-05 04:15 PST (Steve)
+**最後更新:** 2026-02-05 08:05 PST (Steve)
 
 ---
 
@@ -181,23 +181,30 @@ echo "<TOKEN>" | gh auth login --with-token
 
 ### 2. 🔴 合約部署 (BLOCKER - 需要 JhiNResH)
 
-**狀態：** 等待 JhiNResH 提供 PRIVATE_KEY
-**為什麼緊急：** USDC Hackathon deadline Feb 8 (剩 3.5 天)
+**狀態：** ⏳ 等待 JhiNResH 提供 PRIVATE_KEY  
+**為什麼緊急：** USDC Hackathon deadline Feb 8 (剩 3.5 天)  
+**準備文件：** ✅ `DEPLOYMENT_CHECKLIST.md` (詳細流程)
 
-**部署步驟：**
+**Quick Deploy (5 分鐘):**
 ```bash
 cd /Users/jhinresh/clawd/team-kindred/contracts
-export PRIVATE_KEY="你的錢包私鑰"
+export PRIVATE_KEY="你的錢包私鑰"  # ← 需要這個
 export RPC_URL="https://sepolia.base.org"
-forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast
+forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast -vvv
 ```
 
-**部署後需要：**
-1. 更新 `src/lib/contracts.ts` 中的合約地址
-2. 測試 ReviewForm approve → mint 流程
-3. 測試 Voting UI upvote/downvote
-4. 錄製 demo 影片
-5. 提交 USDC Hackathon
+**需要準備：**
+- [ ] 錢包私鑰 (有 0.5 ETH on Base Sepolia)
+- [ ] Testnet ETH: https://www.alchemy.com/faucets/base-sepolia
+
+**部署後 2 小時內：**
+1. Steve 更新 `src/lib/contracts.ts` 合約地址
+2. Steve 測試 mint + vote on-chain
+3. Jensen 錄製 demo 影片 (2-3 min)
+4. Jensen 投票 5 個項目
+5. Jensen 提交 USDC Hackathon
+
+👉 **詳細步驟見：** `DEPLOYMENT_CHECKLIST.md`
 
 ### 3. Database 整合 ✅ (Steve 完成)
 
