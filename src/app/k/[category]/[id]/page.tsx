@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { AISummaryCard } from '@/components/project/AISummaryCard'
 import { ReviewCard } from '@/components/reviews/ReviewCard'
 import { CommunityInfo } from '@/components/project/CommunityInfo'
-import { StakeVote } from '@/components/StakeVote'
 
 import { useStore, Project } from '@/lib/store'
 
@@ -285,42 +284,8 @@ export default function ProjectPage() {
             ) : reviews.length === 0 ? (
               <div className="text-center py-8 text-gray-500">No reviews yet. Be the first!</div>
             ) : (
-              reviews.map((review: any) => (
-                <div key={review.id} className="flex gap-4 bg-[#111113] border border-[#1f1f23] rounded-xl p-4">
-                  {/* Vote Column (Interactive) */}
-                  <StakeVote
-                    reviewId={review.id}
-                    initialUpvotes={review.upvotes}
-                    initialDownvotes={review.downvotes}
-                    totalStaked={review.stakeAmount}
-                    earlyBird={review.upvotes + review.downvotes < 20}
-                  />
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    {/* Header */}
-                    <div className="flex items-center gap-2 text-xs text-[#6b6b70] mb-2 flex-wrap">
-                      <span>by {review.reviewerAddress.slice(0, 6)}...{review.reviewerAddress.slice(-4)}</span>
-                      <span>•</span>
-                      <span>{new Date(review.createdAt).toLocaleDateString()}</span>
-                    </div>
-
-                    {/* Rating */}
-                    <div className="flex items-center gap-1 mb-3">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span key={star} className={star <= review.rating ? 'text-yellow-400' : 'text-[#2a2a2e]'}>
-                          ★
-                        </span>
-                      ))}
-                      <span className="text-sm text-[#6b6b70] ml-1">{review.rating}/5</span>
-                    </div>
-
-                    {/* Content (Full text, not truncated) */}
-                    <p className="text-[#adadb0] text-sm leading-relaxed whitespace-pre-wrap">
-                      {review.content}
-                    </p>
-                  </div>
-                </div>
+              reviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
               ))
             )}
           </div>

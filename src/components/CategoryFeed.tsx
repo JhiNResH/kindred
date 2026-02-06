@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Flame, Clock, TrendingUp, Award, Plus, SlidersHorizontal, Coins, ChevronUp, ChevronDown } from 'lucide-react'
+import { Flame, Clock, TrendingUp, Award, Plus, SlidersHorizontal, Coins } from 'lucide-react'
+import { StakeVote } from './StakeVote'
+import { PaywallContent } from './PaywallContent'
 
 type SortOption = 'hot' | 'new' | 'top' | 'controversial'
 
@@ -136,50 +138,21 @@ export function CategoryFeed({ category, categoryIcon, categoryDescription }: Ca
           const repBadge = getReputationBadge(0) // TODO: Add reputation to API
           
           return (
-            <Link 
-              key={review.id} 
-              href={`/${review.category}/${review.targetAddress}`}
-              className="flex gap-4 bg-[#111113] border border-[#1f1f23] rounded-xl p-4 hover:border-[#2a2a2e] transition-colors cursor-pointer group"
-            >
-              {/* Vote Column (Read-only) */}
-              <div className="flex flex-col items-center gap-1 p-2 bg-[#0a0a0b] rounded-lg border border-[#1f1f23] shrink-0">
-                {/* Upvote Icon */}
-                <div className="p-2 text-[#6b6b70]">
-                  <ChevronUp className="w-6 h-6" strokeWidth={2} />
-                </div>
-
-                {/* Score */}
-                <div className="text-center">
-                  <div className={`font-bold text-lg ${
-                    (review.upvotes - review.downvotes) > 0 ? 'text-green-400' : 
-                    (review.upvotes - review.downvotes) < 0 ? 'text-red-400' : 'text-[#adadb0]'
-                  }`}>
-                    {(review.upvotes - review.downvotes) > 0 ? '+' : ''}{review.upvotes - review.downvotes}
-                  </div>
-                  <div className="flex items-center gap-1 text-[10px] text-[#6b6b70]">
-                    <Coins className="w-3 h-3" />
-                    {review.stakeAmount}
-                  </div>
-                </div>
-
-                {/* Downvote Icon */}
-                <div className="p-2 text-[#6b6b70]">
-                  <ChevronDown className="w-6 h-6" strokeWidth={2} />
-                </div>
-
-                {/* Early Bird Badge */}
-                {review.upvotes + review.downvotes < 20 && (
-                  <div className="mt-1 px-2 py-0.5 bg-yellow-500/10 text-yellow-400 text-[10px] rounded-full font-medium">
-                    🐤 Early
-                  </div>
-                )}
-              </div>
+            <div key={review.id} className="flex gap-4 bg-[#111113] border border-[#1f1f23] rounded-xl p-4 hover:border-[#2a2a2e] transition-colors">
+              {/* Vote Column */}
+              <StakeVote
+                reviewId={review.id}
+                initialUpvotes={review.upvotes}
+                initialDownvotes={review.downvotes}
+                totalStaked={review.stakeAmount}
+                earlyBird={review.upvotes + review.downvotes < 20}
+              />
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 {/* Header */}
                 <div className="flex items-center gap-2 text-xs text-[#6b6b70] mb-2 flex-wrap">
-                  <span className="font-semibold text-[#adadb0] group-hover:text-white transition-colors">{review.targetName}</span>
+                  <span className="font-semibold text-[#adadb0]">{review.targetName}</span>
                   <span>•</span>
                   <span>by {review.reviewerAddress.slice(0, 6)}...{review.reviewerAddress.slice(-4)}</span>
                   <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${repBadge.color}`}>
@@ -205,16 +178,11 @@ export function CategoryFeed({ category, categoryIcon, categoryDescription }: Ca
                 </div>
 
                 {/* Content */}
-                <p className="text-[#adadb0] text-sm leading-relaxed line-clamp-3">
+                <p className="text-[#adadb0] text-sm leading-relaxed">
                   {review.content}
                 </p>
-                
-                {/* Click to vote hint */}
-                <div className="mt-3 text-xs text-[#6b6b70] opacity-0 group-hover:opacity-100 transition-opacity">
-                  Click to view details and vote →
-                </div>
               </div>
-            </Link>
+            </div>
           )
           })
         )}
