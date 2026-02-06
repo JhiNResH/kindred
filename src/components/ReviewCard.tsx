@@ -30,7 +30,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   service: '🛠️',
 }
 
-export function ReviewCard({ review }: ReviewCardProps) {
+export function ReviewCard({ review, interactive = false }: ReviewCardProps & { interactive?: boolean }) {
   const { upvotes, downvotes, userVote, voting, vote } = useVote({
     reviewId: review.id,
     initialUpvotes: review.upvotes,
@@ -82,30 +82,48 @@ export function ReviewCard({ review }: ReviewCardProps) {
       {/* Footer */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-800">
         <div className="flex items-center gap-4">
-          <button 
-            onClick={() => vote('up')}
-            disabled={voting || userVote === 'up'}
-            className={`flex items-center gap-1 transition ${
-              userVote === 'up' 
-                ? 'text-green-400' 
-                : 'text-gray-400 hover:text-green-400'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            <span>👍</span>
-            <span className="text-sm font-medium">{upvotes}</span>
-          </button>
-          <button 
-            onClick={() => vote('down')}
-            disabled={voting || userVote === 'down'}
-            className={`flex items-center gap-1 transition ${
-              userVote === 'down' 
-                ? 'text-red-400' 
-                : 'text-gray-400 hover:text-red-400'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            <span>👎</span>
-            <span className="text-sm font-medium">{downvotes}</span>
-          </button>
+          {interactive ? (
+            // Interactive mode: Full voting buttons (for project detail pages)
+            <>
+              <button 
+                onClick={() => vote('up')}
+                disabled={voting || userVote === 'up'}
+                className={`flex items-center gap-1 transition ${
+                  userVote === 'up' 
+                    ? 'text-green-400' 
+                    : 'text-gray-400 hover:text-green-400'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                <span>👍</span>
+                <span className="text-sm font-medium">{upvotes}</span>
+              </button>
+              <button 
+                onClick={() => vote('down')}
+                disabled={voting || userVote === 'down'}
+                className={`flex items-center gap-1 transition ${
+                  userVote === 'down' 
+                    ? 'text-red-400' 
+                    : 'text-gray-400 hover:text-red-400'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                <span>👎</span>
+                <span className="text-sm font-medium">{downvotes}</span>
+              </button>
+            </>
+          ) : (
+            // Read-only mode: Display only (for feed pages)
+            <>
+              <div className="flex items-center gap-1 text-gray-500 cursor-default">
+                <span>👍</span>
+                <span className="text-sm font-medium">{upvotes}</span>
+              </div>
+              <div className="flex items-center gap-1 text-gray-500 cursor-default">
+                <span>👎</span>
+                <span className="text-sm font-medium">{downvotes}</span>
+              </div>
+              <span className="text-xs text-gray-600 ml-2">→ Click to vote</span>
+            </>
+          )}
         </div>
         {stakeInEth > 0 && (
           <div className="flex items-center gap-1 text-kindred-primary">
