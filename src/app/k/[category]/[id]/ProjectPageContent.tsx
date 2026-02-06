@@ -98,6 +98,7 @@ export function ProjectPageContent({
             name: result.name,
             ticker: result.tokenSymbol || result.name.substring(0, 4).toUpperCase(),
             category: `k/${result.type.toLowerCase()}`,
+            image: result.image,
             aiVerdict: result.status === 'VERIFIED' ? 'bullish' : result.status === 'RISKY' ? 'bearish' : 'neutral',
             aiScore: result.score * 20,
             aiSummary: result.summary,
