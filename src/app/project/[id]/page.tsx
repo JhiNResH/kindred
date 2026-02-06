@@ -10,6 +10,7 @@ import { useStore, Project } from '@/lib/store'
 
 import { useState, useEffect } from 'react'
 import { analyzeProject } from '@/app/actions/analyze'
+import { getTokenPrice, TokenPrice } from '@/lib/coingecko'
 import { Sparkles, Users } from 'lucide-react'
 
 // Initial loading state mock
@@ -39,6 +40,20 @@ export default function ProjectPage() {
   const [projectData, setProjectData] = useState<any>(null)
   const [reviews, setReviews] = useState<any[]>([])
   const [loadingReviews, setLoadingReviews] = useState(true)
+  const [tokenPrice, setTokenPrice] = useState<TokenPrice | null>(null)
+  
+  // Fetch real-time price from CoinGecko
+  useEffect(() => {
+    async function fetchPrice() {
+      if (projectData?.name && projectData.name !== 'Analyzing...') {
+        const price = await getTokenPrice(projectData.name)
+        if (price) {
+          setTokenPrice(price)
+        }
+      }
+    }
+    fetchPrice()
+  }, [projectData?.name])
   
   // Fetch reviews for this project
   useEffect(() => {
@@ -264,17 +279,29 @@ export default function ProjectPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-500 text-sm">Price</span>
-                  <span className="font-mono">{data.price}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono">{tokenPrice?.price || data.price || '-'}</span>
+                    {tokenPrice?.priceChange24h && (
+                      <span className={`text-xs ${parseFloat(tokenPrice.priceChange24h) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {parseFloat(tokenPrice.priceChange24h) >= 0 ? '↑' : '↓'}{tokenPrice.priceChange24h}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-500 text-sm">24h Vol</span>
-                  <span className="font-mono">{data.volume24h}</span>
+                  <span className="font-mono">{tokenPrice?.volume24h || data.volume24h || '-'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-500 text-sm">Market Cap</span>
-                  <span className="font-mono">{data.marketCap}</span>
+                  <span className="font-mono">{tokenPrice?.marketCap || data.marketCap || '-'}</span>
                 </div>
               </div>
+              {tokenPrice && (
+                <div className="mt-3 pt-3 border-t border-[#1f1f23]">
+                  <span className="text-[10px] text-gray-600">via CoinGecko • Live</span>
+                </div>
+              )}
            </div>
         </div>
       </div>

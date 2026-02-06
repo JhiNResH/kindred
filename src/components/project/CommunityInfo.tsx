@@ -8,7 +8,7 @@ interface CommunityInfoProps {
 
 const COMMUNITY_DATA: Record<string, { title: string; description: string; members: string; online: string }> = {
   'all': {
-    title: 'r/Kindred',
+    title: 'k/kindred',
     description: 'The trust layer for crypto. Review projects, stake on your opinions, and build on-chain reputation.',
     members: '1.2k',
     online: '847k Staked'
