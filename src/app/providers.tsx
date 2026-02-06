@@ -3,11 +3,24 @@
 import { useState, useEffect, useMemo } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { PrivyProvider } from '@privy-io/react-auth'
 import { config } from '../config/wagmi'
 
 // Privy App ID - get from https://console.privy.io
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID
+
+// Check if Privy App ID is valid (starts with 'cl' or 'cm')
+const isPrivyConfigured = PRIVY_APP_ID && (PRIVY_APP_ID.startsWith('cl') || PRIVY_APP_ID.startsWith('cm'))
+
+// Dynamically import PrivyProvider only when configured
+let PrivyProvider: any = null
+if (isPrivyConfigured) {
+  try {
+    const privy = require('@privy-io/react-auth')
+    PrivyProvider = privy.PrivyProvider
+  } catch {
+    // Privy not available
+  }
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Create QueryClient inside component to prevent SSR issues
@@ -31,8 +44,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </WagmiProvider>
   )
 
-  // Only wrap with Privy if App ID is configured (supports both 'cl' and 'cm' prefixes)
-  if (PRIVY_APP_ID && (PRIVY_APP_ID.startsWith('cl') || PRIVY_APP_ID.startsWith('cm'))) {
+  // Only wrap with Privy if configured and available
+  if (isPrivyConfigured && PrivyProvider && mounted) {
     return (
       <PrivyProvider
         appId={PRIVY_APP_ID}

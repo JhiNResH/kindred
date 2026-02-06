@@ -1,6 +1,16 @@
-import { usePrivy } from '@privy-io/react-auth'
+'use client'
+
 import { useIsMounted } from './ClientOnly'
 import { LogOut } from 'lucide-react'
+
+// Conditionally import Privy to avoid errors when not configured
+let usePrivy: any
+try {
+  const privy = require('@privy-io/react-auth')
+  usePrivy = privy.usePrivy
+} catch {
+  usePrivy = () => ({ login: () => {}, logout: () => {}, authenticated: false, user: null })
+}
 
 interface WalletButtonProps {
   variant?: 'default' | 'large' | 'minimal'
@@ -9,7 +19,16 @@ interface WalletButtonProps {
 
 export function WalletButton({ variant = 'default', showBalance = true }: WalletButtonProps) {
   const isMounted = useIsMounted()
-  const { login, authenticated, user, logout } = usePrivy()
+  
+  // Safely call usePrivy - returns defaults if Privy not configured
+  let privyState = { login: () => {}, logout: () => {}, authenticated: false, user: null as any }
+  try {
+    privyState = usePrivy()
+  } catch {
+    // Privy not available, use defaults
+  }
+  
+  const { login, authenticated, user, logout } = privyState
 
   if (!isMounted) {
     return (
