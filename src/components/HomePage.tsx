@@ -9,6 +9,7 @@ import {
   ToggleLeft, Store, Key, Terminal, Brain, Shield
 } from 'lucide-react'
 import { BuyToken, KindPrice } from './BuyToken'
+import { LatestReviews } from './home/LatestReviews'
 
 export function HomePage() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -104,35 +105,6 @@ export function HomePage() {
 
           <div className="mx-4 my-2 border-t border-[#1f1f23]" />
 
-          {/* Agent Hub */}
-          <SidebarSection title="🤖 Agent Hub">
-            <div className="flex items-center justify-between px-3 py-2.5 rounded-lg text-[#adadb0] hover:bg-[#1a1a1d] cursor-pointer transition-colors">
-              <div className="flex items-center gap-3">
-                <ToggleLeft className="w-4.5 h-4.5" />
-                <span className="text-sm">Agent Mode</span>
-              </div>
-              <div 
-                onClick={(e) => { e.stopPropagation(); setAgentMode(!agentMode) }}
-                className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${agentMode ? 'bg-green-500' : 'bg-[#2a2a2e]'}`}
-              >
-                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${agentMode ? 'translate-x-5' : 'translate-x-0.5'}`} />
-              </div>
-            </div>
-            <SidebarItem icon={Bot} label="My Agents" badge="3" badgeColor="green" />
-            <SidebarItem icon={Store} label="Agent Marketplace" />
-            <SidebarItem icon={Key} label="API Keys" />
-            <SidebarItem icon={Terminal} label="Agent Logs" />
-          </SidebarSection>
-
-          {/* Active Agents */}
-          <SidebarSection title="Active Agents">
-            <AgentItem name="ReviewBot" status="online" icon={Bot} color="green" />
-            <AgentItem name="AnalyzerAI" status="online" icon={Brain} color="purple" />
-            <AgentItem name="AuditAgent" status="offline" icon={Shield} color="gray" />
-          </SidebarSection>
-
-          <div className="mx-4 my-2 border-t border-[#1f1f23]" />
-
           {/* Categories */}
           <SidebarSection title="Categories">
             <SidebarItem icon={BarChart2} label="k/perp-dex" badge="42" iconBg="defi" />
@@ -206,46 +178,8 @@ export function HomePage() {
             <StatCard label="Trust Score Avg" value="87.3" change="" purple />
           </div>
 
-          {/* Recent Reviews */}
-          <section>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold">Recent Reviews</h2>
-              <button className="flex items-center gap-1.5 px-4 py-2 border border-[#2a2a2e] rounded-md text-sm text-[#adadb0] hover:bg-[#111113] hover:text-white transition-all">
-                View All
-                <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <ReviewCard 
-                project="Hyperliquid"
-                rating={4.8}
-                reviewer="0x7a3d...8f2e"
-                content="Excellent perp DEX with deep liquidity. The order book model provides tight spreads and the UI is intuitive. However, withdrawal times could be improved."
-                upvotes={234}
-                comments={18}
-                staked="5,000"
-              />
-              <ReviewCard 
-                project="Jupiter"
-                rating={4.5}
-                reviewer="0x9b2c...4a1f"
-                content="Best aggregator on Solana. The DCA feature is a game-changer for accumulating positions. Integration with limit orders makes it a one-stop shop."
-                upvotes={189}
-                comments={12}
-                staked="3,200"
-              />
-              <ReviewCard 
-                project="Uniswap v4"
-                rating={4.9}
-                reviewer="0x3e8f...7c2d"
-                content="Revolutionary hooks system opens up endless possibilities. Gas optimization is noticeable. The singleton contract architecture is elegant."
-                upvotes={312}
-                comments={24}
-                staked="8,500"
-              />
-            </div>
-          </section>
+          {/* Latest Reviews - Real Data */}
+          <LatestReviews />
         </main>
       </div>
     </div>
@@ -297,22 +231,6 @@ function SidebarSection({ title, children }: { title: string; children: React.Re
   )
 }
 
-function AgentItem({ name, status, icon: Icon, color }: { name: string; status: 'online' | 'offline'; icon: any; color: string }) {
-  const colorClasses = {
-    green: 'bg-green-500/20 text-green-500',
-    purple: 'bg-purple-500/20 text-purple-500',
-    gray: 'bg-[#6b6b70]/20 text-[#6b6b70]'
-  }
-  
-  return (
-    <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-[#1a1a1d] cursor-pointer transition-colors">
-      <div className={`w-6 h-6 rounded-md flex items-center justify-center ${colorClasses[color as keyof typeof colorClasses]}`}>
-        <Icon className="w-3 h-3" />
-      </div>
-      <div className="flex flex-col">
-        <span className="text-sm text-[#adadb0]">{name}</span>
-        <span className={`text-[10px] font-medium ${status === 'online' ? 'text-green-500' : 'text-[#6b6b70]'}`}>
-          {status === 'online' ? '● Active' : '○ Paused'}
         </span>
       </div>
     </div>
