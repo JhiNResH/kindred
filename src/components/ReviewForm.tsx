@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { WalletButton } from '@/components/WalletButton'
 import { useIsMounted } from './ClientOnly'
 
 type Category = 'k/memecoin' | 'k/defi' | 'k/perp-dex' | 'k/ai'
@@ -108,7 +108,7 @@ export function ReviewForm() {
         <h2 className="text-2xl font-bold mb-4">Write a Review</h2>
         <p className="text-gray-400 mb-6">Connect your wallet to start reviewing</p>
         <div className="flex justify-center">
-          <ConnectButton />
+          <WalletButton />
         </div>
       </div>
     )

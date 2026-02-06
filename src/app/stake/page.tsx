@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { WalletButton } from '@/components/WalletButton'
 import { StakeCard } from '@/components/StakeCard'
 
 type Category = 'k/defi' | 'k/perp-dex' | 'k/memecoin' | 'k/ai'

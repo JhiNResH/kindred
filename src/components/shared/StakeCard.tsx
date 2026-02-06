@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { useAccount, useBalance } from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { WalletButton } from '@/components/WalletButton'
 import { parseEther, formatEther } from 'viem'
 import { useIsMounted } from '@/components/layout/ClientOnly'
 
@@ -91,7 +91,7 @@ export function StakeCard({ project, totalPoolSize, onStake }: StakeCardProps) {
         <h3 className="text-xl font-bold mb-2">Stake Your Prediction</h3>
         <p className="text-gray-400 mb-4">Connect wallet to stake on rankings</p>
         <div className="flex justify-center">
-          <ConnectButton />
+          <WalletButton />
         </div>
       </div>
     )

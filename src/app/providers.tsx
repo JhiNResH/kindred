@@ -3,10 +3,8 @@
 import { useState, useEffect, useMemo } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit'
 import { PrivyProvider } from '@privy-io/react-auth'
 import { config } from '../config/wagmi'
-import '@rainbow-me/rainbowkit/styles.css'
 
 // Privy App ID - get from https://console.privy.io
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID
@@ -25,16 +23,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     setMounted(true)
   }, [])
 
-  // If no Privy App ID, skip PrivyProvider (fallback to RainbowKit only)
   const content = (
     <WagmiProvider config={config as any}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme({
-          accentColor: '#FF6B35',
-          accentColorForeground: 'white',
-        })}>
-          {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
-        </RainbowKitProvider>
+        {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
       </QueryClientProvider>
     </WagmiProvider>
   )

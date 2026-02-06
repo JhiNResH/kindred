@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { WalletButton } from '@/components/WalletButton'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
 
 export default function ReviewPage() {

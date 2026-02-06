@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { WalletButton } from '@/components/WalletButton'
 import {
   useKindBalance,
   useKindAllowance,
@@ -58,7 +58,7 @@ export default function ContractIntegrationExample() {
     return (
       <div className="p-8 text-center">
         <h2 className="text-2xl font-bold mb-4">Connect Wallet</h2>
-        <ConnectButton />
+        <WalletButton />
       </div>
     )
   }

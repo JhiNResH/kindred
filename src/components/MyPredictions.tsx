@@ -1,7 +1,7 @@
 'use client'
 
 import { useAccount } from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { WalletButton } from '@/components/WalletButton'
 import { useIsMounted } from './ClientOnly'
 
 interface Prediction {
@@ -86,7 +86,7 @@ export function MyPredictions() {
         <h3 className="text-xl font-bold mb-2">Your Predictions</h3>
         <p className="text-gray-400 mb-4">Connect wallet to view your predictions</p>
         <div className="flex justify-center">
-          <ConnectButton />
+          <WalletButton />
         </div>
       </div>
     )

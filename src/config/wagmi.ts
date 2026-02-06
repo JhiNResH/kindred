@@ -1,12 +1,7 @@
-import { http, createConfig } from 'wagmi'
+import { http, createConfig, cookieStorage, createStorage } from 'wagmi'
 import { mainnet, polygon, base, sepolia, baseSepolia } from 'wagmi/chains'
-import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
-import { cookieStorage, createStorage } from 'wagmi' // Import these
-
-export const config = getDefaultConfig({
-  appName: 'Kindred',
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'demo',
+export const config = createConfig({
   chains: [polygon, mainnet, base, sepolia, baseSepolia],
   transports: {
     [polygon.id]: http(),
