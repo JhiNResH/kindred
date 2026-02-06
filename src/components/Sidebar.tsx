@@ -158,6 +158,15 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               </div>
               <span>k/infra</span>
             </Link>
+            <Link
+              href="/k/gourmet"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+            >
+              <div className="w-7 h-7 rounded-md bg-red-500/15 text-red-500 flex items-center justify-center">
+                <span className="text-xs">🍽️</span>
+              </div>
+              <span>k/gourmet</span>
+            </Link>
           </div>
         )}
       </div>
