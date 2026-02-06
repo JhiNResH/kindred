@@ -382,122 +382,118 @@ export function ProjectPageContent({
                 <h3 className="font-bold text-orange-400 mb-3 flex items-center gap-2">
                   🍽️ Restaurant Info
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Left Column - Basic Info */}
-                  <div className="space-y-3">
-                    {/* Platform Scores */}
-                    {data.platformScores?.length > 0 && (
-                      <div className="pb-3 border-b border-gray-700">
-                        <span className="text-xs text-gray-400 uppercase block mb-2">⭐ Platform Ratings</span>
-                        <div className="flex flex-wrap gap-2">
-                          {data.platformScores.map((ps: any, i: number) => (
-                            <div key={i} className="bg-black/30 border border-gray-700 rounded-lg px-3 py-1.5 flex items-center gap-2">
-                              <span className="text-xs text-gray-400">{ps.platform}</span>
-                              <span className="text-sm font-bold text-orange-400">{ps.score}</span>
-                              {ps.reviewCount && <span className="text-[10px] text-gray-500">({ps.reviewCount})</span>}
-                            </div>
-                          ))}
-                        </div>
+                <div className="space-y-3">
+                  {/* Platform Scores */}
+                  {data.platformScores?.length > 0 && (
+                    <div className="pb-3 border-b border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-2">⭐ Platform Ratings</span>
+                      <div className="flex flex-wrap gap-2">
+                        {data.platformScores.map((ps: any, i: number) => (
+                          <div key={i} className="bg-black/30 border border-gray-700 rounded-lg px-3 py-1.5 flex items-center gap-2">
+                            <span className="text-xs text-gray-400">{ps.platform}</span>
+                            <span className="text-sm font-bold text-orange-400">{ps.score}</span>
+                            {ps.reviewCount && <span className="text-[10px] text-gray-500">({ps.reviewCount})</span>}
+                          </div>
+                        ))}
                       </div>
-                    )}
+                    </div>
+                  )}
+                  {/* Basic Info Grid */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 pb-3 border-b border-gray-700">
                     {data.cuisine && (
-                      <div className="flex items-center justify-between">
+                      <>
                         <span className="text-xs text-gray-400 uppercase">Cuisine</span>
-                        <span className="text-sm font-semibold text-gray-300">{data.cuisine}</span>
-                      </div>
+                        <span className="text-sm font-semibold text-gray-300 text-right">{data.cuisine}</span>
+                      </>
                     )}
                     {data.priceRange && (
-                      <div className="flex items-center justify-between">
+                      <>
                         <span className="text-xs text-gray-400 uppercase">Price Range</span>
-                        <span className="text-sm font-semibold text-orange-400">{data.priceRange}</span>
-                      </div>
+                        <span className="text-sm font-semibold text-orange-400 text-right">{data.priceRange}</span>
+                      </>
                     )}
                     {data.avgCost && (
-                      <div className="flex items-center justify-between">
+                      <>
                         <span className="text-xs text-gray-400 uppercase">Avg Cost</span>
-                        <span className="text-sm text-gray-300">{data.avgCost}</span>
-                      </div>
-                    )}
-                    {data.hours && (
-                      <div className="pt-2 border-t border-gray-700">
-                        <span className="text-xs text-gray-400 uppercase block mb-1">Hours</span>
-                        <span className="text-sm text-gray-300">{data.hours}</span>
-                      </div>
-                    )}
-                    {data.address && (
-                      <div className="pt-2 border-t border-gray-700">
-                        <span className="text-xs text-gray-400 uppercase block mb-1">Address</span>
-                        <span className="text-sm text-gray-300">{data.address}</span>
-                      </div>
-                    )}
-                    {/* Google Maps Link */}
-                    {data.googleMapsUrl && (
-                      <div className="pt-3 border-t border-gray-700">
-                        <a 
-                          href={data.googleMapsUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-orange-400 hover:text-orange-300"
-                        >
-                          📍 在 Google Maps 查看
-                        </a>
-                      </div>
+                        <span className="text-sm text-gray-300 text-right">{data.avgCost}</span>
+                      </>
                     )}
                   </div>
-
-                  {/* Right Column - Dishes & Reviews */}
-                  <div className="space-y-3">
-                    {data.bestFor?.length > 0 && (
-                      <div className="pb-3 border-b border-gray-700">
-                        <span className="text-xs text-gray-400 uppercase block mb-2">Best For</span>
-                        <div className="flex flex-wrap gap-2">
-                          {data.bestFor.map((tag: string, i: number) => (
-                            <span key={i} className="px-2 py-1 bg-orange-500/10 text-orange-400 text-xs rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                  {data.hours && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-1">Hours</span>
+                      <span className="text-sm text-gray-300">{data.hours}</span>
+                    </div>
+                  )}
+                  {data.address && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-1">Address</span>
+                      <span className="text-sm text-gray-300">{data.address}</span>
+                    </div>
+                  )}
+                  {data.bestFor?.length > 0 && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-2">Best For</span>
+                      <div className="flex flex-wrap gap-2">
+                        {data.bestFor.map((tag: string, i: number) => (
+                          <span key={i} className="px-2 py-1 bg-orange-500/10 text-orange-400 text-xs rounded-full">
+                            {tag}
+                          </span>
+                        ))}
                       </div>
-                    )}
-                    {data.mustTry?.length > 0 && (
-                      <div className="pt-2 border-t border-gray-700">
-                        <span className="text-xs text-gray-400 uppercase block mb-2">🌟 Must Try</span>
-                        <div className="space-y-2">
-                          {data.mustTry.slice(0, 5).map((dish: any, i: number) => (
-                            <div key={i} className="bg-black/20 p-2 rounded text-sm">
-                              <span className="font-semibold text-white">{dish.name}</span>
-                              {dish.price && <span className="text-orange-400 ml-2">{dish.price}</span>}
-                              {dish.description && <p className="text-xs text-gray-400 mt-1">{dish.description}</p>}
-                            </div>
-                          ))}
-                        </div>
+                    </div>
+                  )}
+                  {data.mustTry?.length > 0 && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-2">🌟 Must Try</span>
+                      <div className="space-y-2">
+                        {data.mustTry.slice(0, 5).map((dish: any, i: number) => (
+                          <div key={i} className="bg-black/20 p-2 rounded text-sm">
+                            <span className="font-semibold text-white">{dish.name}</span>
+                            {dish.price && <span className="text-orange-400 ml-2">{dish.price}</span>}
+                            {dish.description && <p className="text-xs text-gray-400 mt-1">{dish.description}</p>}
+                          </div>
+                        ))}
                       </div>
-                    )}
-                    {/* Restaurant Warnings (not corporate scandals) */}
-                    {data.warnings?.length > 0 && (
-                      <div className="pt-2 border-t border-gray-700">
-                        <span className="text-xs text-yellow-400 uppercase block mb-2">⚠️ 注意事項</span>
-                        <ul className="space-y-1">
-                          {data.warnings.map((w: string, i: number) => (
-                            <li key={i} className="text-sm text-yellow-200/80">• {w}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {/* Critical Reviews */}
-                    {data.criticalReviews?.length > 0 && (
-                      <div className="pt-2 border-t border-gray-700">
-                        <span className="text-xs text-red-400 uppercase block mb-2">😤 常見差評</span>
-                        <ul className="space-y-1">
-                          {data.criticalReviews.map((cr: any, i: number) => (
-                            <li key={i} className="text-sm text-red-200/80">
-                              • {cr.issue || cr} {cr.source && <span className="text-red-400/60">({cr.source})</span>}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                  {/* Restaurant Warnings (not corporate scandals) */}
+                  {data.warnings?.length > 0 && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-yellow-400 uppercase block mb-2">⚠️ 注意事項</span>
+                      <ul className="space-y-1">
+                        {data.warnings.map((w: string, i: number) => (
+                          <li key={i} className="text-sm text-yellow-200/80">• {w}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {/* Critical Reviews */}
+                  {data.criticalReviews?.length > 0 && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-red-400 uppercase block mb-2">😤 常見差評</span>
+                      <ul className="space-y-1">
+                        {data.criticalReviews.map((cr: any, i: number) => (
+                          <li key={i} className="text-sm text-red-200/80">
+                            • {cr.issue || cr} {cr.source && <span className="text-red-400/60">({cr.source})</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {/* Google Maps Link */}
+                  {data.googleMapsUrl && (
+                    <div className="pt-3 border-t border-gray-700">
+                      <a 
+                        href={data.googleMapsUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-orange-400 hover:text-orange-300"
+                      >
+                        📍 在 Google Maps 查看
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
