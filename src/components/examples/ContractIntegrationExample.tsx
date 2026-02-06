@@ -89,7 +89,7 @@ export default function ContractIntegrationExample() {
         
         {needsApproval ? (
           <button
-            onClick={() => approve(parseKind('1000000'))} // Approve 1M tokens
+            onClick={() => approve(parseKind('1000000').toString())} // Approve 1M tokens
             disabled={isApproving || !hasBalance}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
@@ -151,8 +151,12 @@ export default function ContractIntegrationExample() {
                 alert('Please fill all fields')
                 return
               }
-              const extraStake = parseKind(stakeAmount) - MIN_STAKE
-              createComment(projectId, content, '', BigInt(0), extraStake)
+              const stakeWei = parseKind(stakeAmount)
+              createComment({
+                targetAddress: projectId as `0x${string}`,
+                content: content,
+                stakeAmount: stakeWei.toString(),
+              })
             }}
             disabled={isCreating || needsApproval || !hasBalance}
             className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"

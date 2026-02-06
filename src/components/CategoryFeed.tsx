@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Flame, Clock, TrendingUp, Award, Plus, SlidersHorizontal, Coins, ChevronUp, ChevronDown } from 'lucide-react'
+import Image from 'next/image'
+import { Flame, Clock, TrendingUp, Award, Plus, SlidersHorizontal, Coins, ChevronUp, ChevronDown, Star, Users, ExternalLink } from 'lucide-react'
+import { useStore } from '@/lib/store'
 
 type SortOption = 'hot' | 'new' | 'top' | 'controversial'
+type ViewMode = 'projects' | 'reviews'
 
 interface Review {
   id: string
@@ -22,6 +25,20 @@ interface Review {
   createdAt: string
 }
 
+interface Project {
+  id: string
+  address: string
+  name: string
+  description: string | null
+  website: string | null
+  category: string
+  score: number
+  reviewsCount: number
+  totalStaked: number
+  rank: number | null
+  logo?: string
+}
+
 interface CategoryFeedProps {
   category: string
   categoryIcon: string
@@ -30,10 +47,41 @@ interface CategoryFeedProps {
 
 export function CategoryFeed({ category, categoryIcon, categoryDescription }: CategoryFeedProps) {
   const [sortBy, setSortBy] = useState<SortOption>('hot')
+  const [viewMode, setViewMode] = useState<ViewMode>('projects')
   const [showFilters, setShowFilters] = useState(false)
   const [reviews, setReviews] = useState<Review[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const addProject = useStore(state => state.addProject)
   
+  // Fetch projects for this category
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await fetch(`/api/projects?category=${category}&sort=rating&limit=50`)
+        const data = await res.json()
+        setProjects(data.projects || [])
+        
+        // Add to store for sidebar
+        data.projects?.forEach((p: Project) => {
+          addProject({
+            id: p.id,
+            name: p.name,
+            ticker: p.name.toUpperCase().slice(0, 4),
+            category: p.category,
+            score: p.score || 0,
+            reviewsCount: p.reviewsCount || 0,
+            logo: p.logo
+          })
+        })
+      } catch (error) {
+        console.error('Failed to fetch projects:', error)
+        setProjects([])
+      }
+    }
+    fetchProjects()
+  }, [category, addProject])
+
   // Fetch reviews for this category
   useEffect(() => {
     async function fetchReviews() {
@@ -58,6 +106,12 @@ export function CategoryFeed({ category, categoryIcon, categoryDescription }: Ca
     { value: 'top', label: 'Top Staked', icon: <TrendingUp className="w-4 h-4" /> },
     { value: 'controversial', label: 'Controversial', icon: <Award className="w-4 h-4" /> },
   ]
+
+  // Get logo for project (try CoinGecko)
+  const getProjectLogo = (name: string) => {
+    const id = name.toLowerCase().replace(/\s+/g, '-')
+    return `https://assets.coingecko.com/coins/images/1/large/${id}.png`
+  }
 
   const formatTimestamp = (ts: string) => {
     const date = new Date(ts)
@@ -99,33 +153,135 @@ export function CategoryFeed({ category, categoryIcon, categoryDescription }: Ca
         </Link>
       </div>
 
-      {/* Sort Bar */}
+      {/* View Mode Tabs */}
       <div className="flex items-center gap-2 p-2 bg-[#111113] border border-[#1f1f23] rounded-lg">
-        {sortOptions.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => setSortBy(option.value)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              sortBy === option.value
-                ? 'bg-[#1f1f23] text-white'
-                : 'text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0]'
-            }`}
-          >
-            {option.icon}
-            {option.label}
-          </button>
-        ))}
-        
         <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0] transition-colors"
+          onClick={() => setViewMode('projects')}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            viewMode === 'projects'
+              ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+              : 'text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-white'
+          }`}
         >
-          <SlidersHorizontal className="w-4 h-4" />
-          Filters
+          <Users className="w-4 h-4" />
+          Projects ({projects.length})
         </button>
+        <button
+          onClick={() => setViewMode('reviews')}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            viewMode === 'reviews'
+              ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+              : 'text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-white'
+          }`}
+        >
+          <Award className="w-4 h-4" />
+          Reviews ({reviews.length})
+        </button>
+        
+        <div className="ml-auto flex items-center gap-2">
+          {viewMode === 'reviews' && sortOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => setSortBy(option.value)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                sortBy === option.value
+                  ? 'bg-[#1f1f23] text-white'
+                  : 'text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0]'
+              }`}
+            >
+              {option.icon}
+              {option.label}
+            </button>
+          ))}
+          
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-[#6b6b70] hover:bg-[#1a1a1d] hover:text-[#adadb0] transition-colors"
+          >
+            <SlidersHorizontal className="w-4 h-4" />
+            Filters
+          </button>
+        </div>
       </div>
 
+      {/* Projects Grid */}
+      {viewMode === 'projects' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {projects.length === 0 ? (
+            <div className="col-span-2 text-center py-8 text-[#6b6b70]">
+              No projects in this category yet. Search to add one!
+            </div>
+          ) : (
+            projects.map((project) => (
+              <Link
+                key={project.id}
+                href={`/${project.category}/${project.id}`}
+                className="flex items-start gap-4 p-4 bg-[#111113] border border-[#1f1f23] rounded-xl hover:border-purple-500/30 hover:bg-[#151517] transition-all group"
+              >
+                {/* Project Logo */}
+                <div className="w-12 h-12 rounded-lg bg-[#1f1f23] flex items-center justify-center shrink-0 overflow-hidden">
+                  {project.logo ? (
+                    <Image
+                      src={project.logo}
+                      alt={project.name}
+                      width={48}
+                      height={48}
+                      className="object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none'
+                      }}
+                    />
+                  ) : (
+                    <span className="text-lg font-bold text-purple-400">
+                      {project.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+
+                {/* Project Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors truncate">
+                      {project.name}
+                    </h3>
+                    {project.website && (
+                      <ExternalLink className="w-3 h-3 text-[#6b6b70]" />
+                    )}
+                  </div>
+                  
+                  <p className="text-sm text-[#6b6b70] line-clamp-2 mt-1">
+                    {project.description || 'No description yet'}
+                  </p>
+                  
+                  <div className="flex items-center gap-4 mt-2 text-xs text-[#6b6b70]">
+                    <span className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-yellow-400" />
+                      {(project.score || 0).toFixed(1)}
+                    </span>
+                    <span>{project.reviewsCount || 0} reviews</span>
+                    {project.totalStaked > 0 && (
+                      <span className="flex items-center gap-1">
+                        <Coins className="w-3 h-3 text-purple-400" />
+                        {project.totalStaked.toLocaleString()} staked
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Rank Badge */}
+                {project.rank && project.rank <= 10 && (
+                  <div className="px-2 py-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded text-yellow-400 text-xs font-bold">
+                    #{project.rank}
+                  </div>
+                )}
+              </Link>
+            ))
+          )}
+        </div>
+      )}
+
       {/* Reviews List */}
+      {viewMode === 'reviews' && (
       <div className="space-y-4">
         {loading ? (
           <div className="text-center py-8 text-[#6b6b70]">Loading reviews...</div>
@@ -219,6 +375,7 @@ export function CategoryFeed({ category, categoryIcon, categoryDescription }: Ca
           })
         )}
       </div>
+      )}
     </div>
   )
 }

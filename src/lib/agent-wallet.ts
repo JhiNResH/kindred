@@ -78,9 +78,7 @@ export async function createAgentWallet(agentId: string): Promise<AgentWallet> {
     chain_type: 'ethereum',
     // Owner is the authorization key (our server controls it)
     owner: { public_key: authKey },
-    // Add idempotency key to prevent duplicate wallets
-    idempotency_key: `agent-wallet-${agentId}`,
-  })
+  } as any)
   
   return {
     id: wallet.id,
@@ -158,14 +156,13 @@ export async function sendTransaction(
   
   // Use Privy's RPC endpoint to send transaction
   const result = await privy.wallets().ethereum().sendTransaction(walletId, {
-    chain_id: chain.id,
-    to: tx.to,
-    value: tx.value ? `0x${tx.value.toString(16)}` : '0x0',
-    data: tx.data || '0x',
-    authorization_context: {
-      authorization_private_keys: [authKey],
+    caip2: `eip155:${chain.id}`,
+    params: {
+      to: tx.to,
+      value: tx.value ? `0x${tx.value.toString(16)}` : '0x0',
+      data: tx.data || '0x',
     },
-  })
+  } as any)
   
   return {
     hash: result.hash as `0x${string}`,

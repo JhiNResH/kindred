@@ -232,9 +232,9 @@ export function ReviewCard({ review }: ReviewCardProps) {
           />
           
           {/* Balance Display */}
-          {balance && (
+          {typeof balance === 'bigint' && (
             <div className="text-xs text-gray-400 mt-1">
-              Balance: {formatEther(balance as bigint)} KIND
+              Balance: {formatEther(balance)} KIND
             </div>
           )}
           

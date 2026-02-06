@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, X, Loader2, FileText, User, Folder, Sparkles, Plus } from 'lucide-react'
 import { findOrCreateProject } from '@/app/actions/createProject'
+import { useStore } from '@/lib/store'
 
 interface SearchResult {
   projects: Array<{
@@ -54,6 +55,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [activeTab, setActiveTab] = useState<'all' | 'projects' | 'reviews' | 'users'>('all')
+  
+  // Store actions for sidebar sync
+  const addProject = useStore(state => state.addProject)
+  const joinCommunity = useStore(state => state.joinCommunity)
 
   // Focus input when modal opens
   useEffect(() => {
@@ -124,6 +129,19 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       const result = await findOrCreateProject(query)
       
       if (result.success && result.project) {
+        // Add to store for sidebar display
+        addProject({
+          id: result.project.id,
+          name: result.project.name,
+          ticker: result.project.name.toUpperCase().slice(0, 4),
+          category: result.project.category,
+          score: 0,
+          reviewsCount: 0,
+        })
+        
+        // Auto-join the community when searching
+        joinCommunity(result.project.id)
+        
         // Navigate to the newly created/found project page
         const targetUrl = `/${result.project.category}/${result.project.id}`
         console.log('[SearchModal] Navigating to:', targetUrl, 'Category:', result.project.category)

@@ -52,6 +52,11 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   });
   const [agentMode, setAgentMode] = useState(false);
   const communities = useStore(state => state.communities)
+  const joinedCommunityIds = useStore(state => state.joinedCommunityIds)
+  
+  // Separate joined vs other communities
+  const joinedCommunities = communities.filter(c => joinedCommunityIds.includes(c.id))
+  const otherCommunities = communities.filter(c => !joinedCommunityIds.includes(c.id))
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({
@@ -246,13 +251,39 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         )}
       </div>
 
-      {/* Communities */}
+      {/* My Communities (Joined) */}
+      {joinedCommunities.length > 0 && (
+        <div className="mb-2">
+          <div className="px-4 py-2.5 text-[10px] font-semibold text-[#6b6b70] uppercase tracking-wide">
+            My Communities
+          </div>
+          <div className="flex flex-col">
+            {joinedCommunities.map((comm) => (
+              <Link
+                key={comm.id}
+                href={`/${comm.category || 'k/defi'}/${comm.id}`}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-purple-500 bg-purple-500/5 hover:bg-purple-500/10 hover:text-white transition-colors"
+              >
+                <div className="w-7 h-7 rounded-md bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px] font-bold">
+                  {comm.name.replace('r/', '').slice(0, 2).toUpperCase()}
+                </div>
+                <span>{comm.name}</span>
+                <span className="ml-auto px-2 py-0.5 bg-purple-500/20 text-purple-400 text-[10px] font-bold rounded-full">
+                  ✓
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Categories */}
       <div className="mb-2">
         <button
           onClick={() => toggleSection("communities")}
           className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-semibold text-[#6b6b70] uppercase tracking-wide hover:text-[#adadb0]"
         >
-          <span>Communities</span>
+          <span>Categories</span>
           <ChevronDown
             className={`w-3.5 h-3.5 transition-transform ${!openSections["communities"] ? "-rotate-90" : ""}`}
           />
@@ -260,69 +291,95 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
         {openSections["communities"] && (
           <div className="flex flex-col">
-            {/* Store Communities (Dynamic) */}
-            {communities.slice(0, 10).map((comm) => (
-              <Link
-                key={comm.id}
-                href={`/${comm.category || 'k/defi'}/${comm.id}`}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
-              >
-                <div className="w-7 h-7 rounded-md bg-[#2a2a2e] text-white flex items-center justify-center text-[10px] font-bold">
-                  {comm.name.replace('r/', '').slice(0, 2).toUpperCase()}
-                </div>
-                <span>{comm.name}</span>
-                <span className="ml-auto px-2 py-0.5 bg-[#2a2a2e] text-[#adadb0] text-[10px] font-bold rounded-full">
-                  {comm.memberCount}
-                </span>
-              </Link>
-            ))}
-            
-            {/* Fallback/Default if empty */}
-            {communities.length === 0 && (
-              <div className="px-4 py-2 text-xs text-[#6b6b70]">
-                Search projects to add communities...
-              </div>
-            )}
-            
             <Link
-              href="/leaderboard?category=k/perp-dex"
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
-            >
-              <div className="w-7 h-7 rounded-md bg-purple-500/15 text-purple-500 flex items-center justify-center">
-                <BarChart2 className="w-3.5 h-3.5" />
-              </div>
-              <span>k/perp-dex</span>
-              <span className="ml-auto px-2 py-0.5 bg-[#2a2a2e] text-[#adadb0] text-[10px] font-bold rounded-full">
-                42
-              </span>
-            </Link>
-            <Link
-              href="/leaderboard?category=k/defi"
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+              href="/k/defi"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/defi" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
             >
               <div className="w-7 h-7 rounded-md bg-pink-500/15 text-pink-500 flex items-center justify-center">
                 <Coins className="w-3.5 h-3.5" />
               </div>
               <span>k/defi</span>
-              <span className="ml-auto px-2 py-0.5 bg-[#2a2a2e] text-[#adadb0] text-[10px] font-bold rounded-full">
-                128
-              </span>
             </Link>
             <Link
-              href="/leaderboard?category=k/ai"
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+              href="/k/perp-dex"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/perp-dex" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <div className="w-7 h-7 rounded-md bg-purple-500/15 text-purple-500 flex items-center justify-center">
+                <BarChart2 className="w-3.5 h-3.5" />
+              </div>
+              <span>k/perp-dex</span>
+            </Link>
+            <Link
+              href="/k/prediction"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/prediction" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <div className="w-7 h-7 rounded-md bg-blue-500/15 text-blue-500 flex items-center justify-center">
+                📊
+              </div>
+              <span>k/prediction</span>
+            </Link>
+            <Link
+              href="/k/ai"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/ai" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
             >
               <div className="w-7 h-7 rounded-md bg-green-500/15 text-green-500 flex items-center justify-center">
                 <Bot className="w-3.5 h-3.5" />
               </div>
-              <span>k/agent</span>
-              <span className="ml-auto px-2 py-0.5 bg-green-500 text-white text-[10px] font-bold rounded-full">
-                89
-              </span>
+              <span>k/ai</span>
+            </Link>
+            <Link
+              href="/k/memecoin"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/memecoin" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <div className="w-7 h-7 rounded-md bg-yellow-500/15 text-yellow-500 flex items-center justify-center">
+                🐕
+              </div>
+              <span>k/memecoin</span>
+            </Link>
+            <Link
+              href="/k/infra"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/infra" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <div className="w-7 h-7 rounded-md bg-orange-500/15 text-orange-500 flex items-center justify-center">
+                🏗️
+              </div>
+              <span>k/infra</span>
             </Link>
           </div>
         )}
       </div>
+
+      {/* Recent Projects */}
+      {otherCommunities.length > 0 && (
+        <div className="mb-2">
+          <button
+            onClick={() => toggleSection("recent-projects")}
+            className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-semibold text-[#6b6b70] uppercase tracking-wide hover:text-[#adadb0]"
+          >
+            <span>Recent Projects</span>
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform ${!openSections["recent-projects"] ? "-rotate-90" : ""}`}
+            />
+          </button>
+
+          {openSections["recent-projects"] !== false && (
+            <div className="flex flex-col">
+              {otherCommunities.slice(0, 8).map((comm) => (
+                <Link
+                  key={comm.id}
+                  href={`/${comm.category || 'k/defi'}/${comm.id}`}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-md bg-[#2a2a2e] text-white flex items-center justify-center text-[10px] font-bold">
+                    {comm.name.replace('r/', '').slice(0, 2).toUpperCase()}
+                  </div>
+                  <span className="truncate">{comm.name}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Resources */}
       <div className="mt-4 mb-8">

@@ -33,8 +33,8 @@ export async function generateMetadata({
   
   // Generate SEO-optimized metadata
   const title = `${projectName} Review - Is ${projectName} Safe?`
-  const description = project?.aiSummary 
-    ? project.aiSummary.slice(0, 155) + '...'
+  const description = project?.description 
+    ? project.description.slice(0, 155) + '...'
     : `Read verified reviews of ${projectName}. Community-driven ratings, security analysis, and expert opinions. Find out if ${projectName} is worth investing in.`
 
   return generateSeoMetadata({
@@ -75,7 +75,9 @@ export default async function ProjectPage({
         where: { address: projectId },
       }),
       prisma.review.findMany({
-        where: { projectAddress: projectId },
+        where: { 
+          project: { address: projectId } 
+        },
         orderBy: { upvotes: 'desc' },
         take: 20,
       }),
@@ -119,7 +121,7 @@ export default async function ProjectPage({
       <JsonLd 
         data={generateProjectSchema({
           name: projectName,
-          description: project?.aiSummary || `Reviews and analysis of ${projectName}`,
+          description: project?.description || `Reviews and analysis of ${projectName}`,
           category: `k/${category}`,
           address: projectId,
           aggregateRating: aggregateRating ? {
@@ -127,7 +129,7 @@ export default async function ProjectPage({
             ratingCount: aggregateRating.ratingCount,
             reviewCount: aggregateRating.reviewCount,
           } : undefined,
-          image: project?.logo || undefined,
+          image: project?.image || undefined,
         })} 
       />
       
@@ -146,7 +148,7 @@ export default async function ProjectPage({
         <p>
           Read {reviews.length} verified reviews of {projectName}. 
           {aggregateRating && ` Average rating: ${aggregateRating.ratingValue}/5 based on ${aggregateRating.ratingCount} reviews.`}
-          {project?.aiSummary && ` Summary: ${project.aiSummary}`}
+          {project?.description && ` Summary: ${project.description}`}
         </p>
         {reviews.length > 0 && (
           <div>

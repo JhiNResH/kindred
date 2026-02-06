@@ -101,7 +101,7 @@ export function ReviewForm() {
     setError(null)
     try {
       // Approve a large amount to avoid multiple approvals
-      approve(parseKind('1000000'))
+      approve(parseKind('1000000').toString())
     } catch (err) {
       setError('Approval failed. Please try again.')
       console.error(err)
@@ -143,11 +143,11 @@ export function ReviewForm() {
         timestamp: Date.now(),
       })
 
-      createComment(
-        projectIdBytes32 as `0x${string}`,
-        contentHash,
-        stakeAmountBigInt
-      )
+      createComment({
+        targetAddress: projectIdBytes32 as `0x${string}`,
+        content: contentHash,
+        stakeAmount: stakeAmountBigInt.toString(),
+      })
       
       // Note: Transaction success/failure handled by isCreated state
     } catch (err) {

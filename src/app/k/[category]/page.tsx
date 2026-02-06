@@ -81,11 +81,12 @@ export default async function CategoryPage({
   let projectCount = 0
   
   try {
-    const categoryFilter = category === 'all' ? {} : { category: `k/${category}` }
+    const projectCategoryFilter = category === 'all' ? {} : { category: `k/${category}` }
+    const reviewCategoryFilter = category === 'all' ? {} : { project: { category: `k/${category}` } }
     
     const [reviews, projects] = await Promise.all([
-      prisma.review.count({ where: categoryFilter }),
-      prisma.project.count({ where: categoryFilter }),
+      prisma.review.count({ where: reviewCategoryFilter }),
+      prisma.project.count({ where: projectCategoryFilter }),
     ])
     
     reviewCount = reviews
