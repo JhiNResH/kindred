@@ -1,17 +1,28 @@
 # STATUS.md - 唯一真相來源
 
-**最後更新:** 2026-02-05 12:10 PST (Steve)
+**最後更新:** 2026-02-06 00:30 PST (Jensen - Nightly Build)
 
 ---
 
 ## 🏆 Hackathon Tracking
 
-| Hackathon | Deadline | 獎金 | 狀態 | 優先級 |
-|-----------|----------|------|------|--------|
-| **USDC Hackathon** | Feb 8, 12:00 PM PST | $30k | 🔴 準備提交 | P0 |
-| **Clawathon** | ~Feb 10-11 | TBD | 🟡 開發中 | P0 |
-| **Chainlink Convergence** | Mar 1 | ~$100k | ⚪ 評估中 | P2 |
-| Solana Agent Hackathon | TBD | TBD | ⚪ 待定 | P3 |
+**總獎金池: $580k+ 🔥**
+
+| # | Hackathon | Deadline | 獎金 | 狀態 | Link |
+|---|-----------|----------|------|------|------|
+| 1 | **USDC Hackathon** | ⚠️ **Feb 8** | $30k | 🔴 準備提交 | [Circle Blog](https://www.circle.com/blog/openclaw-usdc-hackathon-on-moltbook) |
+| 2 | **Builder Quest** | ⚠️ **Feb 8 11:59pm EST** | 5 ETH | 🟡 評估中 | [X Post](https://x.com/0xEricBrown/status/2018082458143699035) |
+| 3 | **Clawathon** | ⚠️ **Feb 10** | TBD | 🟡 開發中 | [OpenWork](https://openwork.bot/hackathon) |
+| 4 | **Colosseum Agent** | **Feb 12** | $100k | ✅ 已註冊 | [Colosseum](https://colosseum.com/agent-hackathon/) |
+| 5 | **x402 SF** | Feb 11-13 | $50k | 🆕 新發現 | [DoraHacks](https://dorahacks.io/hackathon/x402/detail) |
+| 6 | **Moltiverse (Monad)** | Feb 18 | **$200k** | 🆕 新發現 | [Moltiverse](https://moltiverse.dev/) |
+| 7 | **BNB Chain OpenClaw** | Feb 19 | $100k | 🆕 新發現 | [DoraHacks](https://dorahacks.io/hackathon/goodvibes/detail) |
+| 8 | **Chainlink Convergence** | Mar 1 | ~$100k | ⚪ 評估中 | [Chainlink](https://chain.link/hackathon) |
+
+### ⚠️ 緊急 (本週內)
+- **Feb 8:** USDC Hackathon + Builder Quest
+- **Feb 10:** Clawathon
+- **Feb 12:** Colosseum Agent
 
 ### USDC Hackathon Details
 - **Track:** SmartContract ($10k) + AgenticCommerce ($10k)
@@ -19,11 +30,36 @@
 - **要求:** 投票 5 個其他項目、Base 部署、demo
 - **行動:** Patrick 部署 Base Sepolia → Jensen 寫 submission post
 
+### Builder Quest Details
+- **要求:** Autonomous OpenClaw agent (no human in loop)
+- **必須:** 在 Base 上交易、在 X/Farcaster 上活躍
+- **提交:** Agent 的 X/Farcaster profile link
+- **評判:** onchain primitives 實現 + use case 創新度
+
+### x402 SF Details
+- **Sponsors:** Google, Coinbase, SKALE, Virtuals, Edge & Node, Vodafone
+- **Focus:** Agentic Commerce / x402 payments
+- **Platform:** DoraHacks (實體+線上混合)
+- **Tags:** x402, Base, Payments, Agents, AI, AP2, ERC-8004
+
+### Moltiverse (Monad) Details
+- **Sponsors:** Monad, nad.fun, AUSD, Paradigm, Dragonfly, AttentionX
+- **Focus:** AI agents that transact at scale, build communities, monetize
+- **Format:** 2-week sprint
+
+### BNB Chain OpenClaw Details
+- **Platform:** DoraHacks (Good Vibes track)
+- **Focus:** OpenClaw on BNB Chain
+
 ### Chainlink Convergence Details
 - **時間:** Feb 6 – Mar 1
 - **Tracks:** DeFi ($20k), CRE & AI ($17k), Prediction Markets ($16k), Risk ($16k), Privacy ($16k)
 - **要求:** 必須用 Chainlink Runtime Environment (CRE)
 - **策略:** Feb 11 後評估，可能用 ReputationOracle + CRE Workflow
+
+### Colosseum Agent Details
+- **Focus:** Solana-based agent hackathon
+- **Status:** 已註冊
 
 ---
 
@@ -91,14 +127,29 @@ echo "<TOKEN>" | gh auth login --with-token
 - ✅ Vercel deployment ready
 
 ### 🔒 Smart Contracts ✓
-- ✅ KindredHook (v4 Hook)
+- ✅ KindredHook (v4 Hook) - **完整實現 2026-02-06 00:45**
+  - 22/22 tests passing (fee calculation, trade validation, integration)
+  - 3-tier dynamic fees (0.15%/0.22%/0.30%)
+  - Reputation-based access control
+  - DeployHook.s.sol ready
+  - HOOK_README.md documentation
+  - /hook-demo interactive demo page
 - ✅ ReputationOracle
 - ✅ KindredComment (ERC-721 NFT + Pay-to-Comment)
 - ✅ KindToken (ERC-20 with Permit)
-- ✅ 30/30 tests passing (20 KindredComment + 10 KindredHook)
+- ✅ 52/52 tests passing (20 KindredComment + 22 KindredHook + 10 Oracle)
 - ✅ Gas benchmarks
 - ✅ Security audit (AUDIT.md)
 - ✅ **M-1 & M-2 fixed** (SafeERC20 + CEI pattern) - 2026-02-05 12:10
+
+### 🔍 SEO Optimization ✓ (PR #73 - Nightly Build 2026-02-06)
+- ✅ `sitemap.ts` — Auto-generated from database (projects, reviews, categories)
+- ✅ `robots.ts` — Proper crawler rules (allows GPTBot, Googlebot)
+- ✅ Schema.org JSON-LD — Organization, Website, Breadcrumb, FAQ schemas
+- ✅ Dynamic metadata — Title templates, Open Graph, Twitter cards per page
+- ✅ PWA manifest — App installability ready
+- ✅ Category pages SSR — Better crawlability
+- ✅ Rich snippets ready — Stars in Google search results
 
 ---
 
@@ -124,16 +175,19 @@ echo "<TOKEN>" | gh auth login --with-token
    - [ ] 排行榜更新
    - [ ] 錄製 Demo 影片
 
-3. **合約 → UI 整合** ✅ (Steve 完成 - PR #42 + #45)
+3. **合約 → UI 整合** ✅ (Steve 完成 - PR #42 + #45 + #46)
    - [x] UI components (StakeVoteButtons, StakeReviewForm)
    - [x] Contract hooks (useKindToken, useKindredComment)
    - [x] Contract config (contracts.ts + ABI)
    - [x] Deployment script (Deploy.s.sol)
    - [x] Example integration page (/examples/contract-integration)
-   - [x] **ReviewForm 整合真實合約** (PR #42 - 等待部署)
-   - [x] **投票功能 UI 整合** (PR #45 - 等待部署測試)
-   - [ ] Deploy to Base Sepolia (需要 JhiNResH 的錢包 PRIVATE_KEY)
-   - [ ] 測試真實鏈上交易
+   - [x] **ReviewForm 整合真實合約** (PR #42 - 已部署)
+   - [x] **投票功能 UI 整合** (PR #45 - 已部署)
+   - [x] **兩頁投票流程** (Commit b639913 - Option 2)
+     - Feed 頁面：只讀投票顯示（點擊進入詳情）
+     - 詳情頁：完整 StakeVote 互動（帶質押 modal）
+   - [x] Deploy to Base Sepolia (已完成)
+   - [ ] 測試真實鏈上交易（JhiNResH）
 
 4. **週結算系統** 🟡
    - [ ] SettlementRound 自動化
@@ -151,8 +205,12 @@ echo "<TOKEN>" | gh auth login --with-token
 
 ### Medium Priority
 
-- [ ] Hook Dynamic Fee 部署到 Uniswap v4
-- [ ] 信用評分 → 手續費映射
+- [x] ✅ KindredHook Dynamic Fee 完成 (Steve - 2026-02-06 00:45)
+  - 22/22 tests passing
+  - DeployHook.s.sol ready
+  - /hook-demo interactive page
+  - HOOK_README.md documentation
+- [ ] 部署 KindredHook 到 Base Sepolia (需要 JhiNResH 執行)
 - [ ] Agent API authentication 強化
 - [ ] Gas optimization
 
@@ -180,32 +238,19 @@ echo "<TOKEN>" | gh auth login --with-token
 - 3a51489: 更新 AUDIT.md
 - 628e129: 部署腳本
 
-### 2. 🔴 合約部署 (BLOCKER - 需要 JhiNResH)
+### 2. ✅ 合約部署完成 (JhiNResH - 2026-02-05 14:21)
 
-**狀態：** ⏳ 等待 JhiNResH 提供 PRIVATE_KEY  
-**為什麼緊急：** USDC Hackathon deadline Feb 8 (剩 3.5 天)  
-**準備文件：** ✅ `DEPLOYMENT_CHECKLIST.md` (詳細流程)
+**Base Sepolia 合約地址：**
+- KindToken: `0x75c0915F19Aeb2FAaA821A72b8DE64e52EE7c06B`
+- KindredComment: `0xB6762e27A049A478da74C4a4bA3ba5fd179b76cf`
+- Treasury: `0x872989F7fCd4048acA370161989d3904E37A3cB3`
 
-**Quick Deploy (5 分鐘):**
-```bash
-cd /Users/jhinresh/clawd/team-kindred/contracts
-export PRIVATE_KEY="你的錢包私鑰"  # ← 需要這個
-export RPC_URL="https://sepolia.base.org"
-forge script script/Deploy.s.sol:DeployScript --rpc-url $RPC_URL --broadcast -vvv
-```
-
-**需要準備：**
-- [ ] 錢包私鑰 (有 0.5 ETH on Base Sepolia)
-- [ ] Testnet ETH: https://www.alchemy.com/faucets/base-sepolia
-
-**部署後 2 小時內：**
-1. Steve 更新 `src/lib/contracts.ts` 合約地址
-2. Steve 測試 mint + vote on-chain
-3. Jensen 錄製 demo 影片 (2-3 min)
-4. Jensen 投票 5 個項目
-5. Jensen 提交 USDC Hackathon
-
-👉 **詳細步驟見：** `DEPLOYMENT_CHECKLIST.md`
+**下一步：**
+1. ✅ 合約地址已更新到 `src/lib/contracts.ts`
+2. [ ] Steve 測試 mint + vote on-chain
+3. [ ] Jensen 錄製 demo 影片 (2-3 min)
+4. [ ] Jensen 投票 5 個項目
+5. [ ] Jensen 提交 USDC Hackathon (Feb 8)
 
 ### 3. ✅ 合約安全修復完成 (Steve - 2026-02-05 12:10)
 
