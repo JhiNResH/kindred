@@ -7,7 +7,7 @@ import { CommunityInfo } from '@/components/project/CommunityInfo'
 import { StakeVote } from '@/components/StakeVote'
 import { useStore } from '@/lib/store'
 import { useState, useEffect } from 'react'
-import { analyzeProject } from '@/app/actions/analyze'
+import { analyzeProject, analyzeRestaurant } from '@/app/actions/analyze'
 import { findOrCreateProject } from '@/app/actions/createProject'
 import { getTokenPrice, TokenPrice } from '@/lib/coingecko'
 import { Sparkles } from 'lucide-react'
@@ -88,6 +88,39 @@ export function ProjectPageContent({
     
     // Fetch Ma'at analysis if we don't have it
     setProjectData(LOADING_PROJECT)
+    
+    // For restaurants (k/gourmet), use restaurant-specific analysis
+    if (category === 'gourmet') {
+      analyzeRestaurant(projectId).then((result) => {
+        if (result) {
+          setProjectData({
+            ...LOADING_PROJECT,
+            id: projectId,
+            name: result.restaurantName || projectId,
+            category: 'k/gourmet',
+            aiVerdict: result.status === 'PURE' ? 'bullish' : result.status === 'DECEPTIVE' ? 'bearish' : 'neutral',
+            aiScore: result.score * 20,
+            aiSummary: result.summary,
+            keyPoints: result.mustTry?.map(d => d.name) || [],
+            // Restaurant-specific fields
+            platformScores: result.platformScores,
+            mustTry: result.mustTry,
+            warnings: result.warnings,
+            priceRange: result.priceRange,
+            avgCost: result.avgCost,
+            bestFor: result.bestFor,
+            cuisine: result.cuisine,
+            hours: result.hours,
+            address: result.address,
+            photos: result.photos,
+            googleMapsUrl: result.googleMapsUrl,
+            criticalReviews: result.criticalReviews,
+            maAtStatus: result.status,
+          })
+        }
+      })
+      return
+    }
     
     findOrCreateProject(projectId).then((createResult) => {
       if (!createResult.success || !createResult.analysis) {
