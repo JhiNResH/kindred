@@ -73,10 +73,10 @@ export function LandingPage() {
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#adadb0] mb-4">Trending Communities</h3>
               <div className="space-y-3">
                 {[
-                  { name: 'k/defi', members: '142k' },
-                  { name: 'k/perp-dex', members: '89k' },
-                  { name: 'k/memecoins', members: '256k' },
-                  { name: 'k/yield-farming', members: '45k' },
+                  { name: 'r/defi', members: '142k' },
+                  { name: 'r/perp-dex', members: '89k' },
+                  { name: 'r/memecoins', members: '256k' },
+                  { name: 'r/yield-farming', members: '45k' },
                 ].map((community) => (
                   <div key={community.name} className="flex items-center justify-between group cursor-pointer">
                     <div className="flex items-center gap-2">
