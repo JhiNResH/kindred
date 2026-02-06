@@ -8,10 +8,6 @@ interface CommunityInfoProps {
 }
 
 const CATEGORY_META: Record<string, { title: string; description: string }> = {
-  'all': {
-    title: 'k/kindred',
-    description: 'The trust layer for crypto. Review projects, stake on your opinions, and build on-chain reputation.',
-  },
   'k/defi': {
     title: 'k/DeFi',
     description: 'Discuss decentralized finance protocols, yields, and risks. The pulse of open finance.',
@@ -27,11 +23,33 @@ const CATEGORY_META: Record<string, { title: string; description: string }> = {
   'k/ai': {
     title: 'k/AI',
     description: 'Artificial Intelligence agents and protocols. The future is autonomous.',
+  },
+  'k/nft': {
+    title: 'k/NFT',
+    description: 'NFT collections, marketplaces, and digital art. Where culture meets crypto.',
+  },
+  'k/infra': {
+    title: 'k/Infra',
+    description: 'Blockchain infrastructure, L1s, L2s, and developer tools.',
+  },
+}
+
+// Dynamic fallback based on category
+function getCategoryMeta(category: string) {
+  if (CATEGORY_META[category]) {
+    return CATEGORY_META[category]
+  }
+  // Extract readable name from category like "k/defi" -> "DeFi"
+  const name = category.replace('k/', '').replace(/-/g, ' ')
+  const title = `k/${name.charAt(0).toUpperCase() + name.slice(1)}`
+  return {
+    title,
+    description: `Community discussions and reviews for ${name} projects.`,
   }
 }
 
 export function CommunityInfo({ category }: CommunityInfoProps) {
-  const meta = CATEGORY_META[category] || CATEGORY_META['all']
+  const meta = getCategoryMeta(category)
   const [members, setMembers] = useState('-')
   const [staked, setStaked] = useState('-')
 
