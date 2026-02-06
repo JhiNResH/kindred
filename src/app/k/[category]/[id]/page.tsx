@@ -30,7 +30,6 @@ export default function ProjectPage() {
   const projectId = idRaw.toLowerCase()
 
   // Store Hooks
-  const storedProject = useStore(state => state.getProject(projectId))
   const addProject = useStore(state => state.addProject)
   const joinCommunity = useStore(state => state.joinCommunity)
   const leaveCommunity = useStore(state => state.leaveCommunity)
@@ -73,22 +72,11 @@ export default function ProjectPage() {
   }, [projectId])
   
   useEffect(() => {
-    if (storedProject) {
-      // Use verified data from store if available
-      setProjectData({
-         ...storedProject,
-         // Map store data back to UI format expected by this page's legacy types
-         aiVerdict: storedProject.score >= 4 ? 'bullish' : storedProject.score <= 2.5 ? 'bearish' : 'neutral',
-         aiScore: storedProject.score * 20,
-         keyPoints: [], // storedProject in store.ts might need expanding to hold these if we want to persist details
-         // For now, re-fetching deep details or assuming lightweight store
-      })
-      // If store data is lightweight, we might still want to trigger deep analysis if missing details?
-      // For now, trust store.
-    } else {
-      // Trigger "Ma'at" Analysis
-      setProjectData(LOADING_PROJECT)
-      analyzeProject(projectId).then((result) => {
+    // Always fetch Ma'at analysis (cached in DB for 24h)
+    // Show loading state first
+    setProjectData(LOADING_PROJECT)
+    
+    analyzeProject(projectId).then((result) => {
         const fullData = {
           ...LOADING_PROJECT,
           id: projectId,
@@ -125,8 +113,7 @@ export default function ProjectPage() {
           logo: undefined
         })
       })
-    }
-  }, [projectId, storedProject, addProject])
+  }, [projectId, addProject])
 
   const data = projectData || LOADING_PROJECT
 
