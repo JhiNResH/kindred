@@ -1,7 +1,6 @@
 'use client'
 
 import { CategoryFeed } from '@/components/CategoryFeed'
-import { Header } from '@/components/Header'
 import { CommunityInfo } from '@/components/project/CommunityInfo'
 
 interface CategoryPageContentProps {
@@ -20,8 +19,7 @@ export function CategoryPageContent({
   projectCount,
 }: CategoryPageContentProps) {
   return (
-    <main className="min-h-screen bg-[#0a0a0b] text-white">
-      <Header />
+    <main className="min-h-screen bg-[#0a0a0b] text-white pt-8">{/* Added pt-8 for spacing below ClientLayout header */}
       
       <div className="max-w-7xl mx-auto px-4 py-8 flex gap-8">
         {/* Main Content */}
