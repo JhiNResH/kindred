@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
-import { TrendingUp, TrendingDown, Minus, Flame, Clock, Award, BarChart3, ArrowUpRight } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, Flame, Clock, Award, BarChart3, ArrowUpRight, ThumbsUp, ThumbsDown } from 'lucide-react'
 
 type Category = 'all' | 'k/defi' | 'k/perp-dex' | 'k/ai' | 'k/memecoin'
 
@@ -223,12 +223,12 @@ export function MindshareBoard() {
         <div className="grid grid-cols-12 gap-4 px-6 py-3 border-b border-[#1f1f23] text-xs font-medium text-[#6b6b70] uppercase tracking-wider">
           <div className="col-span-1">#</div>
           <div className="col-span-3">Project</div>
-          <div className="col-span-3">Mindshare</div>
+          <div className="col-span-2">Mindshare</div>
           <div className="col-span-1 text-right">Change</div>
           <div className="col-span-1 text-right">Staked</div>
           <div className="col-span-1 text-right">Reviews</div>
           <div className="col-span-1 text-right">Rating</div>
-          <div className="col-span-1"></div>
+          <div className="col-span-2 text-center">Vote</div>
         </div>
 
         {/* Loading State */}
@@ -276,9 +276,9 @@ export function MindshareBoard() {
             </div>
 
             {/* Mindshare */}
-            <div className="col-span-3">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-bold min-w-[52px]" style={{ color: entry.color }}>
+            <div className="col-span-2">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold min-w-[48px]" style={{ color: entry.color }}>
                   {entry.mindshare.toFixed(1)}%
                 </span>
                 <div className="flex-1">
@@ -307,9 +307,32 @@ export function MindshareBoard() {
               <SentimentDot value={entry.sentiment} />
             </div>
 
-            {/* Arrow */}
-            <div className="col-span-1 flex justify-end">
-              <ArrowUpRight className="w-4 h-4 text-[#6b6b70]" />
+            {/* Vote Buttons */}
+            <div className="col-span-2 flex justify-center gap-2">
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  // TODO: Implement upvote
+                  console.log('Upvote:', entry.id)
+                }}
+                className="p-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 transition-colors"
+                title="Bullish"
+              >
+                <ThumbsUp className="w-4 h-4" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  // TODO: Implement downvote
+                  console.log('Downvote:', entry.id)
+                }}
+                className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                title="Bearish"
+              >
+                <ThumbsDown className="w-4 h-4" />
+              </button>
             </div>
           </Link>
         ))}
