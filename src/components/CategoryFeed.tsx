@@ -215,7 +215,7 @@ export function CategoryFeed({ category, categoryIcon, categoryDescription }: Ca
             projects.map((project) => (
               <Link
                 key={project.id}
-                href={`/${project.category}/${project.id}`}
+                href={`/${project.category}/${project.address || project.id}`}
                 className="flex items-start gap-4 p-4 bg-[#111113] border border-[#1f1f23] rounded-xl hover:border-purple-500/30 hover:bg-[#151517] transition-all group"
               >
                 {/* Project Logo */}

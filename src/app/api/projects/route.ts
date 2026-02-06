@@ -61,6 +61,7 @@ export async function GET(request: NextRequest) {
         address: true,
         name: true,
         description: true,
+        image: true, // Logo URL
         website: true,
         category: true,
         avgRating: true,
@@ -83,6 +84,7 @@ export async function GET(request: NextRequest) {
       reviewsCount: p.reviewCount,
       totalStaked: p.totalStaked,
       rank: p.currentRank,
+      logo: p.image, // Include logo in response
     }))
 
     return NextResponse.json({

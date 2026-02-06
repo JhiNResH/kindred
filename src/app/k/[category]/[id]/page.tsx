@@ -70,42 +70,56 @@ export default async function ProjectPage({
   let maatAnalysis = null
   
   try {
-    const [projectData, reviewsData, analysisCache] = await Promise.all([
-      prisma.project.findUnique({
-        where: { address: projectId },
-      }),
-      prisma.review.findMany({
-        where: { 
-          project: { address: projectId } 
-        },
-        orderBy: { upvotes: 'desc' },
-        take: 20,
-      }),
-      // Fetch Ma'at analysis from cache (includes funding, investors, audits, etc.)
-      prisma.projectAnalysisCache.findUnique({
-        where: { query: projectId },
-      }),
-    ])
+    // Try to find project by address, id, or name
+    const projectData = await prisma.project.findFirst({
+      where: {
+        OR: [
+          { address: projectId },
+          { id: projectId },
+          { name: { equals: projectId, mode: 'insensitive' } },
+        ]
+      },
+    })
     
     project = projectData
-    reviews = reviewsData
     
-    // Parse Ma'at analysis if available
-    if (analysisCache) {
-      try {
-        maatAnalysis = JSON.parse(analysisCache.result)
-      } catch (e) {
-        console.error('Failed to parse Ma\'at analysis:', e)
+    // If project found, fetch reviews and analysis cache
+    if (projectData) {
+      const [reviewsData, analysisCache] = await Promise.all([
+        prisma.review.findMany({
+          where: { projectId: projectData.id },
+          orderBy: { upvotes: 'desc' },
+          take: 20,
+        }),
+        prisma.projectAnalysisCache.findFirst({
+          where: {
+            OR: [
+              { query: projectData.address },
+              { query: projectData.name.toLowerCase() },
+            ]
+          },
+        }),
+      ])
+      
+      reviews = reviewsData
+    
+      // Parse Ma'at analysis if available
+      if (analysisCache) {
+        try {
+          maatAnalysis = JSON.parse(analysisCache.result)
+        } catch (e) {
+          console.error('Failed to parse Ma\'at analysis:', e)
+        }
       }
-    }
     
-    // Calculate aggregate rating if we have reviews
-    if (reviews.length > 0) {
-      const totalRating = reviews.reduce((sum, r) => sum + r.rating, 0)
-      aggregateRating = {
-        ratingValue: (totalRating / reviews.length).toFixed(1),
-        ratingCount: reviews.length,
-        reviewCount: reviews.length,
+      // Calculate aggregate rating if we have reviews
+      if (reviews.length > 0) {
+        const totalRating = reviews.reduce((sum, r) => sum + r.rating, 0)
+        aggregateRating = {
+          ratingValue: (totalRating / reviews.length).toFixed(1),
+          ratingCount: reviews.length,
+          reviewCount: reviews.length,
+        }
       }
     }
   } catch (error) {
