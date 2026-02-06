@@ -105,16 +105,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         {categoriesOpen && (
           <div className="flex flex-col">
             <Link
-              href="/leaderboard?category=k/perp-dex"
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
-            >
-              <div className="w-7 h-7 rounded-md bg-blue-500/15 text-blue-500 flex items-center justify-center">
-                <TrendingUp className="w-3.5 h-3.5" />
-              </div>
-              <span>k/perp-dex</span>
-            </Link>
-            <Link
-              href="/leaderboard?category=k/defi"
+              href="/k/defi"
               className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
             >
               <div className="w-7 h-7 rounded-md bg-pink-500/15 text-pink-500 flex items-center justify-center">
@@ -123,13 +114,49 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               <span>k/defi</span>
             </Link>
             <Link
-              href="/leaderboard?category=k/ai"
+              href="/k/perp-dex"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+            >
+              <div className="w-7 h-7 rounded-md bg-blue-500/15 text-blue-500 flex items-center justify-center">
+                <TrendingUp className="w-3.5 h-3.5" />
+              </div>
+              <span>k/perp-dex</span>
+            </Link>
+            <Link
+              href="/k/prediction"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+            >
+              <div className="w-7 h-7 rounded-md bg-orange-500/15 text-orange-500 flex items-center justify-center">
+                <span className="text-xs">🎯</span>
+              </div>
+              <span>k/prediction</span>
+            </Link>
+            <Link
+              href="/k/ai"
               className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
             >
               <div className="w-7 h-7 rounded-md bg-green-500/15 text-green-500 flex items-center justify-center">
                 <Bot className="w-3.5 h-3.5" />
               </div>
               <span>k/ai</span>
+            </Link>
+            <Link
+              href="/k/memecoin"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+            >
+              <div className="w-7 h-7 rounded-md bg-yellow-500/15 text-yellow-500 flex items-center justify-center">
+                <span className="text-xs">🐸</span>
+              </div>
+              <span>k/memecoin</span>
+            </Link>
+            <Link
+              href="/k/infra"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
+            >
+              <div className="w-7 h-7 rounded-md bg-gray-500/15 text-gray-500 flex items-center justify-center">
+                <span className="text-xs">🔧</span>
+              </div>
+              <span>k/infra</span>
             </Link>
           </div>
         )}
