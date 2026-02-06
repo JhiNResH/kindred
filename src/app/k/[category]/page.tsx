@@ -10,12 +10,11 @@ export function generateStaticParams() {
   return [
     { category: 'defi' },
     { category: 'perp-dex' },
+    { category: 'prediction' },
     { category: 'memecoin' },
     { category: 'ai' },
+    { category: 'infra' },
     { category: 'gourmet' },
-    { category: 'saas' },
-    { category: 'crypto' },
-    { category: 'agents' },
     { category: 'all' },
   ]
 }
@@ -33,12 +32,11 @@ export async function generateMetadata({
 const CATEGORY_INFO: Record<string, { icon: string; description: string }> = {
   'defi': { icon: '🏦', description: 'DeFi protocols - Lending, DEXs, Yield' },
   'perp-dex': { icon: '📈', description: 'Perpetual DEXs - Derivatives trading' },
+  'prediction': { icon: '📊', description: 'Prediction markets - Polymarket, Kalshi' },
   'memecoin': { icon: '🐕', description: 'Memecoins - The degen corner' },
   'ai': { icon: '🤖', description: 'AI projects - ML, Agents, Data' },
+  'infra': { icon: '🏗️', description: 'Infrastructure - Wallets, Bridges, Tools' },
   'gourmet': { icon: '🍽️', description: 'Restaurant reviews - Verified dining' },
-  'saas': { icon: '💻', description: 'SaaS tools - Software reviews' },
-  'crypto': { icon: '₿', description: 'Crypto tokens - Token analysis' },
-  'agents': { icon: '🤖', description: 'AI Agents - Autonomous tools' },
   'all': { icon: '🌐', description: 'All categories' },
 }
 
