@@ -185,7 +185,7 @@ export function MindshareBoard() {
         {filtered.map((entry, i) => (
           <Link
             key={entry.name}
-            href={`/project/${entry.id}`}
+            href={`/${entry.category}/${entry.id}`}
             className={`grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-[#1a1a1d] transition-colors cursor-pointer ${
               i !== filtered.length - 1 ? 'border-b border-[#1a1a1d]' : ''
             }`}

@@ -29,6 +29,7 @@ export interface Review {
 export interface Community {
   id: string // usually same as project ID or "r/name"
   name: string
+  category: string
   memberCount: number
   isJoined: boolean
 }
@@ -87,6 +88,7 @@ export const useStore = create<AppState>()(
         const newCommunity: Community = {
           id: newProject.id,
           name: `r/${newProject.name.toLowerCase().replace(/\s+/g, '')}`,
+          category: newProject.category,
           memberCount: 1, // Start with 1
           isJoined: false
         }

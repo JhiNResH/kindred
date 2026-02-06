@@ -121,8 +121,25 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   }
 
   // Handle result click
-  const handleProjectClick = (projectId: string) => {
-    router.push(`/project/${projectId}`)
+  const handleProjectClick = (projectId: string, category: string) => {
+    // Ensure category starts with 'k/' or map it from Type
+    let cleanCategory = category.toLowerCase()
+    
+    // Simple mapping if we get raw types like "DEX" instead of "k/perp-dex"
+    // Ideally this should match backend logic
+    if (!cleanCategory.startsWith('k/')) {
+       const map: Record<string, string> = {
+         'dex': 'k/perp-dex',
+         'defi': 'k/defi', 
+         'nft': 'k/nft',
+         'ai': 'k/ai',
+         'meme': 'k/memecoin',
+         'infrastructure': 'k/infra'
+       }
+       cleanCategory = map[cleanCategory] || 'k/defi'
+    }
+
+    router.push(`/${cleanCategory}/${projectId}`)
     onClose()
   }
 
@@ -202,7 +219,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               </div>
 
               {/* AI Analysis Button */}
-              {(!results?.aiAnalysis && totalResults === 0 && !isAnalyzing) && (
+              {(!results?.aiAnalysis && (!results?.projects.length || results.projects.length === 0) && !isAnalyzing) && (
                 <button
                   onClick={handleAnalyze}
                   className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#1a1a1d] border-b border-[#1f1f23] transition-colors"
@@ -228,7 +245,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               {/* AI Analysis Result */}
               {results?.aiAnalysis && (
                 <button
-                  onClick={() => handleProjectClick(query)}
+                  onClick={() => handleProjectClick(query, results.aiAnalysis?.data.type || 'defi')}
                   className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#1a1a1d] border-b border-[#1f1f23] transition-colors"
                 >
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
@@ -266,7 +283,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               {(activeTab === 'all' || activeTab === 'projects') && results?.projects.map(project => (
                 <button
                   key={project.id}
-                  onClick={() => handleProjectClick(project.id)}
+                  onClick={() => handleProjectClick(project.id, project.category)}
                   className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#1a1a1d] border-b border-[#1f1f23] transition-colors"
                 >
                   <div className="w-10 h-10 rounded-lg bg-[#1a1a1d] flex items-center justify-center">

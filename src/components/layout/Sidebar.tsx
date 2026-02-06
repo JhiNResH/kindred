@@ -264,7 +264,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
             {communities.slice(0, 10).map((comm) => (
               <Link
                 key={comm.id}
-                href={`/project/${comm.id}`}
+                href={`/${comm.category || 'k/defi'}/${comm.id}`}
                 className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#adadb0] border-l-[3px] border-transparent hover:bg-purple-500/5 hover:text-white transition-colors"
               >
                 <div className="w-7 h-7 rounded-md bg-[#2a2a2e] text-white flex items-center justify-center text-[10px] font-bold">
