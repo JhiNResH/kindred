@@ -105,6 +105,7 @@ export function ProjectPageContent({
             riskWarnings: result.warnings,
             audits: result.audits,
             investors: result.investors,
+            funding: result.funding,
             maAtStatus: result.status,
           })
         })
@@ -129,6 +130,7 @@ export function ProjectPageContent({
         riskWarnings: result.warnings,
         audits: result.audits,
         investors: result.investors,
+        funding: result.funding,
         maAtStatus: result.status,
       }
       
@@ -238,41 +240,96 @@ export function ProjectPageContent({
             score={data.aiScore}
             summary={data.aiSummary}
             keyPoints={data.keyPoints}
+            reviewCount={reviews.length}
+            totalStaked={reviews.reduce((sum, r) => sum + parseFloat(r.stakeAmount || '0'), 0).toString()}
           />
 
-          {/* Ma'at Auditor Section */}
-          {(data.riskWarnings?.length > 0 || data.audits?.length > 0) && (
-            <div className="mb-6 p-4 rounded-xl bg-[#1a1a1d] border border-yellow-500/20">
-              <h3 className="font-bold text-yellow-400 mb-3 flex items-center gap-2">
-                ⚠️ Ma'at Risk Analysis
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                 {data.riskWarnings?.length > 0 && (
-                   <div>
-                     <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Warnings</h4>
-                     <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
-                       {data.riskWarnings.map((w: string, i: number) => (
-                         <li key={i}>{w}</li>
-                       ))}
-                     </ul>
-                   </div>
-                 )}
-                 {data.audits?.length > 0 && (
-                   <div>
-                     <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Security Audits</h4>
-                     <ul className="space-y-2">
-                       {data.audits.map((a: any, i: number) => (
-                         <li key={i} className="flex items-center justify-between text-sm bg-black/20 p-2 rounded">
-                           <span className="text-green-400 font-medium">{a.auditor}</span>
-                           <span className="text-gray-500 text-xs">{a.date || 'Verified'}</span>
-                         </li>
-                       ))}
-                     </ul>
-                   </div>
-                 )}
+          {/* Funding & Risk Info Grid */}
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            {/* Funding Info */}
+            {data.funding && (
+              <div className="p-4 rounded-xl bg-[#1a1a1d] border border-green-500/20">
+                <h3 className="font-bold text-green-400 mb-3 flex items-center gap-2">
+                  💰 Funding Information
+                </h3>
+                <div className="space-y-3">
+                  {data.funding.totalRaised && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400 uppercase">Total Raised</span>
+                      <span className="text-lg font-bold text-green-400">{data.funding.totalRaised}</span>
+                    </div>
+                  )}
+                  {data.funding.valuation && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400 uppercase">Valuation</span>
+                      <span className="text-md font-semibold text-gray-300">{data.funding.valuation}</span>
+                    </div>
+                  )}
+                  {data.funding.lastRound && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-1">Latest Round</span>
+                      <span className="text-sm text-gray-300">{data.funding.lastRound}</span>
+                    </div>
+                  )}
+                  {data.funding.rounds && data.funding.rounds.length > 0 && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-2">Funding Rounds</span>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {data.funding.rounds.map((round: any, i: number) => (
+                          <div key={i} className="bg-black/20 p-2 rounded text-xs">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-semibold text-white">{round.round}</span>
+                              <span className="text-green-400 font-bold">{round.amount}</span>
+                            </div>
+                            {round.date && <div className="text-gray-500">{round.date}</div>}
+                            {round.investors && round.investors.length > 0 && (
+                              <div className="text-gray-400 mt-1">
+                                {round.investors.join(', ')}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Ma'at Risk Analysis */}
+            {(data.riskWarnings?.length > 0 || data.audits?.length > 0) && (
+              <div className="p-4 rounded-xl bg-[#1a1a1d] border border-yellow-500/20">
+                <h3 className="font-bold text-yellow-400 mb-3 flex items-center gap-2">
+                  ⚠️ Ma'at Risk Analysis
+                </h3>
+                <div className="space-y-3">
+                   {data.riskWarnings?.length > 0 && (
+                     <div>
+                       <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Warnings</h4>
+                       <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
+                         {data.riskWarnings.map((w: string, i: number) => (
+                           <li key={i}>{w}</li>
+                         ))}
+                       </ul>
+                     </div>
+                   )}
+                   {data.audits?.length > 0 && (
+                     <div className={data.riskWarnings?.length > 0 ? 'pt-3 border-t border-gray-700' : ''}>
+                       <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Security Audits</h4>
+                       <ul className="space-y-2">
+                         {data.audits.map((a: any, i: number) => (
+                           <li key={i} className="flex items-center justify-between text-sm bg-black/20 p-2 rounded">
+                             <span className="text-green-400 font-medium">{a.auditor}</span>
+                             <span className="text-gray-500 text-xs">{a.date || 'Verified'}</span>
+                           </li>
+                         ))}
+                       </ul>
+                     </div>
+                   )}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Discussion / Reviews */}
           <div className="mb-6 flex items-center justify-between">

@@ -94,7 +94,7 @@ export function AISummaryCard({ projectName, verdict, score, summary, keyPoints,
             <div className="flex justify-between text-sm mt-2">
               <span className="text-gray-500">Volume</span>
               <span className="text-white">
-                {totalStaked !== '0' ? `$${(parseInt(totalStaked) / 1e18).toFixed(1)}M Staked` : '-'}
+                {parseFloat(totalStaked) > 0 ? `${parseFloat(totalStaked).toFixed(1)} $KIND` : '-'}
               </span>
             </div>
           </div>

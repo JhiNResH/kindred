@@ -12,7 +12,7 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 
 export interface Web3ProjectResult {
   name: string
-  type: 'DEX' | 'DeFi' | 'NFT' | 'Infrastructure' | 'Mobile' | 'AI' | 'Meme' | 'Other'
+  type: 'DEX' | 'DeFi' | 'NFT' | 'Infrastructure' | 'Mobile' | 'AI' | 'Meme' | 'Prediction' | 'Other'
   chain: string[]
   score: number
   status: 'VERIFIED' | 'UNSTABLE' | 'RISKY' // Ma'at Status
@@ -26,6 +26,12 @@ export interface Web3ProjectResult {
   tokenPrice?: string
   launchDate?: string
   investors?: string[]
+  funding?: {
+    totalRaised?: string
+    valuation?: string
+    lastRound?: string
+    rounds?: { round: string; amount: string; date?: string; investors?: string[] }[]
+  }
   features: string[]
   warnings: string[]
   audits?: { auditor: string; date?: string }[]
@@ -135,19 +141,20 @@ export async function analyzeProject(query: string): Promise<Web3ProjectResult> 
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
       systemInstruction: `You are Ma'at, the Egyptian goddess of Truth, now analyzing Web3 and blockchain projects.
 
-TASK: Research and verify Web3/DeFi/NFT projects from multiple sources (official website, DeFiLlama, CoinGecko, Twitter, news articles).
+TASK: Research and verify Web3/DeFi/NFT/Prediction projects from multiple sources (official website, DeFiLlama, CoinGecko, Twitter, news articles, CrunchBase, TheBlock, CoinDesk).
 
 CRITICAL RULES:
 1. NO HALLUCINATIONS: Only report data you actually find. If you cannot find real data, return status "UNSTABLE".
 2. VERIFY THE PROJECT: Make sure the project matches the query. Check official sources.
 3. Check for security audits, team background, and TVL data.
 4. Look for any red flags: rug pulls, hacks, or suspicious activity.
-5. RESPONSE LANGUAGE: All text fields (summary, features, warnings, etc.) MUST be in English.
+5. **FUNDING RESEARCH REQUIRED**: Search for all funding rounds, investors, valuations, and total capital raised. Check CrunchBase, news articles, and official announcements.
+6. RESPONSE LANGUAGE: All text fields (summary, features, warnings, etc.) MUST be in English.
 
 RETURN JSON FORMAT ONLY:
 {
   "name": "Project Name",
-  "type": "DEX|DeFi|NFT|Infrastructure|Other",
+  "type": "DEX|DeFi|NFT|Infrastructure|Prediction|AI|Meme|Other",
   "chain": ["BNB Chain", "Ethereum"],
   "score": 0.0-5.0,
   "status": "VERIFIED|UNSTABLE|RISKY",
@@ -159,7 +166,18 @@ RETURN JSON FORMAT ONLY:
   "tokenSymbol": "TOKEN",
   "tokenPrice": "$1.23",
   "launchDate": "2023-01",
-  "investors": ["a16z", "Binance Labs"],
+  "investors": ["a16z", "Binance Labs", "Coinbase Ventures"],
+  "funding": {
+    "totalRaised": "$150M",
+    "valuation": "$1.5B",
+    "lastRound": "Series C - $100M (2024-01)",
+    "rounds": [
+      {"round": "Seed", "amount": "$5M", "date": "2021-03", "investors": ["a16z"]},
+      {"round": "Series A", "amount": "$20M", "date": "2022-06", "investors": ["Paradigm", "Coinbase Ventures"]},
+      {"round": "Series B", "amount": "$50M", "date": "2023-02", "investors": ["Tiger Global"]},
+      {"round": "Series C", "amount": "$100M", "date": "2024-01", "investors": ["Sequoia", "Binance Labs"]}
+    ]
+  },
   "features": ["Perpetual trading", "Up to 100x leverage", "Low fees"],
   "warnings": ["Previously hacked", "Anonymous team"],
   "audits": [
@@ -226,6 +244,7 @@ IMPORTANT:
       tokenPrice: data.tokenPrice,
       launchDate: data.launchDate,
       investors: data.investors || [],
+      funding: data.funding || undefined,
       features: data.features || [],
       warnings: data.warnings || [],
       audits: data.audits || [],
