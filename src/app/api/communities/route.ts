@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     // Count unique reviewers as "members"
     const reviewerCount = await prisma.review.groupBy({
-      by: ['reviewerAddress'],
+      by: ['reviewerId'],
       where: {
         project: { category }
       }
