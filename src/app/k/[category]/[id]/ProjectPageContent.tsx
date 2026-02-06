@@ -46,6 +46,8 @@ export function ProjectPageContent({
   const [reviews, setReviews] = useState<any[]>(initialReviews || [])
   const [loadingReviews, setLoadingReviews] = useState(!initialReviews?.length)
   const [tokenPrice, setTokenPrice] = useState<TokenPrice | null>(null)
+  const [imageError, setImageError] = useState(false)
+  const [bannerError, setBannerError] = useState(false)
   
   // Fetch real-time price from CoinGecko
   useEffect(() => {
@@ -227,13 +229,14 @@ export function ProjectPageContent({
       {/* Project Banner */}
       <div className="h-48 bg-gradient-to-r from-gray-900 to-black border-b border-[#1f1f23] relative overflow-hidden">
         {/* Banner Image for restaurants (k/gourmet) */}
-        {data.bannerImage && (
+        {data.bannerImage && !bannerError && (
           <Image
             src={data.bannerImage}
             alt={`${data.name} banner`}
             fill
             className="object-cover opacity-60"
             priority
+            onError={() => setBannerError(true)}
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent"></div>
@@ -244,13 +247,14 @@ export function ProjectPageContent({
                {data.id === 'loading' && (
                  <div className="absolute inset-0 bg-yellow-500/20 animate-pulse" />
                )}
-               {data.image ? (
+               {data.image && !imageError ? (
                  <Image 
                    src={data.image} 
                    alt={data.name} 
                    width={96} 
                    height={96}
                    className="absolute inset-0 w-full h-full object-contain p-2"
+                   onError={() => setImageError(true)}
                  />
                ) : (
                  data.name[0]?.toUpperCase() || '?'
