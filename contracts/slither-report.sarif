@@ -1,0 +1,2351 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Slither",
+          "informationUri": "https://github.com/crytic/slither",
+          "version": "0.11.5",
+          "rules": [
+            {
+              "id": "0-1-incorrect-exp",
+              "name": "incorrect-exp",
+              "properties": {
+                "precision": "high",
+                "security-severity": "8.0"
+              },
+              "shortDescription": {
+                "text": "Incorrect exponentiation"
+              },
+              "help": {
+                "text": "Use the correct operator `**` for exponentiation."
+              }
+            },
+            {
+              "id": "1-1-divide-before-multiply",
+              "name": "divide-before-multiply",
+              "properties": {
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "Divide before multiply"
+              },
+              "help": {
+                "text": "Consider ordering multiplication before division."
+              }
+            },
+            {
+              "id": "1-1-uninitialized-local",
+              "name": "uninitialized-local",
+              "properties": {
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "Uninitialized local variables"
+              },
+              "help": {
+                "text": "Initialize all the variables. If a variable is meant to be initialized to zero, explicitly set it to zero to improve code readability."
+              }
+            },
+            {
+              "id": "2-0-shadowing-local",
+              "name": "shadowing-local",
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "3.0"
+              },
+              "shortDescription": {
+                "text": "Local variable shadowing"
+              },
+              "help": {
+                "text": "Rename the local variables that shadow another component."
+              }
+            },
+            {
+              "id": "2-1-missing-zero-check",
+              "name": "missing-zero-check",
+              "properties": {
+                "precision": "high",
+                "security-severity": "3.0"
+              },
+              "shortDescription": {
+                "text": "Missing zero address validation"
+              },
+              "help": {
+                "text": "Check that the address is not zero."
+              }
+            },
+            {
+              "id": "2-1-calls-loop",
+              "name": "calls-loop",
+              "properties": {
+                "precision": "high",
+                "security-severity": "3.0"
+              },
+              "shortDescription": {
+                "text": "Calls inside a loop"
+              },
+              "help": {
+                "text": "Favor [pull over push](https://github.com/ethereum/wiki/wiki/Safety#favor-pull-over-push-for-external-calls) strategy for external calls."
+              }
+            },
+            {
+              "id": "2-1-timestamp",
+              "name": "timestamp",
+              "properties": {
+                "precision": "high",
+                "security-severity": "3.0"
+              },
+              "shortDescription": {
+                "text": "Block timestamp"
+              },
+              "help": {
+                "text": "Avoid relying on `block.timestamp`."
+              }
+            },
+            {
+              "id": "3-0-assembly",
+              "name": "assembly",
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "0.0"
+              },
+              "shortDescription": {
+                "text": "Assembly usage"
+              },
+              "help": {
+                "text": "Do not use `evm` assembly."
+              }
+            },
+            {
+              "id": "3-0-pragma",
+              "name": "pragma",
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "0.0"
+              },
+              "shortDescription": {
+                "text": "Different pragma directives are used"
+              },
+              "help": {
+                "text": "Use one Solidity version."
+              }
+            },
+            {
+              "id": "3-0-solc-version",
+              "name": "solc-version",
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "0.0"
+              },
+              "shortDescription": {
+                "text": "Incorrect versions of Solidity"
+              },
+              "help": {
+                "text": "\nDeploy with a recent version of Solidity (at least 0.8.0) with no known severe issues.\n\nUse a simple pragma version that allows any of these versions.\nConsider using the latest version of Solidity for testing."
+              }
+            },
+            {
+              "id": "3-0-missing-inheritance",
+              "name": "missing-inheritance",
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "0.0"
+              },
+              "shortDescription": {
+                "text": "Missing inheritance"
+              },
+              "help": {
+                "text": "Inherit from the missing interface or contract."
+              }
+            },
+            {
+              "id": "3-0-naming-convention",
+              "name": "naming-convention",
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "0.0"
+              },
+              "shortDescription": {
+                "text": "Conformance to Solidity naming conventions"
+              },
+              "help": {
+                "text": "Follow the Solidity [naming convention](https://solidity.readthedocs.io/en/v0.4.25/style-guide.html#naming-conventions)."
+              }
+            },
+            {
+              "id": "3-1-too-many-digits",
+              "name": "too-many-digits",
+              "properties": {
+                "precision": "high",
+                "security-severity": "0.0"
+              },
+              "shortDescription": {
+                "text": "Too many digits"
+              },
+              "help": {
+                "text": "\nUse:\n- [Ether suffix](https://solidity.readthedocs.io/en/latest/units-and-global-variables.html#ether-units),\n- [Time suffix](https://solidity.readthedocs.io/en/latest/units-and-global-variables.html#time-units), or\n- [The scientific notation](https://solidity.readthedocs.io/en/latest/types.html#rational-and-integer-literals)\n"
+              }
+            },
+            {
+              "id": "3-0-unindexed-event-address",
+              "name": "unindexed-event-address",
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "0.0"
+              },
+              "shortDescription": {
+                "text": "Unindexed event address parameters"
+              },
+              "help": {
+                "text": "Add the `indexed` keyword to address parameters in events to enable efficient off-chain filtering."
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "0-1-incorrect-exp",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) has bitwise-xor operator ^ instead of the exponentiation operator **: \n\t - inverse = (3 * denominator) ^ 2 (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#259)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) has bitwise-xor operator ^ instead of the exponentiation operator **: \n\t - [inverse = (3 * denominator) ^ 2](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L259)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "83603023c15885ad42ce01c58ca872dc8cbd223c57947d08d7918a4fd59ff82a"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- denominator = denominator / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#244)\n\t- inverse = (3 * denominator) ^ 2 (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#259)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [denominator = denominator / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L244)\n\t- [inverse = (3 * denominator) ^ 2](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L259)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "78de567e89c8d92ba286127f2401d3833fabd53e14fbf38553c805d401aefa35"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- low = low / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#247)\n\t- result = low * inverse (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#274)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [low = low / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L247)\n\t- [result = low * inverse](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L274)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "8b7b598911a68095eb4b853e5972916725f5b9acd2def81703ebbfd6edc20533"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- denominator = denominator / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#244)\n\t- inverse *= 2 - denominator * inverse (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#265)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [denominator = denominator / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L244)\n\t- [inverse *= 2 - denominator * inverse](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L265)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "8d23869d6808590b4243d03e5263dec8d65bd46991a40de4edcd0785f2d6933d"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.invMod(uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#317-363) performs a multiplication on the result of a division:\n\t- quotient = gcd / remainder (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#339)\n\t- (gcd,remainder) = (remainder,gcd - remainder * quotient) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#341-348)\n",
+            "markdown": "[Math.invMod(uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L317-L363) performs a multiplication on the result of a division:\n\t- [quotient = gcd / remainder](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L339)\n\t- [(gcd,remainder) = (remainder,gcd - remainder * quotient)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L341-L348)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 317,
+                  "endLine": 363
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "8e730c3dca57b2bc6eefc8e55d5591610bba754f12e91d001d76536c11c7c174"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- denominator = denominator / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#244)\n\t- inverse *= 2 - denominator * inverse (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#264)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [denominator = denominator / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L244)\n\t- [inverse *= 2 - denominator * inverse](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L264)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "96b8f0c0471d04ca494a1eb1f6d41b964d7198b776a894d7f4b9a018b99fcb00"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- denominator = denominator / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#244)\n\t- inverse *= 2 - denominator * inverse (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#266)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [denominator = denominator / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L244)\n\t- [inverse *= 2 - denominator * inverse](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L266)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "d749c8ec4880f8e1322100d050046001f687f990117af3c3fed794954e9bc83d"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- denominator = denominator / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#244)\n\t- inverse *= 2 - denominator * inverse (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#267)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [denominator = denominator / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L244)\n\t- [inverse *= 2 - denominator * inverse](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L267)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "dceb850138674cff0efb9ce45492b1f3c832b4be04f9983e97cf9b519960630e"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- denominator = denominator / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#244)\n\t- inverse *= 2 - denominator * inverse (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#263)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [denominator = denominator / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L244)\n\t- [inverse *= 2 - denominator * inverse](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L263)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "f3c05efec8e6d330b72ecfb3a62a9cfa0a347f661b5735a7e7c2574a354ecc39"
+          }
+        },
+        {
+          "ruleId": "1-1-divide-before-multiply",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) performs a multiplication on the result of a division:\n\t- denominator = denominator / twos (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#244)\n\t- inverse *= 2 - denominator * inverse (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#268)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) performs a multiplication on the result of a division:\n\t- [denominator = denominator / twos](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L244)\n\t- [inverse *= 2 - denominator * inverse](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L268)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "fa74b1b14a018c9ef7dae16be9273aa6e4c2661ea05f93da50f1ba075d6b4ddc"
+          }
+        },
+        {
+          "ruleId": "1-1-uninitialized-local",
+          "message": {
+            "text": "KindredHook.beforeSwap(address,bytes,bytes).score (src/KindredHook.sol#105) is a local variable never initialized\n",
+            "markdown": "[KindredHook.beforeSwap(address,bytes,bytes).score](src/KindredHook.sol#L105) is a local variable never initialized\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredHook.sol"
+                },
+                "region": {
+                  "startLine": 105,
+                  "endLine": 105
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "c9aaef6c7657c35e0ef3dd8cab8bfa01c2b5a7f4a523e29eee379f16e1a7afed"
+          }
+        },
+        {
+          "ruleId": "1-1-uninitialized-local",
+          "message": {
+            "text": "KindredHook.beforeSwap(address,bytes,bytes).isBlocked (src/KindredHook.sol#106) is a local variable never initialized\n",
+            "markdown": "[KindredHook.beforeSwap(address,bytes,bytes).isBlocked](src/KindredHook.sol#L106) is a local variable never initialized\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredHook.sol"
+                },
+                "region": {
+                  "startLine": 106,
+                  "endLine": 106
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "cecf73f94e1a15f3713723b9092199db34c0a677ad4b0a722a2aa8aaa96b32c0"
+          }
+        },
+        {
+          "ruleId": "2-0-shadowing-local",
+          "message": {
+            "text": "ERC20Permit.constructor(string).name (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#39) shadows:\n\t- ERC20.name() (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#52-54) (function)\n\t- IERC20Metadata.name() (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#15) (function)\n",
+            "markdown": "[ERC20Permit.constructor(string).name](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#L39) shadows:\n\t- [ERC20.name()](lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#L52-L54) (function)\n\t- [IERC20Metadata.name()](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#L15) (function)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "1f85c0fac855acf8d2d6992ee89e0b0ee24104b934a28808f04d68e95041b471"
+          }
+        },
+        {
+          "ruleId": "2-1-missing-zero-check",
+          "message": {
+            "text": "KindredComment.setTreasury(address)._treasury (src/KindredComment.sol#380) lacks a zero-check on :\n\t\t- treasury = _treasury (src/KindredComment.sol#381)\n",
+            "markdown": "[KindredComment.setTreasury(address)._treasury](src/KindredComment.sol#L380) lacks a zero-check on :\n\t\t- [treasury = _treasury](src/KindredComment.sol#L381)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredComment.sol"
+                },
+                "region": {
+                  "startLine": 380,
+                  "endLine": 380
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "a13d367e3d653cc75dd91b32cda36a80385734e962e699616de3033171bc5a2e"
+          }
+        },
+        {
+          "ruleId": "2-1-missing-zero-check",
+          "message": {
+            "text": "KindredComment.constructor(address,address)._treasury (src/KindredComment.sol#123) lacks a zero-check on :\n\t\t- treasury = _treasury (src/KindredComment.sol#128)\n",
+            "markdown": "[KindredComment.constructor(address,address)._treasury](src/KindredComment.sol#L123) lacks a zero-check on :\n\t\t- [treasury = _treasury](src/KindredComment.sol#L128)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredComment.sol"
+                },
+                "region": {
+                  "startLine": 123,
+                  "endLine": 123
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "a71e639906c0cdfa3e05e0973dd752d3cb62b99886cafd416cbcdd939b3995df"
+          }
+        },
+        {
+          "ruleId": "2-1-calls-loop",
+          "message": {
+            "text": "KindredReputationOracle.getScore(address) (src/KindredReputationOracle.sol#71-124) has external calls inside a loop: comment = kindredComment.getComment(commentIds[i]) (src/KindredReputationOracle.sol#95)\n",
+            "markdown": "[KindredReputationOracle.getScore(address)](src/KindredReputationOracle.sol#L71-L124) has external calls inside a loop: [comment = kindredComment.getComment(commentIds[i])](src/KindredReputationOracle.sol#L95)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredReputationOracle.sol"
+                },
+                "region": {
+                  "startLine": 71,
+                  "endLine": 124
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "93a3e6e69302f93ce9e16c81e20642855c7930b771fed2baecce3813cb401d9a"
+          }
+        },
+        {
+          "ruleId": "2-1-calls-loop",
+          "message": {
+            "text": "KindredReputationOracle.getScoreBreakdown(address) (src/KindredReputationOracle.sol#193-240) has external calls inside a loop: comment = kindredComment.getComment(commentIds[i]) (src/KindredReputationOracle.sol#215)\n",
+            "markdown": "[KindredReputationOracle.getScoreBreakdown(address)](src/KindredReputationOracle.sol#L193-L240) has external calls inside a loop: [comment = kindredComment.getComment(commentIds[i])](src/KindredReputationOracle.sol#L215)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredReputationOracle.sol"
+                },
+                "region": {
+                  "startLine": 193,
+                  "endLine": 240
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "ba0c59e5052d336f1764e874c046840818aa64747ad8a4c1f4cf8fa3e079661c"
+          }
+        },
+        {
+          "ruleId": "2-1-timestamp",
+          "message": {
+            "text": "KindTokenTestnet.faucet() (src/KindToken.sol#93-100) uses timestamp for comparisons\n\tDangerous comparisons:\n\t- block.timestamp < lastFaucetRequest[msg.sender] + FAUCET_COOLDOWN (src/KindToken.sol#94)\n",
+            "markdown": "[KindTokenTestnet.faucet()](src/KindToken.sol#L93-L100) uses timestamp for comparisons\n\tDangerous comparisons:\n\t- [block.timestamp < lastFaucetRequest[msg.sender] + FAUCET_COOLDOWN](src/KindToken.sol#L94)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindToken.sol"
+                },
+                "region": {
+                  "startLine": 93,
+                  "endLine": 100
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "12b469f55e71d97e38c5720fb13a570f2e1254c42d1d5a4b2d8457203b48ac05"
+          }
+        },
+        {
+          "ruleId": "2-1-timestamp",
+          "message": {
+            "text": "ERC20Permit.permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#42-65) uses timestamp for comparisons\n\tDangerous comparisons:\n\t- block.timestamp > deadline (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#51)\n",
+            "markdown": "[ERC20Permit.permit(address,address,uint256,uint256,uint8,bytes32,bytes32)](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#L42-L65) uses timestamp for comparisons\n\tDangerous comparisons:\n\t- [block.timestamp > deadline](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#L51)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol"
+                },
+                "region": {
+                  "startLine": 42,
+                  "endLine": 65
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "634385cd582bb99e9880ddda51ae66fb6b69874027c1d82ec2e401ba3afd318a"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.tryMul(uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#73-84) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#76-80)\n",
+            "markdown": "[Math.tryMul(uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L73-L84) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L76-L80)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 73,
+                  "endLine": 84
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "0614eaa799c65c7a0dd915c72c766983762e740a48c1b88d4d9b80d132c5e1f7"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math._zeroBytes(bytes) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#478-490) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#482-484)\n",
+            "markdown": "[Math._zeroBytes(bytes)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L478-L490) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L482-L484)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 478,
+                  "endLine": 490
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "0aca81f4c74fc46475cf143b1175b6644f87efde3400099cf420cc6d46132992"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getAddressSlot(bytes32) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#66-70) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#67-69)\n",
+            "markdown": "[StorageSlot.getAddressSlot(bytes32)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L66-L70) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L67-L69)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 66,
+                  "endLine": 70
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "0cb0950f0a0659779cfbb710140755d3c77f5a3e0cd20665f14e2c29ffa77241"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "ECDSA.parse(bytes) (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#217-240) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#218-239)\n",
+            "markdown": "[ECDSA.parse(bytes)](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L217-L240) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L218-L239)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol"
+                },
+                "region": {
+                  "startLine": 217,
+                  "endLine": 240
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "102bef01d47b97d1fd8afba11e847c3a46568f1450805cb8c35ad87d7233b337"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "MessageHashUtils.toDomainTypeHash(bytes1) (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#182-227) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#185-226)\n",
+            "markdown": "[MessageHashUtils.toDomainTypeHash(bytes1)](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L182-L227) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L185-L226)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol"
+                },
+                "region": {
+                  "startLine": 182,
+                  "endLine": 227
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "1418fce8862c716769bad90848862f5744c46a19e3f02ed22ae09532d61e3812"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.mul512(uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#37-46) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#41-45)\n",
+            "markdown": "[Math.mul512(uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L37-L46) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L41-L45)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 46
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "168b15c466213dab4f22538081a848ff5bb2677ed1f68f8a6e3c5cec40bb386c"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.mulDiv(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#206-277) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#229-236)\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#242-251)\n",
+            "markdown": "[Math.mulDiv(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L206-L277) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L229-L236)\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L242-L251)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 206,
+                  "endLine": 277
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "1bd732c19519e123841ebb947318ac5e5c5dd6dd254899214fe78b2834b787e2"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.add512(uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#25-30) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#26-29)\n",
+            "markdown": "[Math.add512(uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L25-L30) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L26-L29)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 30
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "28bdebcd76b79ef2976918aae40b2d93a0922c69961989873a3970a98b70bc7f"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "ECDSA.tryRecoverCalldata(bytes32,bytes) (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#85-104) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#95-99)\n",
+            "markdown": "[ECDSA.tryRecoverCalldata(bytes32,bytes)](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L85-L104) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L95-L99)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol"
+                },
+                "region": {
+                  "startLine": 85,
+                  "endLine": 104
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "32276768cf2c9309ad4a9fd1faaa011c525d40798b46bcda8f78899da717e0c1"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "SafeCast.toUint(bool) (lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#1157-1161) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#1158-1160)\n",
+            "markdown": "[SafeCast.toUint(bool)](lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#L1157-L1161) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#L1158-L1160)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol"
+                },
+                "region": {
+                  "startLine": 1157,
+                  "endLine": 1161
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "34f9a9306e1110542216cbccf2fca90cca99dfbf63bb6c8f67872d4824c90459"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "ECDSA.tryRecover(bytes32,bytes) (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#61-80) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#71-75)\n",
+            "markdown": "[ECDSA.tryRecover(bytes32,bytes)](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L61-L80) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L71-L75)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol"
+                },
+                "region": {
+                  "startLine": 61,
+                  "endLine": 80
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "376b84984445be3703f0a021a26d075896dd48f75dc100db46a701537d1fd34f"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getInt256Slot(bytes32) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#102-106) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#103-105)\n",
+            "markdown": "[StorageSlot.getInt256Slot(bytes32)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L102-L106) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L103-L105)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 102,
+                  "endLine": 106
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "39b269e77ca4a55a660c8ff6fb0327594b7836943bf18153a5a3f415eaec6ee2"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.tryModExp(bytes,bytes,bytes) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#451-473) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#463-472)\n",
+            "markdown": "[Math.tryModExp(bytes,bytes,bytes)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L451-L473) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L463-L472)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 451,
+                  "endLine": 473
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "40f8056918b342873870666ee9219ff54e855f6acce43ca8a9cdb34b4a8692d1"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Bytes.concat(bytes[]) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#183-203) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#194-196)\n",
+            "markdown": "[Bytes.concat(bytes[])](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L183-L203) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L194-L196)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 183,
+                  "endLine": 203
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "414c560655c4d093c4549ddda2b7aea8eb9b7032bb6a23ded88de4ada8d52cf2"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.tryModExp(uint256,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#411-435) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#413-434)\n",
+            "markdown": "[Math.tryModExp(uint256,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L411-L435) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L413-L434)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 411,
+                  "endLine": 435
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "48df44bd50eb3c0995f482fc56294b5ac38532faa71891daeaba1dd47910454d"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Panic.panic(uint256) (lib/openzeppelin-contracts/contracts/utils/Panic.sol#50-56) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Panic.sol#51-55)\n",
+            "markdown": "[Panic.panic(uint256)](lib/openzeppelin-contracts/contracts/utils/Panic.sol#L50-L56) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Panic.sol#L51-L55)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Panic.sol"
+                },
+                "region": {
+                  "startLine": 50,
+                  "endLine": 56
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "514042b8e90a4f94cc8e124d087dd1ee57e83611d0d7143d6ea91f34a1a40c2b"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "SafeERC20._safeTransfer(IERC20,address,uint256,bool) (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#176-200) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#179-199)\n",
+            "markdown": "[SafeERC20._safeTransfer(IERC20,address,uint256,bool)](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L176-L200) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L179-L199)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol"
+                },
+                "region": {
+                  "startLine": 176,
+                  "endLine": 200
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "52b2d86ef477d24a76412d6ad85fb052da644261139cada47b9a0bb362b6dcf0"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getBytesSlot(bytes32) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#129-133) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#130-132)\n",
+            "markdown": "[StorageSlot.getBytesSlot(bytes32)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L129-L133) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L130-L132)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 129,
+                  "endLine": 133
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "5312cebb2ab4b8c384cec1819b8568b6c3421d67d46e2d67394b702843826ee6"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "MessageHashUtils.toDataWithIntendedValidatorHash(address,bytes32) (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#71-81) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#75-80)\n",
+            "markdown": "[MessageHashUtils.toDataWithIntendedValidatorHash(address,bytes32)](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L71-L81) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L75-L80)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol"
+                },
+                "region": {
+                  "startLine": 71,
+                  "endLine": 81
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "592ca2f8474e02b043750357850d208d7422e09deab20aba323dc60357768534"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.log2(uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#619-658) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#655-657)\n",
+            "markdown": "[Math.log2(uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L619-L658) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L655-L657)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 619,
+                  "endLine": 658
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "6573c467bc9e0b668393b654835d00ccad45b96f3847ce70688f03332a48aca1"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getStringSlot(string) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#120-124) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#121-123)\n",
+            "markdown": "[StorageSlot.getStringSlot(string)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L120-L124) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L121-L123)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 120,
+                  "endLine": 124
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "6a9ae1f07a6a025e863e9db6b62be4f7010ba985b05c152e4f03dae1893353f7"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Bytes.slice(bytes,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#86-98) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#93-95)\n",
+            "markdown": "[Bytes.slice(bytes,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L86-L98) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L93-L95)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 86,
+                  "endLine": 98
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "6d477941aa52ed6a05cf6c9a66f04cd0a8678b8130918427e2c274af1a669429"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getBytes32Slot(bytes32) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#84-88) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#85-87)\n",
+            "markdown": "[StorageSlot.getBytes32Slot(bytes32)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L84-L88) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L85-L87)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 84,
+                  "endLine": 88
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "6e227cedcd7e749e974202ff8de10aac20188eab08f34d87055eed0e201722d2"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Strings.toString(uint256) (lib/openzeppelin-contracts/contracts/utils/Strings.sol#46-64) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Strings.sol#51-53)\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Strings.sol#56-58)\n",
+            "markdown": "[Strings.toString(uint256)](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L46-L64) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L51-L53)\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L56-L58)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Strings.sol"
+                },
+                "region": {
+                  "startLine": 46,
+                  "endLine": 64
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "6f1426309f901408fef08df865347765a5222fd06e9ca6d316d9305d7cffdc91"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.tryMod(uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#102-110) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#105-108)\n",
+            "markdown": "[Math.tryMod(uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L102-L110) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L105-L108)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 102,
+                  "endLine": 110
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "7313f74380b103670486dbd8cf457c4b4778807730acf647419c5b82c007e98d"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getBytesSlot(bytes) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#138-142) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#139-141)\n",
+            "markdown": "[StorageSlot.getBytesSlot(bytes)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L138-L142) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L139-L141)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 138,
+                  "endLine": 142
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "749137134693cf0304f52b590e5a47c5286e0c8814e75ef8be3f6159fd60f08c"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Math.tryDiv(uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#89-97) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#92-95)\n",
+            "markdown": "[Math.tryDiv(uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L89-L97) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L92-L95)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 89,
+                  "endLine": 97
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "7d30224ad923fb46b530816990ce5e4fbe1512dd2fa9f27e469f40cae1573b3f"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Strings.escapeJSON(string) (lib/openzeppelin-contracts/contracts/utils/Strings.sol#464-494) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Strings.sol#488-491)\n",
+            "markdown": "[Strings.escapeJSON(string)](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L464-L494) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L488-L491)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Strings.sol"
+                },
+                "region": {
+                  "startLine": 464,
+                  "endLine": 494
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "87dffb6a81a75e0e9c3dffa640da33790937c0b4cdad2c7087b8c703b12ec985"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Bytes.splice(bytes,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#117-129) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#123-126)\n",
+            "markdown": "[Bytes.splice(bytes,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L117-L129) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L123-L126)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 117,
+                  "endLine": 129
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "92c94decfe2012cf4a2ba5c2c469b077abb0af90941a96cf534a34a7ff5c223a"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "ERC721Utils.checkOnERC721Received(address,address,address,uint256,bytes) (lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#25-49) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#43-45)\n",
+            "markdown": "[ERC721Utils.checkOnERC721Received(address,address,address,uint256,bytes)](lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#L25-L49) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#L43-L45)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 49
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "93040732a219ee835ef1a2ba8f6fda94dc514205d2c6d728b33a153dccc9a0f4"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getBooleanSlot(bytes32) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#75-79) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#76-78)\n",
+            "markdown": "[StorageSlot.getBooleanSlot(bytes32)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L75-L79) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L76-L78)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 75,
+                  "endLine": 79
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "983222c57c42f357d634e6a0307e308f2f0068150a399b605dcd74e034e93c8b"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "SafeERC20._safeApprove(IERC20,address,uint256,bool) (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#255-279) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#258-278)\n",
+            "markdown": "[SafeERC20._safeApprove(IERC20,address,uint256,bool)](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L255-L279) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L258-L278)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol"
+                },
+                "region": {
+                  "startLine": 255,
+                  "endLine": 279
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "9a59084a82f746594dff0d21ff078bc97723b0994e013e033b2578521c5e888f"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getStringSlot(bytes32) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#111-115) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#112-114)\n",
+            "markdown": "[StorageSlot.getStringSlot(bytes32)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L111-L115) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L112-L114)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 111,
+                  "endLine": 115
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "a06128e1b1c97ee25c55d74dda6e1aaa0976f9d134f60bf4344ab3080b21abd2"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Bytes.toNibbles(bytes) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#210-245) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#211-244)\n",
+            "markdown": "[Bytes.toNibbles(bytes)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L210-L245) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L211-L244)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 210,
+                  "endLine": 245
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "a7accc79eedb33fa72f6e3c67fc8e7b584db478e75a4d8349ca4ed86adc91299"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Bytes.replace(bytes,uint256,bytes,uint256,uint256) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#154-172) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#167-169)\n",
+            "markdown": "[Bytes.replace(bytes,uint256,bytes,uint256,uint256)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L154-L172) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L167-L169)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 154,
+                  "endLine": 172
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "aa553491edd5f6b6c144f8875e28f1c90a00f75ba4e3a2b9d1963b8dbd11412d"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Bytes._unsafeReadBytesOffset(bytes,uint256) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#326-331) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#328-330)\n",
+            "markdown": "[Bytes._unsafeReadBytesOffset(bytes,uint256)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L326-L331) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L328-L330)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 326,
+                  "endLine": 331
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "ab47a3565cd425d9f703fe19c41a213e5359fc25193beb8cb9b6a028411504b0"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "MessageHashUtils.toTypedDataHash(bytes32,bytes32) (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#92-100) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#93-99)\n",
+            "markdown": "[MessageHashUtils.toTypedDataHash(bytes32,bytes32)](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L92-L100) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L93-L99)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol"
+                },
+                "region": {
+                  "startLine": 92,
+                  "endLine": 100
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "b8bbc112db24145657198c1dfca356750381eb0406d6d6b27661fa0d36679962"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "MessageHashUtils.toDomainSeparator(bytes1,bytes32,bytes32,uint256,address,bytes32) (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#137-179) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#147-178)\n",
+            "markdown": "[MessageHashUtils.toDomainSeparator(bytes1,bytes32,bytes32,uint256,address,bytes32)](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L137-L179) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L147-L178)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol"
+                },
+                "region": {
+                  "startLine": 137,
+                  "endLine": 179
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "bb8c2de34be36ff99e69817d307f3cb1a3a1aec3dcd57c0e31a6e0edc2c7929c"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "SafeERC20._safeTransferFrom(IERC20,address,address,uint256,bool) (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#212-244) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#221-243)\n",
+            "markdown": "[SafeERC20._safeTransferFrom(IERC20,address,address,uint256,bool)](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L212-L244) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L221-L243)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol"
+                },
+                "region": {
+                  "startLine": 212,
+                  "endLine": 244
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "bf915ac8f52c89d443fe5a93a540b95766d6cae507d4ca6fb527816b1d8fe59a"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "ShortStrings.toString(ShortString) (lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#63-72) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#67-70)\n",
+            "markdown": "[ShortStrings.toString(ShortString)](lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#L63-L72) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#L67-L70)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol"
+                },
+                "region": {
+                  "startLine": 63,
+                  "endLine": 72
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "c883e75f7a7a67b5a268e9ab40a19cabc878999ebcb860cb9c154b26c6781120"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Strings._unsafeReadBytesOffset(bytes,uint256) (lib/openzeppelin-contracts/contracts/utils/Strings.sol#502-507) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Strings.sol#504-506)\n",
+            "markdown": "[Strings._unsafeReadBytesOffset(bytes,uint256)](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L502-L507) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L504-L506)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Strings.sol"
+                },
+                "region": {
+                  "startLine": 502,
+                  "endLine": 507
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "d3e02c2cd6cfd1412c197dc6c301851ac9f50f5089228cd0abaa4d601357906a"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "StorageSlot.getUint256Slot(bytes32) (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#93-97) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#94-96)\n",
+            "markdown": "[StorageSlot.getUint256Slot(bytes32)](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L93-L97) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L94-L96)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol"
+                },
+                "region": {
+                  "startLine": 93,
+                  "endLine": 97
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "e0999a78e2a4800028a800b8f94e81bd4b1fcbb9c2c0021af31da78c22e747e4"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "ECDSA.parseCalldata(bytes) (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#245-268) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#246-267)\n",
+            "markdown": "[ECDSA.parseCalldata(bytes)](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L245-L268) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L246-L267)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol"
+                },
+                "region": {
+                  "startLine": 245,
+                  "endLine": 268
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "e0c52ea167273df53a552eaafe47393f2314e5f9477655bb2a1c54b225f7447e"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "MessageHashUtils.toEthSignedMessageHash(bytes32) (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#32-38) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#33-37)\n",
+            "markdown": "[MessageHashUtils.toEthSignedMessageHash(bytes32)](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L32-L38) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L33-L37)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol"
+                },
+                "region": {
+                  "startLine": 32,
+                  "endLine": 38
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "ecfc9c8df4156de04f8d6f5da0311134319a0611eab39eab88bc79ffa2c85566"
+          }
+        },
+        {
+          "ruleId": "3-0-assembly",
+          "message": {
+            "text": "Strings.toChecksumHexString(address) (lib/openzeppelin-contracts/contracts/utils/Strings.sol#112-130) uses assembly\n\t- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Strings.sol#117-119)\n",
+            "markdown": "[Strings.toChecksumHexString(address)](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L112-L130) uses assembly\n\t- [INLINE ASM](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L117-L119)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Strings.sol"
+                },
+                "region": {
+                  "startLine": 112,
+                  "endLine": 130
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "fe04db1ccc5c52c1958529f8af03e6392da47d2102376b4faaac71a91f633bf0"
+          }
+        },
+        {
+          "ruleId": "3-0-pragma",
+          "message": {
+            "text": "6 different versions of Solidity are used:\n\t- Version constraint ^0.8.20 is used by:\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/access/Ownable.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Burnable.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Nonces.sol#3)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Panic.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#5)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#4)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#5)\n\t\t-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol#4)\n\t- Version constraint >=0.6.2 is used by:\n\t\t->=0.6.2 (lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol#4)\n\t\t->=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#4)\n\t\t->=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol#4)\n\t\t->=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol#4)\n\t- Version constraint >=0.4.16 is used by:\n\t\t->=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol#4)\n\t\t->=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol#4)\n\t\t->=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC5267.sol#4)\n\t\t->=0.4.16 (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#4)\n\t\t->=0.4.16 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol#4)\n\t\t->=0.4.16 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#4)\n\t- Version constraint >=0.8.4 is used by:\n\t\t->=0.8.4 (lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol#4)\n\t- Version constraint ^0.8.24 is used by:\n\t\t-^0.8.24 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#4)\n\t\t-^0.8.24 (lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#4)\n\t\t-^0.8.24 (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#4)\n\t\t-^0.8.24 (lib/openzeppelin-contracts/contracts/utils/Strings.sol#4)\n\t\t-^0.8.24 (lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol#4)\n\t\t-^0.8.24 (lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#4)\n\t\t-^0.8.24 (src/KindToken.sol#2)\n\t\t-^0.8.24 (src/KindredComment.sol#2)\n\t\t-^0.8.24 (src/KindredHook.sol#2)\n\t\t-^0.8.24 (src/KindredReputationOracle.sol#2)\n\t\t-^0.8.24 (src/ReputationOracle.sol#2)\n\t- Version constraint >=0.5.0 is used by:\n\t\t->=0.5.0 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol#4)\n",
+            "markdown": "6 different versions of Solidity are used:\n\t- Version constraint ^0.8.20 is used by:\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/access/Ownable.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Burnable.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/Context.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/Nonces.sol#L3)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/Panic.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/Pausable.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L5)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L4)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#L5)\n\t\t-[^0.8.20](lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol#L4)\n\t- Version constraint >=0.6.2 is used by:\n\t\t-[>=0.6.2](lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol#L4)\n\t\t-[>=0.6.2](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#L4)\n\t\t-[>=0.6.2](lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol#L4)\n\t\t-[>=0.6.2](lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol#L4)\n\t- Version constraint >=0.4.16 is used by:\n\t\t-[>=0.4.16](lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol#L4)\n\t\t-[>=0.4.16](lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol#L4)\n\t\t-[>=0.4.16](lib/openzeppelin-contracts/contracts/interfaces/IERC5267.sol#L4)\n\t\t-[>=0.4.16](lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#L4)\n\t\t-[>=0.4.16](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol#L4)\n\t\t-[>=0.4.16](lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#L4)\n\t- Version constraint >=0.8.4 is used by:\n\t\t-[>=0.8.4](lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol#L4)\n\t- Version constraint ^0.8.24 is used by:\n\t\t-[^0.8.24](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#L4)\n\t\t-[^0.8.24](lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#L4)\n\t\t-[^0.8.24](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L4)\n\t\t-[^0.8.24](lib/openzeppelin-contracts/contracts/utils/Strings.sol#L4)\n\t\t-[^0.8.24](lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol#L4)\n\t\t-[^0.8.24](lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol#L4)\n\t\t-[^0.8.24](src/KindToken.sol#L2)\n\t\t-[^0.8.24](src/KindredComment.sol#L2)\n\t\t-[^0.8.24](src/KindredHook.sol#L2)\n\t\t-[^0.8.24](src/KindredReputationOracle.sol#L2)\n\t\t-[^0.8.24](src/ReputationOracle.sol#L2)\n\t- Version constraint >=0.5.0 is used by:\n\t\t-[>=0.5.0](lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol#L4)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/access/Ownable.sol"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 4
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "e8bab1f8cf2b33747305f0facf32cab86c9f23109c52ab5f9526cf961386388a"
+          }
+        },
+        {
+          "ruleId": "3-0-solc-version",
+          "message": {
+            "text": "Version constraint >=0.5.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- DirtyBytesArrayToStorage\n\t- ABIDecodeTwoDimensionalArrayMemory\n\t- KeccakCaching\n\t- EmptyByteArrayCopy\n\t- DynamicArrayCleanup\n\t- ImplicitConstructorCallvalueCheck\n\t- TupleAssignmentMultiStackSlotComponents\n\t- MemoryArrayCreationOverflow\n\t- privateCanBeOverridden\n\t- SignedArrayStorageCopy\n\t- ABIEncoderV2StorageArrayWithMultiSlotElement\n\t- DynamicConstructorArgumentsClippedABIV2\n\t- UninitializedFunctionPointerInConstructor\n\t- IncorrectEventSignatureInLibraries\n\t- ABIEncoderV2PackedStorage.\nIt is used by:\n\t- >=0.5.0 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol#4)\n",
+            "markdown": "Version constraint >=0.5.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- DirtyBytesArrayToStorage\n\t- ABIDecodeTwoDimensionalArrayMemory\n\t- KeccakCaching\n\t- EmptyByteArrayCopy\n\t- DynamicArrayCleanup\n\t- ImplicitConstructorCallvalueCheck\n\t- TupleAssignmentMultiStackSlotComponents\n\t- MemoryArrayCreationOverflow\n\t- privateCanBeOverridden\n\t- SignedArrayStorageCopy\n\t- ABIEncoderV2StorageArrayWithMultiSlotElement\n\t- DynamicConstructorArgumentsClippedABIV2\n\t- UninitializedFunctionPointerInConstructor\n\t- IncorrectEventSignatureInLibraries\n\t- ABIEncoderV2PackedStorage.\nIt is used by:\n\t- [>=0.5.0](lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol#L4)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 4
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "57881b16be1915cd34254122ce638a143130ebdef11b787e7a267d2507e87559"
+          }
+        },
+        {
+          "ruleId": "3-0-solc-version",
+          "message": {
+            "text": "Version constraint >=0.8.4 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- FullInlinerNonExpressionSplitArgumentEvaluationOrder\n\t- MissingSideEffectsOnSelectorAccess\n\t- AbiReencodingHeadOverflowWithStaticArrayCleanup\n\t- DirtyBytesArrayToStorage\n\t- DataLocationChangeInInternalOverride\n\t- NestedCalldataArrayAbiReencodingSizeValidation\n\t- SignedImmutables.\nIt is used by:\n\t- >=0.8.4 (lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol#4)\n",
+            "markdown": "Version constraint >=0.8.4 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- FullInlinerNonExpressionSplitArgumentEvaluationOrder\n\t- MissingSideEffectsOnSelectorAccess\n\t- AbiReencodingHeadOverflowWithStaticArrayCleanup\n\t- DirtyBytesArrayToStorage\n\t- DataLocationChangeInInternalOverride\n\t- NestedCalldataArrayAbiReencodingSizeValidation\n\t- SignedImmutables.\nIt is used by:\n\t- [>=0.8.4](lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol#L4)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 4
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "92c6e849d832cf91fa63f01b019d66fcbd653b0aa356789ea215cc0cd8f27539"
+          }
+        },
+        {
+          "ruleId": "3-0-solc-version",
+          "message": {
+            "text": "Version constraint >=0.6.2 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- MissingSideEffectsOnSelectorAccess\n\t- AbiReencodingHeadOverflowWithStaticArrayCleanup\n\t- DirtyBytesArrayToStorage\n\t- NestedCalldataArrayAbiReencodingSizeValidation\n\t- ABIDecodeTwoDimensionalArrayMemory\n\t- KeccakCaching\n\t- EmptyByteArrayCopy\n\t- DynamicArrayCleanup\n\t- MissingEscapingInFormatting\n\t- ArraySliceDynamicallyEncodedBaseType\n\t- ImplicitConstructorCallvalueCheck\n\t- TupleAssignmentMultiStackSlotComponents\n\t- MemoryArrayCreationOverflow.\nIt is used by:\n\t- >=0.6.2 (lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol#4)\n\t- >=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#4)\n\t- >=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol#4)\n\t- >=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol#4)\n",
+            "markdown": "Version constraint >=0.6.2 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- MissingSideEffectsOnSelectorAccess\n\t- AbiReencodingHeadOverflowWithStaticArrayCleanup\n\t- DirtyBytesArrayToStorage\n\t- NestedCalldataArrayAbiReencodingSizeValidation\n\t- ABIDecodeTwoDimensionalArrayMemory\n\t- KeccakCaching\n\t- EmptyByteArrayCopy\n\t- DynamicArrayCleanup\n\t- MissingEscapingInFormatting\n\t- ArraySliceDynamicallyEncodedBaseType\n\t- ImplicitConstructorCallvalueCheck\n\t- TupleAssignmentMultiStackSlotComponents\n\t- MemoryArrayCreationOverflow.\nIt is used by:\n\t- [>=0.6.2](lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol#L4)\n\t- [>=0.6.2](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#L4)\n\t- [>=0.6.2](lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol#L4)\n\t- [>=0.6.2](lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol#L4)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 4
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "a5209c773438624b3a564b732bb592751be506eef80fe195273c94eeace2cf87"
+          }
+        },
+        {
+          "ruleId": "3-0-solc-version",
+          "message": {
+            "text": "Version constraint ^0.8.20 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- VerbatimInvalidDeduplication\n\t- FullInlinerNonExpressionSplitArgumentEvaluationOrder\n\t- MissingSideEffectsOnSelectorAccess.\nIt is used by:\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/access/Ownable.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Burnable.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Nonces.sol#3)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Panic.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#5)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#4)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#5)\n\t- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol#4)\n",
+            "markdown": "Version constraint ^0.8.20 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- VerbatimInvalidDeduplication\n\t- FullInlinerNonExpressionSplitArgumentEvaluationOrder\n\t- MissingSideEffectsOnSelectorAccess.\nIt is used by:\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/access/Ownable.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Burnable.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/Context.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/Nonces.sol#L3)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/Panic.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/Pausable.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol#L5)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L4)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#L5)\n\t- [^0.8.20](lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol#L4)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/access/Ownable.sol"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 4
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "c043ef9077ff87004e99dfb44d438a9a92a6cf775ed68a399043f18f128cc600"
+          }
+        },
+        {
+          "ruleId": "3-0-solc-version",
+          "message": {
+            "text": "Version constraint >=0.4.16 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- DirtyBytesArrayToStorage\n\t- ABIDecodeTwoDimensionalArrayMemory\n\t- KeccakCaching\n\t- EmptyByteArrayCopy\n\t- DynamicArrayCleanup\n\t- ImplicitConstructorCallvalueCheck\n\t- TupleAssignmentMultiStackSlotComponents\n\t- MemoryArrayCreationOverflow\n\t- privateCanBeOverridden\n\t- SignedArrayStorageCopy\n\t- ABIEncoderV2StorageArrayWithMultiSlotElement\n\t- DynamicConstructorArgumentsClippedABIV2\n\t- UninitializedFunctionPointerInConstructor_0.4.x\n\t- IncorrectEventSignatureInLibraries_0.4.x\n\t- ExpExponentCleanup\n\t- NestedArrayFunctionCallDecoder\n\t- ZeroFunctionSelector.\nIt is used by:\n\t- >=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol#4)\n\t- >=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol#4)\n\t- >=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC5267.sol#4)\n\t- >=0.4.16 (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#4)\n\t- >=0.4.16 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol#4)\n\t- >=0.4.16 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#4)\n",
+            "markdown": "Version constraint >=0.4.16 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)\n\t- DirtyBytesArrayToStorage\n\t- ABIDecodeTwoDimensionalArrayMemory\n\t- KeccakCaching\n\t- EmptyByteArrayCopy\n\t- DynamicArrayCleanup\n\t- ImplicitConstructorCallvalueCheck\n\t- TupleAssignmentMultiStackSlotComponents\n\t- MemoryArrayCreationOverflow\n\t- privateCanBeOverridden\n\t- SignedArrayStorageCopy\n\t- ABIEncoderV2StorageArrayWithMultiSlotElement\n\t- DynamicConstructorArgumentsClippedABIV2\n\t- UninitializedFunctionPointerInConstructor_0.4.x\n\t- IncorrectEventSignatureInLibraries_0.4.x\n\t- ExpExponentCleanup\n\t- NestedArrayFunctionCallDecoder\n\t- ZeroFunctionSelector.\nIt is used by:\n\t- [>=0.4.16](lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol#L4)\n\t- [>=0.4.16](lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol#L4)\n\t- [>=0.4.16](lib/openzeppelin-contracts/contracts/interfaces/IERC5267.sol#L4)\n\t- [>=0.4.16](lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#L4)\n\t- [>=0.4.16](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol#L4)\n\t- [>=0.4.16](lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#L4)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 4
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "c047bfa88c0f0f749af1b83364ff17fe9eee5c1b8906673eaf1cacc88c4972c2"
+          }
+        },
+        {
+          "ruleId": "3-0-missing-inheritance",
+          "message": {
+            "text": "KindredReputationOracle (src/KindredReputationOracle.sol#22-241) should inherit from IReputationOracle (src/KindredHook.sol#10-13)\n",
+            "markdown": "[KindredReputationOracle](src/KindredReputationOracle.sol#L22-L241) should inherit from [IReputationOracle](src/KindredHook.sol#L10-L13)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredReputationOracle.sol"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 241
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "adc1d2c1a2ee0c4998ea8d20ac2a270a35a8de4f22f5edfd9aa3f7b6bfc8d4d5"
+          }
+        },
+        {
+          "ruleId": "3-0-missing-inheritance",
+          "message": {
+            "text": "ReputationOracle (src/ReputationOracle.sol#6-130) should inherit from IReputationOracle (src/KindredHook.sol#10-13)\n",
+            "markdown": "[ReputationOracle](src/ReputationOracle.sol#L6-L130) should inherit from [IReputationOracle](src/KindredHook.sol#L10-L13)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ReputationOracle.sol"
+                },
+                "region": {
+                  "startLine": 6,
+                  "endLine": 130
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "ced5755bb4b8db2e501aaf9f5e084e7c87273020e4ef8efca564fb85edb3c621"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Parameter KindredComment.setTreasury(address)._treasury (src/KindredComment.sol#380) is not in mixedCase\n",
+            "markdown": "Parameter [KindredComment.setTreasury(address)._treasury](src/KindredComment.sol#L380) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredComment.sol"
+                },
+                "region": {
+                  "startLine": 380,
+                  "endLine": 380
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "35794a1d8aaa68b069ba1b1e09b6c411d0077c9921f4b26e6cca69224789dffb"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Function EIP712._EIP712Version() (lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol#157-159) is not in mixedCase\n",
+            "markdown": "Function [EIP712._EIP712Version()](lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol#L157-L159) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol"
+                },
+                "region": {
+                  "startLine": 157,
+                  "endLine": 159
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "5b08301e8648d88e4cc740cc85995aa02917ecb8ccef3ef89d067cf5d80e4685"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Parameter ReputationOracle.setBlocked(address,bool)._blocked (src/ReputationOracle.sol#89) is not in mixedCase\n",
+            "markdown": "Parameter [ReputationOracle.setBlocked(address,bool)._blocked](src/ReputationOracle.sol#L89) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ReputationOracle.sol"
+                },
+                "region": {
+                  "startLine": 89,
+                  "endLine": 89
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "84f13cd634e1e0a58ac962d0d86a0d6cea42a815221150582dcbda2ce3760d26"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Parameter KindredReputationOracle.setBlocked(address,bool)._blocked (src/KindredReputationOracle.sol#162) is not in mixedCase\n",
+            "markdown": "Parameter [KindredReputationOracle.setBlocked(address,bool)._blocked](src/KindredReputationOracle.sol#L162) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/KindredReputationOracle.sol"
+                },
+                "region": {
+                  "startLine": 162,
+                  "endLine": 162
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "92034ba4a224fc591348182094bb0dcdc7d18953651ebf439f3f5a0126e58ecb"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Parameter ReputationOracle.batchSetScores(address[],uint256[])._scores (src/ReputationOracle.sol#77) is not in mixedCase\n",
+            "markdown": "Parameter [ReputationOracle.batchSetScores(address[],uint256[])._scores](src/ReputationOracle.sol#L77) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ReputationOracle.sol"
+                },
+                "region": {
+                  "startLine": 77,
+                  "endLine": 77
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "937ea15c23d34808651a82acd78bf32a02fe3792df72c565691bae1c472641e6"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Function IERC20Permit.DOMAIN_SEPARATOR() (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol#89) is not in mixedCase\n",
+            "markdown": "Function [IERC20Permit.DOMAIN_SEPARATOR()](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol#L89) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol"
+                },
+                "region": {
+                  "startLine": 89,
+                  "endLine": 89
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "9a77c79a6cf40e2f151723e49ba63d30100a56d0f72688e58cdf4a550a6ff843"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Function ERC20Permit.DOMAIN_SEPARATOR() (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#74-76) is not in mixedCase\n",
+            "markdown": "Function [ERC20Permit.DOMAIN_SEPARATOR()](lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol#L74-L76) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol"
+                },
+                "region": {
+                  "startLine": 74,
+                  "endLine": 76
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "ae3f36aabe9ce571b2d0bac868aa8ddd745117bd041ef8300b9798601ba580ca"
+          }
+        },
+        {
+          "ruleId": "3-0-naming-convention",
+          "message": {
+            "text": "Function EIP712._EIP712Name() (lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol#146-148) is not in mixedCase\n",
+            "markdown": "Function [EIP712._EIP712Name()](lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol#L146-L148) is not in mixedCase\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol"
+                },
+                "region": {
+                  "startLine": 146,
+                  "endLine": 148
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "db96ea04e6546eb3d22674155940655c8a832e0e60c564b72e5f02f0c4ebf387"
+          }
+        },
+        {
+          "ruleId": "3-1-too-many-digits",
+          "message": {
+            "text": "Bytes.reverseBytes16(bytes16) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#275-286) uses literals with too many digits:\n\t- value = ((value & 0xFFFFFFFF00000000FFFFFFFF00000000) >> 32) | ((value & 0x00000000FFFFFFFF00000000FFFFFFFF) << 32) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#282-284)\n",
+            "markdown": "[Bytes.reverseBytes16(bytes16)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L275-L286) uses literals with too many digits:\n\t- [value = ((value & 0xFFFFFFFF00000000FFFFFFFF00000000) >> 32) | ((value & 0x00000000FFFFFFFF00000000FFFFFFFF) << 32)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L282-L284)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 275,
+                  "endLine": 286
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "01810cc6ff2f50ed825fadaa581f10ec8934993b1b5856f3fad057298e00d6b9"
+          }
+        },
+        {
+          "ruleId": "3-1-too-many-digits",
+          "message": {
+            "text": "Math.log2(uint256) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#619-658) uses literals with too many digits:\n\t- r = r | byte(uint256,uint256)(x >> r,0x0000010102020202030303030303030300000000000000000000000000000000) (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#656)\n",
+            "markdown": "[Math.log2(uint256)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L619-L658) uses literals with too many digits:\n\t- [r = r | byte(uint256,uint256)(x >> r,0x0000010102020202030303030303030300000000000000000000000000000000)](lib/openzeppelin-contracts/contracts/utils/math/Math.sol#L656)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol"
+                },
+                "region": {
+                  "startLine": 619,
+                  "endLine": 658
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "0d746317b0af6f83551b3f25e77c70dfda35a924dd013ba0774527adcc3b8c0b"
+          }
+        },
+        {
+          "ruleId": "3-1-too-many-digits",
+          "message": {
+            "text": "ShortStrings.slitherConstructorConstantVariables() (lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#40-122) uses literals with too many digits:\n\t- FALLBACK_SENTINEL = 0x00000000000000000000000000000000000000000000000000000000000000FF (lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#42)\n",
+            "markdown": "[ShortStrings.slitherConstructorConstantVariables()](lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#L40-L122) uses literals with too many digits:\n\t- [FALLBACK_SENTINEL = 0x00000000000000000000000000000000000000000000000000000000000000FF](lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol#L42)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/ShortStrings.sol"
+                },
+                "region": {
+                  "startLine": 40,
+                  "endLine": 122
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "186f4716f541b247857e23dd41e5fda89248eea9e580857e3dc021dc1a307c50"
+          }
+        },
+        {
+          "ruleId": "3-1-too-many-digits",
+          "message": {
+            "text": "Bytes.reverseBytes32(bytes32) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#258-272) uses literals with too many digits:\n\t- value = ((value >> 32) & 0x00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF) | ((value & 0x00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF) << 32) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#265-267)\n",
+            "markdown": "[Bytes.reverseBytes32(bytes32)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L258-L272) uses literals with too many digits:\n\t- [value = ((value >> 32) & 0x00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF) | ((value & 0x00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF) << 32)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L265-L267)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 258,
+                  "endLine": 272
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "2cd5229b9974f89cbffbabe781cc4fc822bc515a7f2eb53aac8ad843f81a2e2e"
+          }
+        },
+        {
+          "ruleId": "3-1-too-many-digits",
+          "message": {
+            "text": "Bytes.toNibbles(bytes) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#210-245) uses literals with too many digits:\n\t- chunk_toNibbles_asm_0 = 0x0000000000000000ffffffffffffffff0000000000000000ffffffffffffffff & chunk_toNibbles_asm_0 << 64 | chunk_toNibbles_asm_0 (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#222-225)\n",
+            "markdown": "[Bytes.toNibbles(bytes)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L210-L245) uses literals with too many digits:\n\t- [chunk_toNibbles_asm_0 = 0x0000000000000000ffffffffffffffff0000000000000000ffffffffffffffff & chunk_toNibbles_asm_0 << 64 | chunk_toNibbles_asm_0](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L222-L225)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 210,
+                  "endLine": 245
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "67e2f73d8b0f7df40d3349d2b44f20df49eb49d057d0f6b8c5e045b46472eeb4"
+          }
+        },
+        {
+          "ruleId": "3-1-too-many-digits",
+          "message": {
+            "text": "Bytes.toNibbles(bytes) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#210-245) uses literals with too many digits:\n\t- chunk_toNibbles_asm_0 = 0x00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff & chunk_toNibbles_asm_0 << 32 | chunk_toNibbles_asm_0 (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#226-229)\n",
+            "markdown": "[Bytes.toNibbles(bytes)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L210-L245) uses literals with too many digits:\n\t- [chunk_toNibbles_asm_0 = 0x00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff & chunk_toNibbles_asm_0 << 32 | chunk_toNibbles_asm_0](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L226-L229)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 210,
+                  "endLine": 245
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "850d0debf80060e47d9287251f60b9bcc0c8e373f324cb84b233379e420fd80a"
+          }
+        },
+        {
+          "ruleId": "3-1-too-many-digits",
+          "message": {
+            "text": "Bytes.reverseBytes32(bytes32) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#258-272) uses literals with too many digits:\n\t- value = ((value >> 64) & 0x0000000000000000FFFFFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFF) | ((value & 0x0000000000000000FFFFFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFF) << 64) (lib/openzeppelin-contracts/contracts/utils/Bytes.sol#268-270)\n",
+            "markdown": "[Bytes.reverseBytes32(bytes32)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L258-L272) uses literals with too many digits:\n\t- [value = ((value >> 64) & 0x0000000000000000FFFFFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFF) | ((value & 0x0000000000000000FFFFFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFF) << 64)](lib/openzeppelin-contracts/contracts/utils/Bytes.sol#L268-L270)\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Bytes.sol"
+                },
+                "region": {
+                  "startLine": 258,
+                  "endLine": 272
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "d5c866d59034aaf07d265b6b5e59cee6645a43c963cf7bd23bdd4dab93a3c987"
+          }
+        },
+        {
+          "ruleId": "3-0-unindexed-event-address",
+          "message": {
+            "text": "Event Pausable.Unpaused(address) (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#28) has address parameters but no indexed parameters\n",
+            "markdown": "Event [Pausable.Unpaused(address)](lib/openzeppelin-contracts/contracts/utils/Pausable.sol#L28) has address parameters but no indexed parameters\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Pausable.sol"
+                },
+                "region": {
+                  "startLine": 28,
+                  "endLine": 28
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "6dd5d4bf5e1073fd5b40c46fbbf7c6768b2a1fbb54a2ae3d02fb47ebd806b5db"
+          }
+        },
+        {
+          "ruleId": "3-0-unindexed-event-address",
+          "message": {
+            "text": "Event Pausable.Paused(address) (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#23) has address parameters but no indexed parameters\n",
+            "markdown": "Event [Pausable.Paused(address)](lib/openzeppelin-contracts/contracts/utils/Pausable.sol#L23) has address parameters but no indexed parameters\n"
+          },
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/openzeppelin-contracts/contracts/utils/Pausable.sol"
+                },
+                "region": {
+                  "startLine": 23,
+                  "endLine": 23
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "id": "d70dae3b34011ef87d55e1cfcd7ba32c10cf2659a8bc79ecc9dde48e0ef2d5bd"
+          }
+        }
+      ]
+    }
+  ]
+}

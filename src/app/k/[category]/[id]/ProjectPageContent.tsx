@@ -245,10 +245,10 @@ export function ProjectPageContent({
             totalStaked={reviews.reduce((sum, r) => sum + parseFloat(r.stakeAmount || '0'), 0).toString()}
           />
 
-          {/* Funding & Risk Info Grid */}
+          {/* Funding & Risk Info Grid - Hide for k/gourmet */}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* Funding Info */}
-            {data.funding && (
+            {/* Funding Info - Not for restaurants */}
+            {data.funding && category !== 'k/gourmet' && (
               <div className="p-4 rounded-xl bg-[#1a1a1d] border border-green-500/20">
                 <h3 className="font-bold text-green-400 mb-3 flex items-center gap-2">
                   💰 Funding Information
@@ -288,6 +288,73 @@ export function ProjectPageContent({
                                 {round.investors.join(', ')}
                               </div>
                             )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Restaurant Info - For k/gourmet only */}
+            {category === 'k/gourmet' && (
+              <div className="p-4 rounded-xl bg-[#1a1a1d] border border-orange-500/20">
+                <h3 className="font-bold text-orange-400 mb-3 flex items-center gap-2">
+                  🍽️ Restaurant Info
+                </h3>
+                <div className="space-y-3">
+                  {data.cuisine && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400 uppercase">Cuisine</span>
+                      <span className="text-sm font-semibold text-gray-300">{data.cuisine}</span>
+                    </div>
+                  )}
+                  {data.priceRange && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400 uppercase">Price Range</span>
+                      <span className="text-sm font-semibold text-orange-400">{data.priceRange}</span>
+                    </div>
+                  )}
+                  {data.avgCost && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400 uppercase">Avg Cost</span>
+                      <span className="text-sm text-gray-300">{data.avgCost}</span>
+                    </div>
+                  )}
+                  {data.hours && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-1">Hours</span>
+                      <span className="text-sm text-gray-300">{data.hours}</span>
+                    </div>
+                  )}
+                  {data.address && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-1">Address</span>
+                      <span className="text-sm text-gray-300">{data.address}</span>
+                    </div>
+                  )}
+                  {data.bestFor?.length > 0 && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-2">Best For</span>
+                      <div className="flex flex-wrap gap-2">
+                        {data.bestFor.map((tag: string, i: number) => (
+                          <span key={i} className="px-2 py-1 bg-orange-500/10 text-orange-400 text-xs rounded-full">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {data.mustTry?.length > 0 && (
+                    <div className="pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-400 uppercase block mb-2">🌟 Must Try</span>
+                      <div className="space-y-2">
+                        {data.mustTry.slice(0, 5).map((dish: any, i: number) => (
+                          <div key={i} className="bg-black/20 p-2 rounded text-sm">
+                            <span className="font-semibold text-white">{dish.name}</span>
+                            {dish.price && <span className="text-orange-400 ml-2">{dish.price}</span>}
+                            {dish.description && <p className="text-xs text-gray-400 mt-1">{dish.description}</p>}
                           </div>
                         ))}
                       </div>

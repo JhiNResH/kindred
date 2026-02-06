@@ -3,6 +3,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import { prisma } from "@/lib/prisma"
 import { getTokenPrice } from "@/lib/coingecko"
+import { analyzeRestaurant, type RestaurantAnalysis } from "./analyzeRestaurant"
+
+// Re-export for use in other files
+export { analyzeRestaurant }
+export type { RestaurantAnalysis }
 
 // Initialize Google GenAI with the API Key
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || '')
