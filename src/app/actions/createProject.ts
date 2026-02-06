@@ -6,7 +6,9 @@ import { analyzeProject, Web3ProjectResult } from "./analyze"
 // Map Gemini type to our category format
 function mapTypeToCategory(type: string): string {
   const typeMap: Record<string, string> = {
-    'DEX': 'k/perp-dex',
+    'DEX': 'k/defi',           // Spot DEX like Uniswap → DeFi
+    'Perpetual DEX': 'k/perp-dex', // Perp DEX like GMX, Hyperliquid
+    'Perp': 'k/perp-dex',
     'DeFi': 'k/defi',
     'NFT': 'k/nft',
     'AI': 'k/ai',
