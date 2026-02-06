@@ -12,11 +12,14 @@ interface AISummaryCardProps {
   totalStaked?: string
 }
 
-export function AISummaryCard({ projectName, verdict, score, summary, keyPoints, reviewCount = 0, totalStaked = '0' }: AISummaryCardProps) {
+export function AISummaryCard({ projectName, verdict, score, summary, keyPoints = [], reviewCount = 0, totalStaked = '0' }: AISummaryCardProps) {
   // Calculate sentiment from score (score is 0-100)
   const sentiment = Math.round(score * 0.9 + 5) // Maps 0-100 to roughly 5-95%
   const isBullish = verdict === 'bullish'
   const isBearish = verdict === 'bearish'
+  
+  // Ensure keyPoints is always an array
+  const safeKeyPoints = Array.isArray(keyPoints) ? keyPoints : []
 
   return (
     <div className="bg-[#111113] border border-[#1f1f23] rounded-xl overflow-hidden mb-8">
@@ -53,15 +56,19 @@ export function AISummaryCard({ projectName, verdict, score, summary, keyPoints,
             {summary}
           </p>
           
-          <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Key Consensus</h4>
-          <ul className="space-y-2">
-            {keyPoints.map((point, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
-                <span className="text-purple-500 mt-1">●</span>
-                {point}
-              </li>
-            ))}
-          </ul>
+          {safeKeyPoints.length > 0 && (
+            <>
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Key Consensus</h4>
+              <ul className="space-y-2">
+                {safeKeyPoints.map((point, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
+                    <span className="text-purple-500 mt-1">●</span>
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
 
         {/* Right: Score Card */}
