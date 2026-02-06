@@ -41,13 +41,45 @@ export interface TokenPrice {
   image?: string
 }
 
+// Dynamic search for coin ID if not in mapping
+async function findCoinId(projectName: string): Promise<string | null> {
+  const normalizedName = projectName.toLowerCase().trim()
+  
+  // Check hardcoded mapping first
+  if (PROJECT_TO_COINGECKO[normalizedName]) {
+    return PROJECT_TO_COINGECKO[normalizedName]
+  }
+  
+  // Dynamic search via CoinGecko API
+  try {
+    const res = await fetch(
+      `${COINGECKO_BASE}/search?query=${encodeURIComponent(projectName)}`,
+      { next: { revalidate: 3600 } } // Cache search for 1 hour
+    )
+    
+    if (!res.ok) return null
+    
+    const data = await res.json()
+    const coin = data.coins?.[0]
+    
+    if (coin?.id) {
+      console.log(`[CoinGecko] Found ${projectName} -> ${coin.id}`)
+      return coin.id
+    }
+    
+    return null
+  } catch (error) {
+    console.error('[CoinGecko] Search error:', error)
+    return null
+  }
+}
+
 export async function getTokenPrice(projectName: string): Promise<TokenPrice | null> {
   try {
-    const normalizedName = projectName.toLowerCase().trim()
-    const coinId = PROJECT_TO_COINGECKO[normalizedName]
+    const coinId = await findCoinId(projectName)
     
     if (!coinId) {
-      console.log(`[CoinGecko] No mapping for: ${projectName}`)
+      console.log(`[CoinGecko] Could not find: ${projectName}`)
       return null
     }
 
