@@ -8,9 +8,13 @@ interface AISummaryCardProps {
   score: number
   summary: string
   keyPoints: string[]
+  reviewCount?: number
+  totalStaked?: string
 }
 
-export function AISummaryCard({ projectName, verdict, score, summary, keyPoints }: AISummaryCardProps) {
+export function AISummaryCard({ projectName, verdict, score, summary, keyPoints, reviewCount = 0, totalStaked = '0' }: AISummaryCardProps) {
+  // Calculate sentiment from score (score is 0-100)
+  const sentiment = Math.round(score * 0.9 + 5) // Maps 0-100 to roughly 5-95%
   const isBullish = verdict === 'bullish'
   const isBearish = verdict === 'bearish'
 
@@ -24,7 +28,9 @@ export function AISummaryCard({ projectName, verdict, score, summary, keyPoints 
           </div>
           <div>
             <h2 className="font-bold text-white">AnalyzerAI Verdict</h2>
-            <div className="text-xs text-purple-300">Analysis based on 145 verified reviews</div>
+            <div className="text-xs text-purple-300">
+              {reviewCount > 0 ? `Analysis based on ${reviewCount} verified reviews` : 'AI-powered analysis'}
+            </div>
           </div>
         </div>
         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${
@@ -74,15 +80,22 @@ export function AISummaryCard({ projectName, verdict, score, summary, keyPoints 
           <div className="space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Sentiment</span>
-              <span className="text-green-400">82% Positive</span>
+              <span className={sentiment >= 50 ? 'text-green-400' : 'text-red-400'}>
+                {sentiment}% {sentiment >= 50 ? 'Positive' : 'Negative'}
+              </span>
             </div>
             <div className="w-full bg-[#1a1a1d] h-1.5 rounded-full overflow-hidden">
-              <div className="bg-green-500 h-full w-[82%]"></div>
+              <div 
+                className={`h-full ${sentiment >= 50 ? 'bg-green-500' : 'bg-red-500'}`}
+                style={{ width: `${sentiment}%` }}
+              />
             </div>
             
             <div className="flex justify-between text-sm mt-2">
               <span className="text-gray-500">Volume</span>
-              <span className="text-white">$1.2M Staked</span>
+              <span className="text-white">
+                {totalStaked !== '0' ? `$${(parseInt(totalStaked) / 1e18).toFixed(1)}M Staked` : '-'}
+              </span>
             </div>
           </div>
         </div>
