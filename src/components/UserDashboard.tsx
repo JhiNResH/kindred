@@ -1,11 +1,38 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import { Trophy, Star, Coins, FileText, TrendingUp, Award } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui'
 
 export function UserDashboard() {
   const { address, isConnected } = useAccount()
+  const [stats, setStats] = useState({
+    trustScore: 0,
+    totalReviews: 0,
+    kindEarned: '0',
+    kindStaked: '0',
+    rank: 0,
+    upvotes: 0,
+  })
+  const [activities, setActivities] = useState<{ type: 'review' | 'upvote' | 'badge'; text: string; time: string; reward?: string }[]>([])
+
+  useEffect(() => {
+    async function fetchDashboard() {
+      if (!address) return
+      try {
+        const res = await fetch(`/api/user/dashboard?address=${address}`)
+        const data = await res.json()
+        if (data.stats) setStats(data.stats)
+        if (data.activities) setActivities(data.activities)
+      } catch (error) {
+        console.error('Failed to fetch dashboard:', error)
+      }
+    }
+    if (isConnected && address) {
+      fetchDashboard()
+    }
+  }, [address, isConnected])
 
   if (!isConnected) {
     return (
@@ -16,16 +43,6 @@ export function UserDashboard() {
         </div>
       </Card>
     )
-  }
-
-  // Mock data - replace with real API calls
-  const stats = {
-    trustScore: 87,
-    totalReviews: 24,
-    kindEarned: '1,250',
-    kindStaked: '500',
-    rank: 142,
-    upvotes: 1893,
   }
 
   return (
@@ -39,9 +56,11 @@ export function UserDashboard() {
               <span className="text-5xl font-bold text-purple-400">{stats.trustScore}</span>
               <span className="text-[#6b6b70]">/ 100</span>
             </div>
-            <p className="text-sm text-green-500 mt-2 flex items-center gap-1">
-              <TrendingUp className="w-4 h-4" /> +3 this week
-            </p>
+            {stats.trustScore > 0 && (
+              <p className="text-sm text-green-500 mt-2 flex items-center gap-1">
+                <TrendingUp className="w-4 h-4" />
+              </p>
+            )}
           </div>
           <div className="text-right">
             <Award className="w-16 h-16 text-purple-400 opacity-50" />
@@ -52,23 +71,20 @@ export function UserDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard 
-          icon={FileText} 
-          label="Reviews" 
-          value={stats.totalReviews.toString()} 
-          change="+2 this month"
+        <StatCard
+          icon={FileText}
+          label="Reviews"
+          value={stats.totalReviews.toString()}
         />
-        <StatCard 
-          icon={Star} 
-          label="Upvotes" 
-          value={stats.upvotes.toLocaleString()} 
-          change="+124 this week"
+        <StatCard
+          icon={Star}
+          label="Upvotes"
+          value={stats.upvotes.toLocaleString()}
         />
-        <StatCard 
-          icon={Coins} 
-          label="$KIND Earned" 
-          value={stats.kindEarned} 
-          change="+50 today"
+        <StatCard
+          icon={Coins}
+          label="$KIND Earned"
+          value={stats.kindEarned}
         />
         <StatCard 
           icon={Coins} 
@@ -85,23 +101,11 @@ export function UserDashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <ActivityItem 
-              type="review"
-              text="Reviewed Hyperliquid"
-              time="2 hours ago"
-              reward="+15 $KIND"
-            />
-            <ActivityItem 
-              type="upvote"
-              text="Your Jupiter review got 12 upvotes"
-              time="5 hours ago"
-              reward="+6 $KIND"
-            />
-            <ActivityItem 
-              type="badge"
-              text="Earned 'DeFi Expert' badge"
-              time="1 day ago"
-            />
+            {activities.length === 0 ? (
+              <p className="text-sm text-[#6b6b70] text-center py-2">No recent activity</p>
+            ) : activities.map((activity, i) => (
+              <ActivityItem key={i} {...activity} />
+            ))}
           </div>
         </CardContent>
       </Card>

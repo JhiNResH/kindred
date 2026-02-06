@@ -66,7 +66,7 @@ interface AppState {
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
-      projects: [], // Start empty per user request (remove hardcoded)
+      projects: [],
       reviews: [],
       communities: [],
       userStakedBalance: 1000, // Give user some initial mock tokens to test staking

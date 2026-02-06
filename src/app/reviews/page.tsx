@@ -1,68 +1,34 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ReviewCard } from '@/components/ReviewCard'
 import { CommunityInfo } from '@/components/CommunityInfo'
 
-// Mock data for demo
-const MOCK_REVIEWS = [
-  {
-    id: '1',
-    targetAddress: '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a',
-    reviewerAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f8fE23',
-    rating: 5,
-    content: 'Hyperliquid is absolutely crushing it. Best perp DEX UX I\'ve used - feels like a CEX but fully on-chain. Predicting #1 in k/perp-dex this week, they just launched new features. The funding rates significantly better than GMX right now.',
-    category: 'k/perp-dex',
-    stakeAmount: '5000000000000000000',
-    upvotes: 89,
-    downvotes: 5,
-    createdAt: '2025-01-28T10:30:00Z',
-  },
-  {
-    id: '2',
-    targetAddress: '0x6982508145454Ce325dDbE47a25d4ec3d2311933',
-    reviewerAddress: '0x8ba1f109551bD432803012645Hac136c22b27',
-    rating: 4,
-    content: 'PEPE still has the strongest meme community. Volume is consistent and it\'s become a benchmark for the memecoin space. Holding #1 in k/memecoin for sure.',
-    category: 'k/memecoin',
-    stakeAmount: '10000000000000000000',
-    upvotes: 234,
-    downvotes: 45,
-    createdAt: '2025-01-27T15:45:00Z',
-  },
-  {
-    id: '3',
-    targetAddress: '0x7890123456789012345678901234567890123456',
-    reviewerAddress: '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed',
-    rating: 5,
-    content: 'AI16Z is leading the AI agent narrative. Their framework is being adopted everywhere. Predicting it stays #1 in k/ai - no competition right now.',
-    category: 'k/ai',
-    stakeAmount: '8000000000000000000',
-    upvotes: 156,
-    downvotes: 12,
-    createdAt: '2025-01-26T09:00:00Z',
-  },
-  {
-    id: '4',
-    targetAddress: '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2',
-    reviewerAddress: '0x1234567890123456789012345678901234567890',
-    rating: 5,
-    content: 'Aave V3 is battle-tested DeFi infrastructure. Highest TVL, best risk management. Easy #1 in k/defi. Flash loans are working seamlessly.',
-    category: 'k/defi',
-    stakeAmount: '15000000000000000000',
-    upvotes: 312,
-    downvotes: 8,
-    createdAt: '2025-01-25T12:00:00Z',
-  },
-]
-
 type Category = 'all' | 'k/defi' | 'k/perp-dex' | 'k/memecoin' | 'k/ai'
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState(MOCK_REVIEWS)
+  const [reviews, setReviews] = useState<any[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>('all')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchReviews() {
+      setIsLoading(true)
+      try {
+        const categoryParam = selectedCategory !== 'all' ? `&category=${selectedCategory}` : ''
+        const res = await fetch(`/api/reviews?sort=new${categoryParam}`)
+        const data = await res.json()
+        setReviews(data.reviews || [])
+      } catch (error) {
+        console.error('Failed to fetch reviews:', error)
+        setReviews([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchReviews()
+  }, [selectedCategory])
 
   const filteredReviews = selectedCategory === 'all' 
     ? reviews 

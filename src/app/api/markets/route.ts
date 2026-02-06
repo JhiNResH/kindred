@@ -82,58 +82,6 @@ async function fetchPolymarketMarkets(category?: string, limit = 20): Promise<Ma
   }
 }
 
-// Mock markets for development/fallback
-const MOCK_MARKETS: Market[] = [
-  {
-    id: 'mock-1',
-    question: 'Will Bitcoin reach $100,000 by end of 2026?',
-    slug: 'bitcoin-100k-2026',
-    category: 'crypto',
-    source: 'prediction-market',
-    outcomes: [
-      { id: 'mock-1-yes', name: 'Yes', price: 0.65, volume: '1500000' },
-      { id: 'mock-1-no', name: 'No', price: 0.35, volume: '800000' },
-    ],
-    volume: '2300000',
-    liquidity: '500000',
-    endDate: '2026-12-31T23:59:59Z',
-    resolved: false,
-    createdAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: 'mock-2',
-    question: 'Will Ethereum flip Bitcoin market cap in 2026?',
-    slug: 'eth-flip-btc-2026',
-    category: 'crypto',
-    source: 'prediction-market',
-    outcomes: [
-      { id: 'mock-2-yes', name: 'Yes', price: 0.15, volume: '500000' },
-      { id: 'mock-2-no', name: 'No', price: 0.85, volume: '2800000' },
-    ],
-    volume: '3300000',
-    liquidity: '800000',
-    endDate: '2026-12-31T23:59:59Z',
-    resolved: false,
-    createdAt: '2024-01-15T00:00:00Z',
-  },
-  {
-    id: 'mock-3',
-    question: 'Will Uniswap v4 launch in Q1 2026?',
-    slug: 'uniswap-v4-q1-2026',
-    category: 'defi',
-    source: 'prediction-market',
-    outcomes: [
-      { id: 'mock-3-yes', name: 'Yes', price: 0.72, volume: '200000' },
-      { id: 'mock-3-no', name: 'No', price: 0.28, volume: '78000' },
-    ],
-    volume: '278000',
-    liquidity: '50000',
-    endDate: '2026-03-31T23:59:59Z',
-    resolved: false,
-    createdAt: '2025-12-01T00:00:00Z',
-  },
-]
-
 // GET /api/markets
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -144,16 +92,8 @@ export async function GET(request: NextRequest) {
 
   let markets: Market[] = []
 
-  // Fetch from Polymarket if not filtering to mock only
-  if (source !== 'mock') {
-    const polymarketMarkets = await fetchPolymarketMarkets(category || undefined, limit)
-    markets = [...markets, ...polymarketMarkets]
-  }
-
-  // Add mock markets if no real data or explicitly requested
-  if (markets.length === 0 || source === 'mock' || source === 'all') {
-    markets = [...markets, ...MOCK_MARKETS]
-  }
+  const polymarketMarkets = await fetchPolymarketMarkets(category || undefined, limit)
+  markets = [...markets, ...polymarketMarkets]
 
   // Filter by category
   if (category) {
@@ -181,7 +121,7 @@ export async function GET(request: NextRequest) {
     markets,
     total: markets.length,
     categories: ['crypto', 'defi', 'politics', 'sports', 'other'],
-    sources: ['polymarket', 'prediction-market'],
+    sources: ['polymarket'],
     lastUpdated: new Date().toISOString(),
   })
 }
@@ -221,16 +161,7 @@ export async function POST(request: NextRequest) {
         })
       }
     } catch (e) {
-      // Fall through to mock
-    }
-
-    // Check mock markets
-    const mockMarket = MOCK_MARKETS.find(m => m.id === marketId)
-    if (mockMarket) {
-      return NextResponse.json({
-        market: mockMarket,
-        source: 'mock',
-      })
+      // Polymarket fetch failed
     }
 
     return NextResponse.json({ error: 'Market not found' }, { status: 404 })

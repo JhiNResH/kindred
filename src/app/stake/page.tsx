@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { WalletButton } from '@/components/WalletButton'
 import { StakeCard } from '@/components/StakeCard'
@@ -16,28 +16,6 @@ interface Project {
   poolSize: string
 }
 
-const PROJECTS: Project[] = [
-  // DeFi
-  { name: 'Aave V3', address: '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2', category: 'k/defi', currentRank: 1, icon: '👻', poolSize: '125000000000000000000000' },
-  { name: 'Uniswap V4', address: '0x1F98431c8aD98523631AE4a59f267346ea31F984', category: 'k/defi', currentRank: 2, icon: '🦄', poolSize: '98000000000000000000000' },
-  { name: 'Compound III', address: '0xc3d688B66703497DAA19211EEdff47f25384cdc3', category: 'k/defi', currentRank: 3, icon: '🏦', poolSize: '87000000000000000000000' },
-  
-  // Perp DEX
-  { name: 'Hyperliquid', address: '0x1234567890123456789012345678901234567890', category: 'k/perp-dex', currentRank: 1, icon: '💎', poolSize: '180000000000000000000000' },
-  { name: 'GMX V2', address: '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a', category: 'k/perp-dex', currentRank: 2, icon: '🔵', poolSize: '156000000000000000000000' },
-  { name: 'dYdX V4', address: '0x92D6C1e31e14520e676a687F0a93788B716BEff5', category: 'k/perp-dex', currentRank: 3, icon: '📊', poolSize: '134000000000000000000000' },
-  
-  // Memecoins
-  { name: 'PEPE', address: '0x6982508145454Ce325dDbE47a25d4ec3d2311933', category: 'k/memecoin', currentRank: 1, icon: '🐸', poolSize: '234000000000000000000000' },
-  { name: 'WIF', address: '0x4567890123456789012345678901234567890123', category: 'k/memecoin', currentRank: 2, icon: '🐕', poolSize: '198000000000000000000000' },
-  { name: 'BONK', address: '0x5678901234567890123456789012345678901234', category: 'k/memecoin', currentRank: 3, icon: '🦴', poolSize: '167000000000000000000000' },
-  
-  // AI Agents
-  { name: 'AI16Z', address: '0x7890123456789012345678901234567890123456', category: 'k/ai', currentRank: 1, icon: '🤖', poolSize: '156000000000000000000000' },
-  { name: 'Virtual Protocol', address: '0x8901234567890123456789012345678901234567', category: 'k/ai', currentRank: 2, icon: '🎮', poolSize: '134000000000000000000000' },
-  { name: 'Griffain', address: '0x9012345678901234567890123456789012345678', category: 'k/ai', currentRank: 3, icon: '🦅', poolSize: '112000000000000000000000' },
-]
-
 const CATEGORIES: { value: Category | 'all'; label: string; icon: string }[] = [
   { value: 'all', label: 'All Markets', icon: '📋' },
   { value: 'k/defi', label: 'DeFi', icon: '🏦' },
@@ -49,10 +27,27 @@ const CATEGORIES: { value: Category | 'all'; label: string; icon: string }[] = [
 export default function StakePage() {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const filteredProjects = selectedCategory === 'all'
-    ? PROJECTS
-    : PROJECTS.filter(p => p.category === selectedCategory)
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const categoryParam = selectedCategory !== 'all' ? `?category=${selectedCategory}` : ''
+        const res = await fetch(`/api/projects${categoryParam}`)
+        const data = await res.json()
+        setProjects(data.projects || [])
+      } catch (error) {
+        console.error('Failed to fetch projects:', error)
+        setProjects([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProjects()
+  }, [selectedCategory])
+
+  const filteredProjects = projects
 
   const handleStake = async (amount: string, predictedRank: number) => {
     // TODO: Implement actual staking logic with smart contract
@@ -90,19 +85,19 @@ export default function StakePage() {
         {/* Stats Bar */}
         <div className="grid grid-cols-4 gap-4 mb-8 p-4 bg-gray-900/50 rounded-lg">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-400">847k</div>
+            <div className="text-2xl font-bold text-green-400">-</div>
             <div className="text-xs text-gray-500">Total Staked</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-400">1,234</div>
+            <div className="text-2xl font-bold text-purple-400">-</div>
             <div className="text-xs text-gray-500">Active Predictions</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-400">12</div>
+            <div className="text-2xl font-bold text-yellow-400">{projects.length}</div>
             <div className="text-xs text-gray-500">Markets</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-kindred-primary">5d 12h</div>
+            <div className="text-2xl font-bold text-kindred-primary">-</div>
             <div className="text-xs text-gray-500">Until Settlement</div>
           </div>
         </div>
@@ -130,7 +125,11 @@ export default function StakePage() {
 
             {/* Project Grid */}
             <div className="grid md:grid-cols-2 gap-4">
-              {filteredProjects.map((project) => (
+              {loading ? (
+                <div className="col-span-2 text-center py-8 text-gray-500">Loading projects...</div>
+              ) : filteredProjects.length === 0 ? (
+                <div className="col-span-2 text-center py-8 text-gray-500">No projects found</div>
+              ) : filteredProjects.map((project) => (
                 <button
                   key={project.address}
                   onClick={() => setSelectedProject(project)}

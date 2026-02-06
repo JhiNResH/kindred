@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import { WalletButton } from '@/components/WalletButton'
 import { useIsMounted } from '@/components/layout/ClientOnly'
@@ -18,52 +19,32 @@ interface Prediction {
   settlesAt: string
 }
 
-// Mock data
-const MOCK_PREDICTIONS: Prediction[] = [
-  {
-    id: '1',
-    projectName: 'Hyperliquid',
-    projectIcon: '💎',
-    category: 'k/perp-dex',
-    predictedRank: 1,
-    actualRank: null,
-    stakeAmount: '500000000000000000000',
-    status: 'pending',
-    potentialWin: '1500000000000000000000',
-    createdAt: '2025-01-28T10:00:00Z',
-    settlesAt: '2025-02-02T00:00:00Z',
-  },
-  {
-    id: '2',
-    projectName: 'PEPE',
-    projectIcon: '🐸',
-    category: 'k/memecoin',
-    predictedRank: 1,
-    actualRank: 1,
-    stakeAmount: '1000000000000000000000',
-    status: 'won',
-    potentialWin: '3000000000000000000000',
-    createdAt: '2025-01-21T10:00:00Z',
-    settlesAt: '2025-01-28T00:00:00Z',
-  },
-  {
-    id: '3',
-    projectName: 'AI16Z',
-    projectIcon: '🤖',
-    category: 'k/ai',
-    predictedRank: 2,
-    actualRank: 4,
-    stakeAmount: '200000000000000000000',
-    status: 'lost',
-    potentialWin: '500000000000000000000',
-    createdAt: '2025-01-21T10:00:00Z',
-    settlesAt: '2025-01-28T00:00:00Z',
-  },
-]
-
 export function MyPredictions() {
   const isMounted = useIsMounted()
-  const { isConnected } = useAccount()
+  const { address, isConnected } = useAccount()
+  const [predictions, setPredictions] = useState<Prediction[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchPredictions() {
+      if (!address) return
+      try {
+        const res = await fetch(`/api/predictions?address=${address}`)
+        const data = await res.json()
+        setPredictions(data.predictions || [])
+      } catch (error) {
+        console.error('Failed to fetch predictions:', error)
+        setPredictions([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    if (isConnected && address) {
+      fetchPredictions()
+    } else {
+      setLoading(false)
+    }
+  }, [address, isConnected])
 
   // Prevent SSR hydration mismatch
   if (!isMounted) {
@@ -92,11 +73,11 @@ export function MyPredictions() {
     )
   }
 
-  const pendingPredictions = MOCK_PREDICTIONS.filter(p => p.status === 'pending')
-  const pastPredictions = MOCK_PREDICTIONS.filter(p => p.status !== 'pending')
+  const pendingPredictions = predictions.filter(p => p.status === 'pending')
+  const pastPredictions = predictions.filter(p => p.status !== 'pending')
 
-  const totalStaked = MOCK_PREDICTIONS.reduce((sum, p) => sum + Number(p.stakeAmount), 0)
-  const totalWon = MOCK_PREDICTIONS
+  const totalStaked = predictions.reduce((sum, p) => sum + Number(p.stakeAmount), 0)
+  const totalWon = predictions
     .filter(p => p.status === 'won')
     .reduce((sum, p) => sum + Number(p.potentialWin), 0)
   const winRate = pastPredictions.length > 0
@@ -125,7 +106,7 @@ export function MyPredictions() {
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4">
           <div className="bg-gray-900/50 rounded-lg p-3 text-center">
-            <div className="text-lg font-bold text-white">{MOCK_PREDICTIONS.length}</div>
+            <div className="text-lg font-bold text-white">{predictions.length}</div>
             <div className="text-xs text-gray-500">Total</div>
           </div>
           <div className="bg-gray-900/50 rounded-lg p-3 text-center">
@@ -200,7 +181,7 @@ export function MyPredictions() {
       </div>
 
       {/* Empty State */}
-      {MOCK_PREDICTIONS.length === 0 && (
+      {predictions.length === 0 && (
         <div className="p-8 text-center">
           <div className="text-4xl mb-4">🎯</div>
           <p className="text-gray-400">No predictions yet</p>

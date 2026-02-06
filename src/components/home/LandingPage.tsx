@@ -30,28 +30,20 @@ export function LandingPage() {
 
           {/* Right Sidebar (Widgets) */}
           <aside className="space-y-6 hidden lg:block">
-            {/* Platform Stats Widget (Moved from Hero) */}
+            {/* Platform Stats Widget */}
             <div className="grid grid-cols-2 gap-3">
                <div className="p-4 bg-[#111113] border border-[#1f1f23] rounded-lg">
                   <div className="text-[10px] text-[#6b6b70] uppercase tracking-wider font-semibold mb-1">Total Staked</div>
-                  <div className="text-lg font-mono font-bold text-white">$8.4M</div>
-                  <div className="text-[10px] text-green-500 flex items-center gap-1 mt-1">
-                    <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                    +156%
-                  </div>
+                  <div className="text-lg font-mono font-bold text-white">-</div>
                </div>
                <div className="p-4 bg-[#111113] border border-[#1f1f23] rounded-lg">
                   <div className="text-[10px] text-[#6b6b70] uppercase tracking-wider font-semibold mb-1">Reviews</div>
-                  <div className="text-lg font-mono font-bold text-white">12.8k</div>
-                  <div className="text-[10px] text-green-500 flex items-center gap-1 mt-1">
-                    <span>↑</span>
-                    +23%
-                  </div>
+                  <div className="text-lg font-mono font-bold text-white">-</div>
                </div>
                <div className="col-span-2 p-3 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-lg flex items-center justify-between">
                   <div className="flex flex-col">
                     <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">Protected Trades</span>
-                    <span className="text-xl font-mono font-bold text-white">94,231</span>
+                    <span className="text-xl font-mono font-bold text-white">-</span>
                   </div>
                   <div className="h-8 w-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
                     <ShieldCheck className="w-4 h-4" />
@@ -72,22 +64,7 @@ export function LandingPage() {
             <div className="bg-[#111113] border border-[#1f1f23] rounded-lg p-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#adadb0] mb-4">Trending Communities</h3>
               <div className="space-y-3">
-                {[
-                  { name: 'k/defi', members: '142k' },
-                  { name: 'k/perp-dex', members: '89k' },
-                  { name: 'k/memecoins', members: '256k' },
-                  { name: 'k/yield-farming', members: '45k' },
-                ].map((community) => (
-                  <div key={community.name} className="flex items-center justify-between group cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center text-[10px] font-bold">
-                        {community.name[2]}
-                      </div>
-                      <span className="text-sm font-medium text-[#adadb0] group-hover:text-white transition-colors">{community.name}</span>
-                    </div>
-                    <button className="px-3 py-1 bg-[#1f1f23] hover:bg-[#2a2a2e] text-xs rounded-full transition-colors">Join</button>
-                  </div>
-                ))}
+                <p className="text-xs text-[#6b6b70] text-center py-2">No communities yet</p>
               </div>
             </div>
 

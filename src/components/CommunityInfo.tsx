@@ -1,46 +1,53 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 interface CommunityInfoProps {
   category: string
 }
 
-const COMMUNITY_DATA: Record<string, { title: string; description: string; members: string; online: string }> = {
+const CATEGORY_META: Record<string, { title: string; description: string }> = {
   'all': {
     title: 'r/Kindred',
     description: 'The trust layer for crypto. Review projects, stake on your opinions, and build on-chain reputation.',
-    members: '1.2k',
-    online: '847k Staked'
   },
   'k/defi': {
     title: 'k/DeFi',
     description: 'Discuss decentralized finance protocols, yields, and risks. The pulse of open finance.',
-    members: '4.5k',
-    online: '2.1M Staked'
   },
   'k/perp-dex': {
     title: 'k/PerpDEX',
     description: 'Leverage trading, funding rates, and exchange reviews. Where the degens live.',
-    members: '3.2k',
-    online: '1.8M Staked'
   },
   'k/memecoin': {
     title: 'k/Memecoin',
     description: 'Moonshots, rugs, and gems. High risk, high reward community reviews.',
-    members: '8.9k',
-    online: '500k Staked'
   },
   'k/ai': {
     title: 'k/AI',
     description: 'Artificial Intelligence agents and protocols. The future is autonomous.',
-    members: '2.1k',
-    online: '900k Staked'
   }
 }
 
 export function CommunityInfo({ category }: CommunityInfoProps) {
-  const info = COMMUNITY_DATA[category] || COMMUNITY_DATA['all']
+  const meta = CATEGORY_META[category] || CATEGORY_META['all']
+  const [members, setMembers] = useState('-')
+  const [staked, setStaked] = useState('-')
+
+  useEffect(() => {
+    async function fetchCommunityStats() {
+      try {
+        const res = await fetch(`/api/communities?category=${category}`)
+        const data = await res.json()
+        if (data.members) setMembers(data.members)
+        if (data.staked) setStaked(data.staked)
+      } catch (error) {
+        console.error('Failed to fetch community stats:', error)
+      }
+    }
+    fetchCommunityStats()
+  }, [category])
 
   return (
     <div className="w-80 flex-shrink-0 hidden xl:block">
@@ -56,21 +63,21 @@ export function CommunityInfo({ category }: CommunityInfoProps) {
                 🦞
               </div>
             </div>
-            <h2 className="font-bold text-lg pt-6">{info.title}</h2>
+            <h2 className="font-bold text-lg pt-6">{meta.title}</h2>
           </div>
-          
+
           <p className="text-sm text-gray-400 mb-4">
-            {info.description}
+            {meta.description}
           </p>
 
           <div className="flex gap-8 mb-6 border-b border-[#1f1f23] pb-4">
             <div>
-              <div className="font-bold">{info.members}</div>
+              <div className="font-bold">{members}</div>
               <div className="text-xs text-gray-500">Members</div>
             </div>
             <div>
-              <div className="font-bold">{info.online}</div>
-              <div className="text-xs text-gray-500">Online</div>
+              <div className="font-bold">{staked}</div>
+              <div className="text-xs text-gray-500">Staked</div>
             </div>
           </div>
 
