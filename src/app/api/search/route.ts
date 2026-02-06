@@ -41,10 +41,10 @@ export async function GET(request: NextRequest) {
       const projects = await prisma.project.findMany({
         where: {
           OR: [
-            { name: { contains: lowerQuery } },
-            { address: { contains: lowerQuery } },
-            { category: { contains: lowerQuery } },
-            { description: { contains: lowerQuery } },
+            { name: { contains: lowerQuery, mode: 'insensitive' } },
+            { address: { contains: lowerQuery, mode: 'insensitive' } },
+            { category: { contains: lowerQuery, mode: 'insensitive' } },
+            { description: { contains: lowerQuery, mode: 'insensitive' } },
           ],
         },
         take: limit,
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     if (type === 'all' || type === 'reviews') {
       const reviews = await prisma.review.findMany({
         where: {
-          content: { contains: lowerQuery },
+          content: { contains: lowerQuery, mode: 'insensitive' },
         },
         take: limit,
         orderBy: { createdAt: 'desc' },
@@ -93,8 +93,8 @@ export async function GET(request: NextRequest) {
       const users = await prisma.user.findMany({
         where: {
           OR: [
-            { address: { contains: lowerQuery } },
-            { displayName: { contains: lowerQuery } },
+            { address: { contains: lowerQuery, mode: 'insensitive' } },
+            { displayName: { contains: lowerQuery, mode: 'insensitive' } },
           ],
         },
         take: limit,

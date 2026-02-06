@@ -56,6 +56,8 @@ export function Header() {
                   const query = target.value.trim()
                   if (query) {
                     // ✅ Use Next.js router for smooth navigation
+                    // Now utilizing the smart redirector at /project/[id]
+                    // This handles category lookup automatically!
                     router.push(`/project/${query.toLowerCase()}`)
                   }
                 }
