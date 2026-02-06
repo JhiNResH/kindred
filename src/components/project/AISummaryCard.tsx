@@ -30,7 +30,7 @@ export function AISummaryCard({ projectName, verdict, score, summary, keyPoints 
             <Bot className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-bold text-white">AnalyzerAI Verdict</h2>
+            <h2 className="font-bold text-white">Ma'at Verdict</h2>
             <div className="text-xs text-purple-300">
               {reviewCount > 0 ? `Analysis based on ${reviewCount} verified reviews` : 'AI-powered analysis'}
             </div>
@@ -109,7 +109,7 @@ export function AISummaryCard({ projectName, verdict, score, summary, keyPoints 
       </div>
 
       <div className="px-6 py-3 bg-[#1a1a1d]/50 border-t border-[#1f1f23] text-xs text-gray-500 text-center">
-        AI analysis updated 15 mins ago • Powered by Kindred AI
+        AI analysis updated 15 mins ago • Powered by Ma'at AI
       </div>
     </div>
   )

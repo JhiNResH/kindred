@@ -231,12 +231,6 @@ function SidebarSection({ title, children }: { title: string; children: React.Re
   )
 }
 
-        </span>
-      </div>
-    </div>
-  )
-}
-
 function BoardItem({ name, letter, color }: { name: string; letter: string; color: string }) {
   const colorClasses = {
     purple: 'bg-purple-500/20 text-purple-500',

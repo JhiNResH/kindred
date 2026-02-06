@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { Lock, Unlock, Coins, Eye, Users, TrendingUp } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Lock, Unlock, Coins, Eye, Users, TrendingUp, Wallet } from 'lucide-react'
 import { useAccount } from 'wagmi'
 import { useIsMounted } from '@/components/layout/ClientOnly'
+import { useX402 } from '@/hooks/useX402'
 
 interface PaywallContentProps {
   reviewId: string
@@ -25,27 +26,50 @@ export function PaywallContent({
   author,
   authorEarnings,
   totalUnlocks,
-  isUnlocked = false,
+  isUnlocked: initialUnlocked = false,
   onUnlock
 }: PaywallContentProps) {
   const isMounted = useIsMounted()
   const { isConnected } = useAccount()
-  const [isUnlocking, setIsUnlocking] = useState(false)
-  const [showFullContent, setShowFullContent] = useState(isUnlocked)
+  const { 
+    isLoading, 
+    isUnlocked: x402Unlocked, 
+    content: unlockedContent,
+    requirements,
+    error,
+    checkAccess, 
+    payOnChain,
+    formatPrice,
+    getAssetSymbol,
+  } = useX402(reviewId, 'review')
+  
+  const [showFullContent, setShowFullContent] = useState(initialUnlocked)
+
+  // Check access on mount
+  useEffect(() => {
+    if (isMounted && !initialUnlocked) {
+      checkAccess()
+    }
+  }, [isMounted, initialUnlocked, checkAccess])
+
+  // Update state when x402 unlocks
+  useEffect(() => {
+    if (x402Unlocked) {
+      setShowFullContent(true)
+      onUnlock?.()
+    }
+  }, [x402Unlocked, onUnlock])
 
   const handleUnlock = async () => {
     if (!isConnected) {
-      // TODO: Prompt wallet connection
+      // TODO: Prompt wallet connection modal
+      alert('Please connect your wallet first')
       return
     }
 
-    setIsUnlocking(true)
-    try {
-      // TODO: Call x402 payment endpoint
-      await onUnlock?.()
+    const result = await payOnChain()
+    if (result.success) {
       setShowFullContent(true)
-    } finally {
-      setIsUnlocking(false)
     }
   }
 
@@ -113,20 +137,30 @@ export function PaywallContent({
                     </div>
                   </div>
 
+                  {/* Error message */}
+                  {error && (
+                    <p className="text-red-400 text-sm mb-3">{error}</p>
+                  )}
+
                   <button
                     onClick={handleUnlock}
-                    disabled={isUnlocking}
+                    disabled={isLoading || !isConnected}
                     className="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-lg font-medium hover:translate-y-[-2px] hover:shadow-lg hover:shadow-purple-500/30 transition-all disabled:opacity-50"
                   >
-                    {isUnlocking ? (
+                    {isLoading ? (
                       <span className="flex items-center gap-2">
                         <span className="animate-spin">⏳</span>
                         Processing...
                       </span>
+                    ) : !isConnected ? (
+                      <span className="flex items-center gap-2">
+                        <Wallet className="w-4 h-4" />
+                        Connect Wallet
+                      </span>
                     ) : (
                       <span className="flex items-center gap-2">
                         <Unlock className="w-4 h-4" />
-                        Unlock for {unlockPrice} ETH
+                        Unlock for {requirements ? `${formatPrice()} ${getAssetSymbol()}` : `${unlockPrice} ETH`}
                       </span>
                     )}
                   </button>

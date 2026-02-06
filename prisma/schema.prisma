@@ -279,3 +279,31 @@ model ExternalMarket {
   @@index([category])
   @@index([resolved])
 }
+
+// ============================================
+// x402 Payment / Content Access
+// ============================================
+
+// Track paid content access (x402 protocol)
+model ContentAccess {
+  id              String    @id @default(cuid())
+  
+  // Content reference
+  contentId       String    // Review ID, Analysis ID, etc.
+  contentType     String    // "review", "analysis", "report"
+  
+  // User who paid
+  userAddress     String    // Wallet address (lowercase)
+  
+  // Payment info
+  paidAmount      String    @default("0") // Wei as string
+  txHash          String?   // On-chain transaction hash
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@unique([contentId, userAddress])
+  @@index([userAddress])
+  @@index([contentId])
+}
