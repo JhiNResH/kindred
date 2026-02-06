@@ -3,9 +3,11 @@
 /**
  * Restaurant Analysis Action (Ma'at-style)
  * 
- * For k/gourmet category - gets restaurant data from Gemini
+ * For k/gourmet category - gets restaurant data from Gemini + Google Places
  * including ratings, photos, must-try dishes, etc.
  */
+
+import { searchPlace } from '@/lib/googlePlaces'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
@@ -36,7 +38,27 @@ export async function analyzeRestaurant(query: string): Promise<RestaurantAnalys
     return null
   }
 
+  // First, try Google Places API for verified data
+  let placesData = null
+  try {
+    placesData = await searchPlace(query)
+    console.log('[Restaurant] Google Places result:', placesData?.name, placesData?.photos?.length, 'photos')
+  } catch (e) {
+    console.warn('[Restaurant] Google Places failed:', e)
+  }
+
+  // Include Places data in prompt if available
+  const placesContext = placesData ? `
+Google Places API Data (verified):
+- Name: ${placesData.name}
+- Rating: ${placesData.rating}/5 (${placesData.userRatingCount} reviews)
+- Price: ${placesData.priceLevel || 'N/A'}
+- Address: ${placesData.formattedAddress || 'N/A'}
+- Photos available: ${placesData.photos?.length || 0}
+` : ''
+
   const prompt = `Search for comprehensive restaurant information: "${query}"
+${placesContext}
 
 Search for:
 1. Ratings from Yelp, Dianping (大眾點評), TripAdvisor, OpenRice, Google
@@ -109,8 +131,36 @@ CRITICAL RULES:
       return null
     }
 
-    const result = JSON.parse(jsonMatch[0])
-    return result as RestaurantAnalysis
+    const result = JSON.parse(jsonMatch[0]) as RestaurantAnalysis
+    
+    // Merge Google Places data (more reliable)
+    if (placesData) {
+      // Use Google Places photos (verified, high quality)
+      if (placesData.photos && placesData.photos.length > 0) {
+        result.photos = placesData.photos
+      }
+      // Use Google address if available
+      if (placesData.formattedAddress) {
+        result.address = placesData.formattedAddress
+      }
+      // Add Google Maps URL
+      if (placesData.placeId) {
+        result.googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${placesData.placeId}`
+      }
+      // Use Google rating as one of the platform scores
+      if (placesData.rating && result.platformScores) {
+        const hasGoogle = result.platformScores.some(p => p.platform.toLowerCase() === 'google')
+        if (!hasGoogle) {
+          result.platformScores.unshift({
+            platform: 'Google',
+            score: placesData.rating,
+            reviewCount: placesData.userRatingCount
+          })
+        }
+      }
+    }
+    
+    return result
 
   } catch (error) {
     console.error('Restaurant analysis error:', error)
