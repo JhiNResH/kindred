@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, X, Loader2, FileText, User, Folder, Sparkles } from 'lucide-react'
+import { Search, X, Loader2, FileText, User, Folder, Sparkles, Plus } from 'lucide-react'
+import { findOrCreateProject } from '@/app/actions/createProject'
 
 interface SearchResult {
   projects: Array<{
@@ -113,10 +114,28 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     return () => clearTimeout(timer)
   }, [query, search])
 
-  // Handle AI analysis
-  const handleAnalyze = () => {
-    if (query.length >= 2) {
+  // Handle AI analysis - this creates the project if it doesn't exist
+  const handleAnalyze = async () => {
+    if (query.length < 2) return
+    
+    setIsAnalyzing(true)
+    try {
+      // Call server action to find or create project with Gemini analysis
+      const result = await findOrCreateProject(query)
+      
+      if (result.success && result.project) {
+        // Navigate to the newly created/found project page
+        router.push(`/${result.project.category}/${result.project.id}`)
+        onClose()
+      } else {
+        // Fall back to basic search with analyze flag
+        search(query, true)
+      }
+    } catch (err) {
+      console.error('Analysis failed:', err)
       search(query, true)
+    } finally {
+      setIsAnalyzing(false)
     }
   }
 
@@ -245,7 +264,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               {/* AI Analysis Result */}
               {results?.aiAnalysis && (
                 <button
-                  onClick={() => handleProjectClick(query, results.aiAnalysis?.data.type || 'defi')}
+                  onClick={handleAnalyze} // Create project and navigate
                   className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#1a1a1d] border-b border-[#1f1f23] transition-colors"
                 >
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
