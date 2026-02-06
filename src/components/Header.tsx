@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Menu, X, Search, Bell, Bot, SquarePen } from 'lucide-react'
 import { WalletButton } from './WalletButton'
 
@@ -15,6 +15,7 @@ const NAV_LINKS = [
 
 export function Header() {
   const pathname = usePathname()
+  const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
 
@@ -52,8 +53,10 @@ export function Header() {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   const target = e.target as HTMLInputElement
-                  if (target.value.trim()) {
-                    window.location.href = `/project/${target.value.toLowerCase()}`
+                  const query = target.value.trim()
+                  if (query) {
+                    // ✅ Use Next.js router for smooth navigation
+                    router.push(`/project/${query.toLowerCase()}`)
                   }
                 }
               }}
