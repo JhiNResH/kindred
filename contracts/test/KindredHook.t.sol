@@ -18,12 +18,12 @@ contract KindredHookTest is Test {
     MockPoolManager public poolManager;
     
     address public owner = address(this);
-    address public eliteUser = address(0x1);
-    address public trustedUser = address(0x2);
-    address public normalUser = address(0x3);
-    address public riskyUser = address(0x4);
+    address public highTrustUser = address(0x1);    // >= 850
+    address public mediumTrustUser = address(0x2);  // 600-849
+    address public lowTrustUser = address(0x3);     // < 600
+    address public veryLowUser = address(0x4);      // < 600
     address public blockedUser = address(0x5);
-    address public lowScoreUser = address(0x6);
+    address public minScoreUser = address(0x6);     // Just above MIN_SCORE_TO_TRADE
     
     event SwapWithReputation(address indexed trader, uint256 reputationScore, uint24 feeApplied, uint256 timestamp);
     event TradeBlocked(address indexed trader, uint256 reputationScore, string reason);
@@ -34,11 +34,11 @@ contract KindredHookTest is Test {
         hook = new KindredHook(address(oracle), address(poolManager));
         
         // Set up test users with different reputation levels
-        oracle.setScore(eliteUser, 950);
-        oracle.setScore(trustedUser, 750);
-        oracle.setScore(normalUser, 500);
-        oracle.setScore(riskyUser, 200);
-        oracle.setScore(lowScoreUser, 50);
+        oracle.setScore(highTrustUser, 900);     // 0.15% fee
+        oracle.setScore(mediumTrustUser, 700);   // 0.22% fee
+        oracle.setScore(lowTrustUser, 500);      // 0.30% fee
+        oracle.setScore(veryLowUser, 200);       // 0.30% fee
+        oracle.setScore(minScoreUser, 150);      // 0.30% fee (above MIN 100)
         oracle.setScore(blockedUser, 800);
         oracle.setBlocked(blockedUser, true);
     }
@@ -48,21 +48,23 @@ contract KindredHookTest is Test {
     // ============================================
     
     function test_CalculateFee_AllTiers() public view {
-        assertEq(hook.calculateFee(950), 10, "Elite tier (>=900) should be 10 bp");
-        assertEq(hook.calculateFee(900), 10, "Elite threshold should be 10 bp");
-        assertEq(hook.calculateFee(750), 20, "Trusted tier (>=700) should be 20 bp");
-        assertEq(hook.calculateFee(700), 20, "Trusted threshold should be 20 bp");
-        assertEq(hook.calculateFee(500), 30, "Normal tier (>=400) should be 30 bp");
-        assertEq(hook.calculateFee(400), 30, "Normal threshold should be 30 bp");
-        assertEq(hook.calculateFee(200), 50, "Risky tier (<400) should be 50 bp");
-        assertEq(hook.calculateFee(0), 50, "Zero score should be 50 bp");
+        assertEq(hook.calculateFee(1000), 15, "Max score should be 15 bp");
+        assertEq(hook.calculateFee(900), 15, "High trust tier (>=850) should be 15 bp");
+        assertEq(hook.calculateFee(850), 15, "High trust threshold should be 15 bp");
+        assertEq(hook.calculateFee(849), 22, "Medium trust tier (600-849) should be 22 bp");
+        assertEq(hook.calculateFee(700), 22, "Medium trust mid should be 22 bp");
+        assertEq(hook.calculateFee(600), 22, "Medium trust threshold should be 22 bp");
+        assertEq(hook.calculateFee(599), 30, "Low trust tier (<600) should be 30 bp");
+        assertEq(hook.calculateFee(500), 30, "Low trust mid should be 30 bp");
+        assertEq(hook.calculateFee(100), 30, "Low trust min should be 30 bp");
+        assertEq(hook.calculateFee(0), 30, "Zero score should be 30 bp");
     }
     
     function test_GetFeeForAccount() public view {
-        assertEq(hook.getFeeForAccount(eliteUser), 10);
-        assertEq(hook.getFeeForAccount(trustedUser), 20);
-        assertEq(hook.getFeeForAccount(normalUser), 30);
-        assertEq(hook.getFeeForAccount(riskyUser), 50);
+        assertEq(hook.getFeeForAccount(highTrustUser), 15);
+        assertEq(hook.getFeeForAccount(mediumTrustUser), 22);
+        assertEq(hook.getFeeForAccount(lowTrustUser), 30);
+        assertEq(hook.getFeeForAccount(veryLowUser), 30);
     }
     
     // ============================================
@@ -70,15 +72,16 @@ contract KindredHookTest is Test {
     // ============================================
     
     function test_CanTrade() public view {
-        assertTrue(hook.canTrade(eliteUser), "Elite user should be able to trade");
-        assertTrue(hook.canTrade(normalUser), "Normal user should be able to trade");
+        assertTrue(hook.canTrade(highTrustUser), "High trust user should be able to trade");
+        assertTrue(hook.canTrade(lowTrustUser), "Low trust user should be able to trade");
+        assertTrue(hook.canTrade(minScoreUser), "User above MIN_SCORE_TO_TRADE should trade");
         assertFalse(hook.canTrade(blockedUser), "Blocked user should not be able to trade");
-        assertFalse(hook.canTrade(lowScoreUser), "Low score user should not be able to trade");
     }
     
     function test_ValidateTrade_Success() public view {
-        assertEq(hook.validateTrade(eliteUser), 10);
-        assertEq(hook.validateTrade(trustedUser), 20);
+        assertEq(hook.validateTrade(highTrustUser), 15);
+        assertEq(hook.validateTrade(mediumTrustUser), 22);
+        assertEq(hook.validateTrade(lowTrustUser), 30);
     }
     
     function test_ValidateTrade_RevertBlocked() public {
@@ -87,8 +90,12 @@ contract KindredHookTest is Test {
     }
     
     function test_ValidateTrade_RevertLowScore() public {
-        vm.expectRevert(abi.encodeWithSelector(KindredHook.ReputationTooLow.selector, lowScoreUser, 50));
-        hook.validateTrade(lowScoreUser);
+        // Create a user with score below MIN_SCORE_TO_TRADE (100)
+        address tooLowUser = address(0x999);
+        oracle.setScore(tooLowUser, 50);
+        
+        vm.expectRevert(abi.encodeWithSelector(KindredHook.ReputationTooLow.selector, tooLowUser, 50));
+        hook.validateTrade(tooLowUser);
     }
     
     // ============================================
@@ -99,26 +106,26 @@ contract KindredHookTest is Test {
         bytes memory hookData = "";
         
         vm.expectEmit(true, true, true, true);
-        emit SwapWithReputation(eliteUser, 950, 10, block.timestamp);
+        emit SwapWithReputation(highTrustUser, 900, 15, block.timestamp);
         
-        (bytes4 selector, uint24 fee) = hook.beforeSwap(eliteUser, "", hookData);
+        (bytes4 selector, uint24 fee) = hook.beforeSwap(highTrustUser, "", hookData);
         
         assertEq(selector, hook.beforeSwap.selector, "Should return correct selector");
-        assertEq(fee, 10, "Should apply elite fee");
+        assertEq(fee, 15, "Should apply high trust fee");
     }
     
     function test_BeforeSwap_WithHookData() public {
         // Simulate router passing actual trader address in hookData
-        bytes memory hookData = abi.encodePacked(eliteUser);
+        bytes memory hookData = abi.encodePacked(highTrustUser);
         address router = address(0x999);
         
         vm.expectEmit(true, true, true, true);
-        emit SwapWithReputation(eliteUser, 950, 10, block.timestamp);
+        emit SwapWithReputation(highTrustUser, 900, 15, block.timestamp);
         
         (bytes4 selector, uint24 fee) = hook.beforeSwap(router, "", hookData);
         
         assertEq(selector, hook.beforeSwap.selector);
-        assertEq(fee, 10, "Should extract trader from hookData");
+        assertEq(fee, 15, "Should extract trader from hookData");
     }
     
     function test_BeforeSwap_RevertBlocked() public {
@@ -131,15 +138,18 @@ contract KindredHookTest is Test {
     }
     
     function test_BeforeSwap_RevertLowScore() public {
-        vm.expectEmit(true, true, true, true);
-        emit TradeBlocked(lowScoreUser, 50, "Reputation too low");
+        address tooLowUser = address(0x999);
+        oracle.setScore(tooLowUser, 50);
         
-        vm.expectRevert(abi.encodeWithSelector(KindredHook.ReputationTooLow.selector, lowScoreUser, 50));
-        hook.beforeSwap(lowScoreUser, "", "");
+        vm.expectEmit(true, true, true, true);
+        emit TradeBlocked(tooLowUser, 50, "Reputation too low");
+        
+        vm.expectRevert(abi.encodeWithSelector(KindredHook.ReputationTooLow.selector, tooLowUser, 50));
+        hook.beforeSwap(tooLowUser, "", "");
     }
     
     function test_AfterSwap() public view {
-        bytes4 selector = hook.afterSwap(eliteUser, "", "");
+        bytes4 selector = hook.afterSwap(highTrustUser, "", "");
         assertEq(selector, hook.afterSwap.selector, "Should return correct selector");
     }
     
@@ -151,7 +161,7 @@ contract KindredHookTest is Test {
         hook.pause();
         
         vm.expectRevert(abi.encodeWithSignature("EnforcedPause()"));
-        hook.beforeSwap(eliteUser, "", "");
+        hook.beforeSwap(highTrustUser, "", "");
     }
     
     function test_Unpause() public {
@@ -159,9 +169,9 @@ contract KindredHookTest is Test {
         hook.unpause();
         
         // Should work after unpause
-        (bytes4 selector, uint24 fee) = hook.beforeSwap(eliteUser, "", "");
+        (bytes4 selector, uint24 fee) = hook.beforeSwap(highTrustUser, "", "");
         assertEq(selector, hook.beforeSwap.selector);
-        assertEq(fee, 10);
+        assertEq(fee, 15);
     }
     
     function test_Pause_OnlyOwner() public {
@@ -192,33 +202,30 @@ contract KindredHookTest is Test {
         address trader = address(0x100);
         
         oracle.setScore(trader, 200);
-        assertEq(hook.getFeeForAccount(trader), 50, "Should start with risky fee");
+        assertEq(hook.getFeeForAccount(trader), 30, "Should start with low trust fee");
         
-        oracle.increaseScore(trader, 300);
-        assertEq(hook.getFeeForAccount(trader), 30, "Should upgrade to normal fee");
+        oracle.increaseScore(trader, 450);
+        assertEq(hook.getFeeForAccount(trader), 22, "Should upgrade to medium trust fee");
         
         oracle.increaseScore(trader, 250);
-        assertEq(hook.getFeeForAccount(trader), 20, "Should upgrade to trusted fee");
-        
-        oracle.increaseScore(trader, 200);
-        assertEq(hook.getFeeForAccount(trader), 10, "Should upgrade to elite fee");
+        assertEq(hook.getFeeForAccount(trader), 15, "Should upgrade to high trust fee");
     }
     
     function test_Integration_FullSwapFlow() public {
         // 1. Check if can trade
-        assertTrue(hook.canTrade(normalUser));
+        assertTrue(hook.canTrade(lowTrustUser));
         
         // 2. Get expected fee
-        uint24 expectedFee = hook.getFeeForAccount(normalUser);
+        uint24 expectedFee = hook.getFeeForAccount(lowTrustUser);
         assertEq(expectedFee, 30);
         
         // 3. Execute beforeSwap
-        (bytes4 selector, uint24 actualFee) = hook.beforeSwap(normalUser, "", "");
+        (bytes4 selector, uint24 actualFee) = hook.beforeSwap(lowTrustUser, "", "");
         assertEq(selector, hook.beforeSwap.selector);
         assertEq(actualFee, expectedFee);
         
         // 4. Execute afterSwap
-        bytes4 afterSelector = hook.afterSwap(normalUser, "", "");
+        bytes4 afterSelector = hook.afterSwap(lowTrustUser, "", "");
         assertEq(afterSelector, hook.afterSwap.selector);
     }
     
@@ -228,7 +235,7 @@ contract KindredHookTest is Test {
     
     function testFuzz_CalculateFee_Valid(uint256 score) public view {
         uint24 fee = hook.calculateFee(score);
-        assertTrue(fee == 10 || fee == 20 || fee == 30 || fee == 50, "Fee must be one of the valid tiers");
+        assertTrue(fee == 15 || fee == 22 || fee == 30, "Fee must be one of: 15, 22, or 30 bp");
     }
     
     function testFuzz_FeeMonotonicity(uint256 s1, uint256 s2) public view {
@@ -247,7 +254,7 @@ contract KindredHookTest is Test {
         (bytes4 selector, uint24 fee) = hook.beforeSwap(trader, "", "");
         
         assertEq(selector, hook.beforeSwap.selector);
-        assertTrue(fee >= 10 && fee <= 50, "Fee must be within valid range");
+        assertTrue(fee >= 15 && fee <= 30, "Fee must be within valid range (15-30 bp)");
     }
     
     // ============================================

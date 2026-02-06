@@ -28,16 +28,13 @@ contract KindredHook is Pausable, Ownable {
     IPoolManager public immutable poolManager;
     
     // Fee tiers (in basis points, where 100 = 1%)
-    uint24 public constant FEE_ELITE = 10;      // 0.10% for elite users (score >= 900)
-    uint24 public constant FEE_TRUSTED = 20;    // 0.20% for trusted users (score >= 700)
-    uint24 public constant FEE_NORMAL = 30;     // 0.30% for normal users (score >= 400)
-    uint24 public constant FEE_RISKY = 50;      // 0.50% for risky users (score < 400)
-    uint24 public constant FEE_BLOCKED = 100;   // 1.00% for blocked users (should revert instead)
+    uint24 public constant FEE_HIGH_TRUST = 15;    // 0.15% for high trust users (score >= 850)
+    uint24 public constant FEE_MEDIUM_TRUST = 22;  // 0.22% for medium trust users (score >= 600)
+    uint24 public constant FEE_LOW_TRUST = 30;     // 0.30% for low trust users (score < 600)
     
     // Reputation score thresholds
-    uint256 public constant ELITE_THRESHOLD = 900;
-    uint256 public constant TRUSTED_THRESHOLD = 700;
-    uint256 public constant NORMAL_THRESHOLD = 400;
+    uint256 public constant HIGH_TRUST_THRESHOLD = 850;
+    uint256 public constant MEDIUM_TRUST_THRESHOLD = 600;
     uint256 public constant MIN_SCORE_TO_TRADE = 100;
     
     // ============================================
@@ -118,9 +115,9 @@ contract KindredHook is Pausable, Ownable {
                 isBlocked = false;
             }
         } catch {
-            // Oracle failure: apply RISKY fee as fallback
+            // Oracle failure: apply highest fee as fallback (fail-safe)
             emit TradeBlocked(trader, 0, "Oracle failure - fallback fee applied");
-            return (this.beforeSwap.selector, FEE_RISKY);
+            return (this.beforeSwap.selector, FEE_LOW_TRUST);
         }
         
         // Block trades if reputation too low or explicitly blocked
@@ -168,17 +165,15 @@ contract KindredHook is Pausable, Ownable {
     // ============================================
     
     /// @notice Calculate fee tier based on reputation score
-    /// @param score The user's reputation score (0-1000+)
+    /// @param score The user's reputation score (0-1000)
     /// @return fee The fee in basis points (100 = 1%)
     function calculateFee(uint256 score) public pure returns (uint24 fee) {
-        if (score >= ELITE_THRESHOLD) {
-            return FEE_ELITE;       // 0.10%
-        } else if (score >= TRUSTED_THRESHOLD) {
-            return FEE_TRUSTED;     // 0.20%
-        } else if (score >= NORMAL_THRESHOLD) {
-            return FEE_NORMAL;      // 0.30%
+        if (score >= HIGH_TRUST_THRESHOLD) {
+            return FEE_HIGH_TRUST;      // 0.15% for score >= 850
+        } else if (score >= MEDIUM_TRUST_THRESHOLD) {
+            return FEE_MEDIUM_TRUST;    // 0.22% for score >= 600
         } else {
-            return FEE_RISKY;       // 0.50%
+            return FEE_LOW_TRUST;       // 0.30% for score < 600
         }
     }
     
@@ -193,7 +188,7 @@ contract KindredHook is Pausable, Ownable {
         try reputationOracle.getScore(account) returns (uint256 score) {
             return calculateFee(score);
         } catch {
-            return FEE_RISKY; // Fallback fee
+            return FEE_LOW_TRUST; // Fallback fee
         }
     }
     
