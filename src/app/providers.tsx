@@ -55,7 +55,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             accentColor: '#FF6B35',
             logo: '/kindred-logo.png',
           },
-          loginMethods: ['email', 'wallet', 'google', 'twitter'],
+          loginMethods: ['email', 'wallet', 'google', 'twitter', 'sms'],
           embeddedWallets: {
             ethereum: {
               createOnLogin: 'users-without-wallets',
