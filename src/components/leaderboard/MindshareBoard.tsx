@@ -6,22 +6,24 @@ import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { TrendingUp, TrendingDown, Minus, Flame, Clock, Award, BarChart3, ArrowUpRight, ThumbsUp, ThumbsDown } from 'lucide-react'
 
-type Category = 'all' | 'k/defi' | 'k/perp-dex' | 'k/ai' | 'k/memecoin'
+type Category = 'all' | 'k/defi' | 'k/perp-dex' | 'k/ai' | 'k/memecoin' | 'k/prediction' | 'k/infra'
 
 const CATEGORIES = [
   { id: 'all' as Category, label: 'All', icon: BarChart3 },
   { id: 'k/defi' as Category, label: 'DeFi', icon: Award },
   { id: 'k/perp-dex' as Category, label: 'Perp DEX', icon: TrendingUp },
-  { id: 'k/ai' as Category, label: 'AI Agents', icon: Flame },
-  { id: 'k/memecoin' as Category, label: 'Memecoins', icon: Clock },
+  { id: 'k/prediction' as Category, label: 'Prediction', icon: Flame },
+  { id: 'k/ai' as Category, label: 'AI Agents', icon: Clock },
+  { id: 'k/memecoin' as Category, label: 'Memecoins', icon: Flame },
 ]
 
 const CATEGORY_COLORS: Record<string, string> = {
   'k/defi': '#8b5cf6',
   'k/perp-dex': '#3b82f6',
+  'k/prediction': '#ec4899',
   'k/ai': '#10b981',
   'k/memecoin': '#f59e0b',
-  'k/restaurants': '#ef4444',
+  'k/infra': '#6366f1',
 }
 
 interface LeaderboardEntry {

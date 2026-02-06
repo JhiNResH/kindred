@@ -9,6 +9,11 @@ const KNOWN_PERP_DEXES = [
   'vertex', 'gains network', 'kwenta', 'level finance', 'mux'
 ]
 
+// Known prediction markets
+const KNOWN_PREDICTION = [
+  'polymarket', 'kalshi', 'augur', 'gnosis', 'azuro', 'overtime'
+]
+
 // Known infrastructure projects
 const KNOWN_INFRA = [
   'eigenlayer', 'celestia', 'layerzero', 'chainlink', 'the graph'
@@ -23,6 +28,11 @@ function mapTypeToCategory(type: string, projectName?: string): string {
     return 'k/perp-dex'
   }
   
+  // Override for known prediction markets
+  if (KNOWN_PREDICTION.some(p => nameLower.includes(p))) {
+    return 'k/prediction'
+  }
+  
   // Override for known infra projects
   if (KNOWN_INFRA.some(p => nameLower.includes(p))) {
     return 'k/infra'
@@ -32,10 +42,13 @@ function mapTypeToCategory(type: string, projectName?: string): string {
     'DEX': 'k/defi',           // Spot DEX like Uniswap → DeFi
     'Perpetual DEX': 'k/perp-dex', // Perp DEX like GMX, Hyperliquid
     'Perp': 'k/perp-dex',
+    'Prediction Market': 'k/prediction',
+    'Prediction': 'k/prediction',
     'DeFi': 'k/defi',
     'NFT': 'k/nft',
     'AI': 'k/ai',
     'Meme': 'k/memecoin',
+    'Memecoin': 'k/memecoin',
     'Infrastructure': 'k/infra',
     'Mobile': 'k/mobile',
     'Other': 'k/defi',

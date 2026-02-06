@@ -20,6 +20,10 @@ const CATEGORY_META: Record<string, { title: string; description: string }> = {
     title: 'k/Memecoin',
     description: 'Moonshots, rugs, and gems. High risk, high reward community reviews.',
   },
+  'k/prediction': {
+    title: 'k/Prediction',
+    description: 'Prediction markets and betting protocols. Put your money where your mouth is.',
+  },
   'k/ai': {
     title: 'k/AI',
     description: 'Artificial Intelligence agents and protocols. The future is autonomous.',
