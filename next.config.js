@@ -16,6 +16,11 @@ const nextConfig = {
         hostname: 'coin-images.coingecko.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        pathname: '/**',
+      },
     ],
   },
   
