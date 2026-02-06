@@ -163,7 +163,18 @@ export function ProjectPageContent({
   return (
     <main className="min-h-screen bg-[#0a0a0b] text-white">
       {/* Project Banner */}
-      <div className="h-48 bg-gradient-to-r from-gray-900 to-black border-b border-[#1f1f23] relative">
+      <div className="h-48 bg-gradient-to-r from-gray-900 to-black border-b border-[#1f1f23] relative overflow-hidden">
+        {/* Banner Image for restaurants (k/gourmet) */}
+        {data.bannerImage && (
+          <Image
+            src={data.bannerImage}
+            alt={`${data.name} banner`}
+            fill
+            className="object-cover opacity-60"
+            priority
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent"></div>
         <div className="absolute bottom-0 left-0 w-full h-full bg-grid-white/[0.05] [mask-image:linear-gradient(to_bottom,transparent,black)]"></div>
         <div className="max-w-7xl mx-auto px-4 h-full flex items-end pb-8 relative z-10">
           <div className="flex items-center gap-6">
