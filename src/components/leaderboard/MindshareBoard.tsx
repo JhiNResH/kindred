@@ -35,6 +35,8 @@ interface LeaderboardEntry {
   totalStaked: string
   weeklyChange: number
   predictedRank: number | null
+  bullishCount?: number
+  bearishCount?: number
 }
 
 function formatNumber(n: number): string {
@@ -81,6 +83,34 @@ export function MindshareBoard() {
   const [timeRange, setTimeRange] = useState<string>('7d')
   const [projects, setProjects] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
+  const [userVotes, setUserVotes] = useState<Record<string, 'bullish' | 'bearish'>>({})
+  const [votingId, setVotingId] = useState<string | null>(null)
+
+  // Handle vote
+  const handleVote = async (projectId: string, sentiment: 'bullish' | 'bearish') => {
+    setVotingId(projectId)
+    try {
+      const res = await fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, sentiment })
+      })
+      const data = await res.json()
+      if (data.success) {
+        setUserVotes(prev => ({ ...prev, [projectId]: sentiment }))
+        // Update local project stats
+        setProjects(prev => prev.map(p => 
+          p.projectAddress === projectId 
+            ? { ...p, bullishCount: data.projectStats.bullishCount, bearishCount: data.projectStats.bearishCount }
+            : p
+        ))
+      }
+    } catch (error) {
+      console.error('Vote failed:', error)
+    } finally {
+      setVotingId(null)
+    }
+  }
   
   // Sync state with URL params
   useEffect(() => {
@@ -127,6 +157,8 @@ export function MindshareBoard() {
       rank: p.rank,
       mindshare,
       mindshareChange: p.weeklyChange,
+      bullishCount: p.bullishCount || 0,
+      bearishCount: p.bearishCount || 0,
       staked,
       reviewsCount: p.reviewCount,
       sentiment: p.avgRating,
@@ -308,27 +340,40 @@ export function MindshareBoard() {
             </div>
 
             {/* Vote Buttons */}
-            <div className="col-span-2 flex justify-center gap-2">
+            <div className="col-span-2 flex justify-center items-center gap-2">
               <button
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  // TODO: Implement upvote
-                  console.log('Upvote:', entry.id)
+                  handleVote(entry.id, 'bullish')
                 }}
-                className="p-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 transition-colors"
+                disabled={votingId === entry.id}
+                className={`p-1.5 rounded-lg transition-colors ${
+                  userVotes[entry.id] === 'bullish'
+                    ? 'bg-green-500/30 text-green-300 ring-1 ring-green-500'
+                    : 'bg-green-500/10 hover:bg-green-500/20 text-green-400'
+                }`}
                 title="Bullish"
               >
                 <ThumbsUp className="w-4 h-4" />
               </button>
+              <span className="text-xs text-[#6b6b70] min-w-[32px] text-center">
+                {((entry.bullishCount || 0) + (entry.bearishCount || 0)) > 0
+                  ? `${Math.round(((entry.bullishCount || 0) / ((entry.bullishCount || 0) + (entry.bearishCount || 0))) * 100)}%`
+                  : '-'}
+              </span>
               <button
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  // TODO: Implement downvote
-                  console.log('Downvote:', entry.id)
+                  handleVote(entry.id, 'bearish')
                 }}
-                className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                disabled={votingId === entry.id}
+                className={`p-1.5 rounded-lg transition-colors ${
+                  userVotes[entry.id] === 'bearish'
+                    ? 'bg-red-500/30 text-red-300 ring-1 ring-red-500'
+                    : 'bg-red-500/10 hover:bg-red-500/20 text-red-400'
+                }`}
                 title="Bearish"
               >
                 <ThumbsDown className="w-4 h-4" />

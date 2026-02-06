@@ -16,6 +16,9 @@ interface LeaderboardEntry {
   totalStaked: string
   weeklyChange: number // rank change from last week (TODO: implement)
   predictedRank: number | null // stake-weighted prediction (TODO: calculate)
+  bullishCount: number
+  bearishCount: number
+  mindshareScore: number
 }
 
 // GET /api/leaderboard
@@ -50,6 +53,9 @@ export async function GET(request: NextRequest) {
       totalStaked: p.totalStaked,
       weeklyChange: 0, // TODO: Track weekly rank changes in SettlementRound
       predictedRank: p.currentRank,
+      bullishCount: p.bullishCount,
+      bearishCount: p.bearishCount,
+      mindshareScore: p.mindshareScore,
     }))
 
     const total = await prisma.project.count({ where })

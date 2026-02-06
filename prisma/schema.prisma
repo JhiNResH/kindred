@@ -62,6 +62,13 @@ model Project {
   totalStaked     String    @default("0")
   currentRank     Int?
   
+  // Sentiment votes (bullish/bearish)
+  bullishCount    Int       @default(0)
+  bearishCount    Int       @default(0)
+  
+  // Mindshare = reviewCount*2 + bullishCount + totalStaked
+  mindshareScore  Float     @default(0)
+  
   // Timestamps
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -69,6 +76,7 @@ model Project {
   // Relations
   reviews         Review[]
   stakes          Stake[]
+  projectVotes    ProjectVote[]
   
   @@index([address])
   @@index([category])
@@ -166,6 +174,28 @@ model Vote {
   // Unique constraint: one vote per user per review
   @@unique([voterId, reviewId])
   @@index([reviewId])
+}
+
+// Sentiment vote on a project (bullish/bearish) - FREE, no staking
+model ProjectVote {
+  id              String    @id @default(cuid())
+  sentiment       String    // "bullish" or "bearish"
+  
+  // Voter info (wallet or anonymous)
+  
+voterAddress    String?   // wallet address if connected
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  
+  // Relations
+  project         Project   @relation(fields: [projectId], references: [id])
+  projectId       String
+  
+  // One vote per address per project (can be updated)
+  @@unique([voterAddress, projectId])
+  @@index([projectId])
+  @@index([sentiment])
 }
 
 // ============================================
