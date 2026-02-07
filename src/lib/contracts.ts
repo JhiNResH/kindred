@@ -56,7 +56,7 @@ export const CONTRACTS = {
     // KindClaw arcade token - Deployed 2026-02-07
     kindClaw: {
       address: '0x03c1F6E4f6EfF220dE00b508005F2c7dc3Bd925D' as `0x${string}`,
-      abi: KindClawABI,
+      abi: KindClawTokenABI,
     },
     // $OPENWORK token (Clawathon) - Base mainnet
     openwork: '0x299c30dd5974bf4d5bfe42d340ca40462816ab07' as `0x${string}`,
