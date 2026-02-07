@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { MapPin, Star, Users, TrendingUp, ArrowLeft, ExternalLink, Award, Utensils, Camera, Clock, DollarSign, ChefHat } from 'lucide-react'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
 import { ReviewCard } from '@/components/reviews/ReviewCard'
-import { analyzeRestaurant, RestaurantAnalysis } from '@/app/actions/analyzeRestaurant'
 
 interface Review {
   id: string
@@ -61,29 +60,28 @@ export function RestaurantPage({ restaurant }: RestaurantPageProps) {
   const [loadingInfo, setLoadingInfo] = useState(true)
   const averageRating = restaurant.avgRating
 
-  // Fetch restaurant details using Gemini analysis
+  // Fetch restaurant details from Gemini API (FREE basic info)
   useEffect(() => {
     async function fetchRestaurantInfo() {
       try {
-        const analysis = await analyzeRestaurant(restaurant.name)
+        console.log('[RestaurantPage] Fetching info for:', restaurant.name)
         
-        if (analysis) {
-          setRestaurantInfo({
-            platformScores: analysis.platformScores,
-            cuisine: analysis.cuisine,
-            priceRange: analysis.priceRange,
-            avgCost: analysis.avgCost,
-            hours: analysis.hours,
-            address: analysis.address,
-            googleMapsUrl: analysis.googleMapsUrl,
-            bestFor: analysis.bestFor,
-            mustTry: analysis.mustTry,
-            warnings: analysis.warnings,
-            criticalReviews: analysis.criticalReviews,
-          })
+        const res = await fetch('/api/gourmet/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ restaurantName: restaurant.name }),
+        })
+        
+        if (res.ok) {
+          const data = await res.json()
+          console.log('[RestaurantPage] Received info:', data)
+          setRestaurantInfo(data)
+        } else {
+          console.error('[RestaurantPage] API error:', res.status, await res.text())
+          // Still set loading to false even on error
         }
       } catch (error) {
-        console.error('Failed to fetch restaurant info:', error)
+        console.error('[RestaurantPage] Failed to fetch restaurant info:', error)
       } finally {
         setLoadingInfo(false)
       }
