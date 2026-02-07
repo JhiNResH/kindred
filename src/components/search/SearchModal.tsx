@@ -159,8 +159,16 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     }
   }
 
+  // Generate slug from name (for gourmet routes)
+  const generateSlug = (name: string): string => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+  }
+
   // Handle result click (use address for URL, not database ID)
-  const handleProjectClick = (address: string, category: string) => {
+  const handleProjectClick = (address: string, category: string, name?: string) => {
     // Ensure category starts with 'k/' or map it from Type
     let cleanCategory = category.toLowerCase()
     
@@ -179,7 +187,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
        cleanCategory = map[cleanCategory] || 'k/defi'
     }
 
-    router.push(`/${cleanCategory}/${address}`)
+    // For gourmet, use slug-based route instead of address
+    if (cleanCategory === 'k/gourmet' && name) {
+      router.push(`/k/gourmet/${generateSlug(name)}`)
+    } else {
+      router.push(`/${cleanCategory}/${address}`)
+    }
     onClose()
   }
 
@@ -385,7 +398,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         return (
                           <button
                             key={project.id}
-                            onClick={() => handleProjectClick(project.address, project.category)}
+                            onClick={() => handleProjectClick(project.address, project.category, project.name)}
                             className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#1a1a1d] border-b border-[#1f1f23] transition-colors"
                           >
                             <div className={`w-10 h-10 rounded-lg ${colors.bg} flex items-center justify-center`}>
