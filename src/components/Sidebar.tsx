@@ -84,6 +84,20 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
             <Trophy className="w-[18px] h-[18px]" />
             <span>Leaderboard</span>
           </Link>
+          <Link
+            href="/swap"
+            className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${
+              pathname === "/swap"
+                ? "bg-purple-500/10 text-purple-400 border-purple-500"
+                : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"
+            }`}
+          >
+            <TrendingUp className="w-[18px] h-[18px]" />
+            <span>Hook Swap</span>
+            <span className="ml-auto px-2 py-0.5 bg-blue-500 text-white text-[10px] font-bold rounded-full">
+              v4
+            </span>
+          </Link>
         </div>
       </div>
 
