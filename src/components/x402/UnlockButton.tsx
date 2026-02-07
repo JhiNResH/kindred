@@ -48,6 +48,14 @@ export function UnlockButton({
       return
     }
 
+    console.log('[UnlockButton] Debug info:', {
+      userAddress: address,
+      isConnected,
+      treasuryAddress: TREASURY_ADDRESS,
+      usdcAddress: USDC_ADDRESS,
+      addressMatch: address === TREASURY_ADDRESS
+    })
+
     setStatus('paying')
     setError(null)
 
