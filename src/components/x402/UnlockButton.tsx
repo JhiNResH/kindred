@@ -38,21 +38,19 @@ export function UnlockButton({
       status,
     })
 
-    if (!ready) {
-      console.log('[UnlockButton] Privy not ready yet')
-      setError('Wallet not ready. Please wait...')
-      return
-    }
-
+    // If not authenticated, trigger login
     if (!authenticated) {
       console.log('[UnlockButton] Not authenticated, triggering login')
       login()
       return
     }
 
-    if (!wallets.length) {
-      console.log('[UnlockButton] No wallets connected')
-      setError('No wallet connected. Please connect wallet first.')
+    // Check if wallet exists (more reliable than ready)
+    if (!wallets || wallets.length === 0) {
+      console.log('[UnlockButton] No wallets available')
+      setError('No wallet connected. Please reconnect your wallet.')
+      // Try to trigger wallet connection
+      setTimeout(() => login(), 1000)
       return
     }
 
