@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { UnlockButton } from '@/components/x402/UnlockButton'
 import { TrendingUp, TrendingDown, Clock, DollarSign, Star, Users, Award, AlertTriangle } from 'lucide-react'
-import { usePrivy } from '@privy-io/react-auth'
+import { useAccount } from 'wagmi'
 
 interface InsightReport {
   overall_score: number
@@ -31,28 +31,22 @@ interface PremiumInsightProps {
 }
 
 export function PremiumInsight({ restaurantId, restaurantName }: PremiumInsightProps) {
-  const { authenticated, user } = usePrivy()
+  const { address, isConnected } = useAccount()
   const [report, setReport] = useState<InsightReport | null>(null)
   const [loading, setLoading] = useState(true)
   const [hasAccess, setHasAccess] = useState(false)
 
   useEffect(() => {
     checkAccess()
-  }, [restaurantId, user])
+  }, [restaurantId, address])
 
   const checkAccess = async () => {
-    if (!authenticated || !user) {
+    if (!isConnected || !address) {
       setLoading(false)
       return
     }
 
     try {
-      const address = (user as any).wallet?.address
-      if (!address) {
-        setLoading(false)
-        return
-      }
-
       const response = await fetch(
         `/api/gourmet/insight?restaurantId=${restaurantId}&address=${address}`
       )
@@ -72,8 +66,41 @@ export function PremiumInsight({ restaurantId, restaurantName }: PremiumInsightP
   }
 
   const handleUnlock = async (content: any) => {
-    setReport(content.report)
-    setHasAccess(true)
+    console.log('[PremiumInsight] Unlock callback received:', content)
+    
+    // If content has report, use it
+    if (content?.report) {
+      setReport(content.report)
+      setHasAccess(true)
+      return
+    }
+    
+    // Otherwise, fetch from insight API
+    if (!address) return
+    
+    try {
+      const response = await fetch('/api/gourmet/insight', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurantId,
+          restaurantName,
+          userAddress: address,
+          txHash: content.txHash || 'manual-unlock',
+        }),
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log('[PremiumInsight] Insight fetched:', data)
+        setReport(data.report)
+        setHasAccess(true)
+      } else {
+        console.error('[PremiumInsight] Failed to fetch insight:', await response.text())
+      }
+    } catch (error) {
+      console.error('[PremiumInsight] Fetch error:', error)
+    }
   }
 
   if (loading) {

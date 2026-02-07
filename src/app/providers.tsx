@@ -4,12 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { config } from '../config/wagmi'
-import { PrivyProvider } from '@privy-io/react-auth'
-
-// Privy App ID - get from https://console.privy.io
-const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'cmkncaz3r0047ic0dtanwx48p'
-
-console.log('[Providers] Initializing with Privy App ID:', PRIVY_APP_ID)
+import { SmartAccountProvider } from '@/hooks/useSmartAccount'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Create QueryClient inside component to prevent SSR issues
@@ -26,25 +21,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <PrivyProvider
-      appId={PRIVY_APP_ID}
-      config={{
-        appearance: {
-          theme: 'dark',
-          accentColor: '#FF6B35',
-          logo: '/kindred-logo.png',
-        },
-        loginMethods: ['email', 'wallet', 'google', 'twitter', 'sms'],
-        embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
-        },
-      }}
-    >
-      <WagmiProvider config={config as any}>
-        <QueryClientProvider client={queryClient}>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <SmartAccountProvider>
           {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
-        </QueryClientProvider>
-      </WagmiProvider>
-    </PrivyProvider>
+        </SmartAccountProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   )
 }

@@ -1,8 +1,10 @@
 'use client'
 
 import { useIsMounted } from '@/components/layout/ClientOnly'
-import { LogOut } from 'lucide-react'
-import { usePrivy } from '@privy-io/react-auth'
+import { LogOut, Shield } from 'lucide-react'
+import { useAccount, useDisconnect, useConnect } from 'wagmi'
+import { useSmartAccount } from '@/hooks/useSmartAccount'
+import { injected } from 'wagmi/connectors'
 
 interface WalletButtonProps {
   variant?: 'default' | 'large' | 'minimal'
@@ -11,7 +13,14 @@ interface WalletButtonProps {
 
 export function WalletButton({ variant = 'default', showBalance = true }: WalletButtonProps) {
   const isMounted = useIsMounted()
-  const { login, authenticated, user, logout } = usePrivy()
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const { connect } = useConnect()
+  const { smartAccount } = useSmartAccount()
+
+  const handleConnect = () => {
+    connect({ connector: injected() })
+  }
 
   if (!isMounted) {
     return (
@@ -21,10 +30,10 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
     )
   }
 
-  if (!authenticated) {
+  if (!isConnected) {
     return (
       <button
-        onClick={login}
+        onClick={handleConnect}
         className={`font-bold transition-all text-black ${
           variant === 'large'
             ? 'px-8 py-4 text-lg rounded-xl bg-[#ded4e8] hover:bg-[#c4b9d3] hover:shadow-xl hover:shadow-purple-500/20'
@@ -42,7 +51,7 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
     <div className="flex items-center gap-2">
       {/* Wallet Display */}
       <button
-        onClick={logout}
+        onClick={() => disconnect()}
         className={`flex items-center gap-2 font-medium transition-all group ${
           variant === 'large'
             ? 'px-6 py-3 text-base rounded-xl bg-[#111113] border border-[#2a2a2e] text-white hover:bg-[#1a1a1d]'
@@ -50,12 +59,10 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
         }`}
       >
         <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold">
-          {user?.wallet ? 'W' : user?.email ? 'E' : 'U'}
+          {smartAccount ? <Shield className="w-4 h-4" /> : 'W'}
         </div>
         <span className="text-sm">
-          {user?.wallet 
-            ? `${user.wallet.address.slice(0, 4)}...${user.wallet.address.slice(-4)}`
-            : user?.email?.address || 'User'}
+          {address ? `${address.slice(0, 4)}...${address.slice(-4)}` : 'Wallet'}
         </span>
         <LogOut className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#6b6b70] hover:text-red-400" />
       </button>

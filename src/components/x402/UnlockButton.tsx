@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { usePrivy, useWallets } from '@privy-io/react-auth'
-import { parseUnits, encodeFunctionData, createWalletClient, custom } from 'viem'
-import { baseSepolia } from 'viem/chains'
-import { Loader2, Lock, Sparkles, Check } from 'lucide-react'
+import { useAccount } from 'wagmi'
+import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { parseUnits, encodeFunctionData } from 'viem'
+import { Loader2, Lock, Check } from 'lucide-react'
 import { CONTRACTS } from '@/lib/contracts'
 
 interface UnlockButtonProps {
@@ -22,36 +23,28 @@ export function UnlockButton({
   onUnlock,
   className = '',
 }: UnlockButtonProps) {
-  const { ready, authenticated, login } = usePrivy()
-  const { wallets } = useWallets()
+  const { address, isConnected } = useAccount()
+  const { openConnectModal } = useConnectModal()
   const [status, setStatus] = useState<'idle' | 'paying' | 'unlocking' | 'unlocked'>('idle')
   const [error, setError] = useState<string | null>(null)
 
   // USDC contract address (Base Sepolia)
-  const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
+  const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as `0x${string}`
   const TREASURY_ADDRESS = CONTRACTS.baseSepolia.treasury
 
-  const handleUnlock = async () => {
-    console.log('[UnlockButton] Click detected', {
-      authenticated,
-      ready,
-      walletsCount: wallets.length,
-      status,
-    })
+  const { sendTransaction, data: txHash } = useSendTransaction()
+  const { isLoading: isConfirming, isSuccess: txSuccess } = useWaitForTransactionReceipt({
+    hash: txHash,
+  })
 
-    // If not authenticated, trigger login
-    if (!authenticated) {
-      console.log('[UnlockButton] Not authenticated, triggering login')
-      login()
+  const handleUnlock = async () => {
+    if (!isConnected) {
+      openConnectModal?.()
       return
     }
 
-    // Check if wallet exists (more reliable than ready)
-    if (!wallets || wallets.length === 0) {
-      console.log('[UnlockButton] No wallets available')
-      setError('No wallet connected. Please reconnect your wallet.')
-      // Try to trigger wallet connection
-      setTimeout(() => login(), 1000)
+    if (!address) {
+      setError('No wallet connected')
       return
     }
 
@@ -59,9 +52,6 @@ export function UnlockButton({
     setError(null)
 
     try {
-      const wallet = wallets[0]
-      const address = wallet.address as `0x${string}`
-
       // Parse USDC amount (6 decimals)
       const usdcAmount = parseUnits(price, 6)
 
@@ -83,7 +73,6 @@ export function UnlockButton({
         args: [TREASURY_ADDRESS, usdcAmount],
       })
 
-      // Send USDC transaction via Privy wallet
       console.log('[UnlockButton] Sending USDC payment:', {
         from: address,
         to: USDC_ADDRESS,
@@ -91,28 +80,36 @@ export function UnlockButton({
         treasury: TREASURY_ADDRESS,
       })
 
-      // Get EIP-1193 provider from Privy wallet
-      const provider = await wallet.getEthereumProvider()
-      
-      // Create viem wallet client
-      const walletClient = createWalletClient({
-        account: address,
-        chain: baseSepolia,
-        transport: custom(provider),
-      })
-
-      // Send transaction
-      const txHash = await walletClient.sendTransaction({
+      // Send USDC transaction
+      sendTransaction({
         to: USDC_ADDRESS,
         data,
-        value: BigInt(0),
+        value: BigInt(0), // No ETH value for ERC-20 transfer
       })
 
-      console.log('[UnlockButton] Payment sent:', txHash)
+      // Wait for confirmation (handled by useWaitForTransactionReceipt)
+
+    } catch (err: any) {
+      console.error('[UnlockButton] Error:', err)
+      setError(err.message || 'Payment failed')
+      setStatus('idle')
+    }
+  }
+
+  // Handle transaction confirmation
+  useState(() => {
+    if (txSuccess && txHash && status === 'paying') {
+      verifyAndUnlock(txHash)
+    }
+  })
+
+  async function verifyAndUnlock(hash: `0x${string}`) {
+    setStatus('unlocking')
+
+    try {
+      console.log('[UnlockButton] Payment confirmed:', hash)
 
       // Verify payment and unlock content
-      setStatus('unlocking')
-
       const response = await fetch('/api/x402', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -120,7 +117,7 @@ export function UnlockButton({
           contentId,
           contentType,
           userAddress: address,
-          txHash,
+          txHash: hash,
         }),
       })
 
@@ -135,15 +132,15 @@ export function UnlockButton({
       setStatus('unlocked')
       onUnlock(result.content)
     } catch (err: any) {
-      console.error('[UnlockButton] Error:', err)
-      setError(err.message || 'Payment failed')
+      console.error('[UnlockButton] Unlock error:', err)
+      setError(err.message || 'Unlock failed')
       setStatus('idle')
     }
   }
 
   const buttonText = {
     idle: `Unlock for $${price} USDC`,
-    paying: 'Sending payment...',
+    paying: isConfirming ? 'Confirming...' : 'Sending payment...',
     unlocking: 'Verifying...',
     unlocked: 'Unlocked!',
   }[status]
@@ -161,18 +158,17 @@ export function UnlockButton({
     <div className="space-y-2">
       <button
         onClick={handleUnlock}
-        disabled={status === 'paying' || status === 'unlocking' || status === 'unlocked'}
+        disabled={status !== 'idle'}
         className={`
           w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg
           font-medium text-white transition-all
           ${
             status === 'idle'
-              ? 'bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 shadow-lg hover:shadow-xl cursor-pointer'
+              ? 'bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 shadow-lg hover:shadow-xl'
               : status === 'unlocked'
-              ? 'bg-green-500 cursor-default'
-              : 'bg-gray-600 cursor-wait'
+              ? 'bg-green-500'
+              : 'bg-gray-600 cursor-not-allowed'
           }
-          ${status === 'paying' || status === 'unlocking' ? 'opacity-75' : ''}
           ${className}
         `}
       >

@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useIsMounted } from './ClientOnly'
-import { LogOut, Copy, Check, Wallet, ExternalLink, ChevronDown } from 'lucide-react'
+import { LogOut, Copy, Check, Wallet, ExternalLink, ChevronDown, Shield } from 'lucide-react'
 import { formatEther } from 'viem'
-import { usePublicClient } from 'wagmi'
-import { baseSepolia } from 'viem/chains'
-import { usePrivy } from '@privy-io/react-auth'
+import { useAccount, useDisconnect, useConnect, usePublicClient } from 'wagmi'
+import { useSmartAccount } from '@/hooks/useSmartAccount'
+import { injected } from 'wagmi/connectors'
 
 interface WalletButtonProps {
   variant?: 'default' | 'large' | 'minimal'
@@ -22,9 +22,10 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
   const dropdownRef = useRef<HTMLDivElement>(null)
   const publicClient = usePublicClient()
   
-  const { login, authenticated, user, logout } = usePrivy()
-  
-  const walletAddress = user?.wallet?.address as `0x${string}` | undefined
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const { connect } = useConnect()
+  const { smartAccount, isLoading: isCreatingSmartAccount } = useSmartAccount()
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -39,34 +40,23 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
 
   // Fetch balances when wallet connected
   useEffect(() => {
-    if (!walletAddress) {
-      console.log('[WalletButton] No wallet address')
-      return
-    }
+    if (!address) return
 
     const fetchBalances = async () => {
       try {
-        console.log('[WalletButton] Fetching balances for:', walletAddress)
-
-        // Fetch ETH balance via direct RPC call
         const ethResponse = await fetch('/api/balance', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: walletAddress }),
+          body: JSON.stringify({ address }),
         })
 
         if (ethResponse.ok) {
           const data = await ethResponse.json()
           setEthBalance(data.eth || '0.0000')
           setUsdcBalance(data.usdc || '0.00')
-          console.log('[WalletButton] Balances fetched:', data)
-        } else {
-          console.error('[WalletButton] Balance API failed:', await ethResponse.text())
-          // Fallback: try publicClient directly
-          if (publicClient) {
-            const ethBal = await publicClient.getBalance({ address: walletAddress })
-            setEthBalance(parseFloat(formatEther(ethBal)).toFixed(4))
-          }
+        } else if (publicClient) {
+          const ethBal = await publicClient.getBalance({ address })
+          setEthBalance(parseFloat(formatEther(ethBal)).toFixed(4))
         }
       } catch (error) {
         console.error('[WalletButton] Failed to fetch balances:', error)
@@ -76,20 +66,24 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
     }
 
     fetchBalances()
-    const interval = setInterval(fetchBalances, 30000) // Refresh every 30s
+    const interval = setInterval(fetchBalances, 30000)
     return () => clearInterval(interval)
-  }, [walletAddress, publicClient])
+  }, [address, publicClient])
 
   const copyAddress = async () => {
-    if (!walletAddress) return
-    await navigator.clipboard.writeText(walletAddress)
+    if (!address) return
+    await navigator.clipboard.writeText(address)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const openExplorer = () => {
-    if (!walletAddress) return
-    window.open(`https://sepolia.basescan.org/address/${walletAddress}`, '_blank')
+    if (!address) return
+    window.open(`https://sepolia.basescan.org/address/${address}`, '_blank')
+  }
+
+  const handleConnect = () => {
+    connect({ connector: injected() })
   }
 
   if (!isMounted) {
@@ -100,10 +94,10 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
     )
   }
 
-  if (!authenticated) {
+  if (!isConnected) {
     return (
       <button
-        onClick={login}
+        onClick={handleConnect}
         className={`font-bold transition-all text-black ${
           variant === 'large'
             ? 'px-8 py-4 text-lg rounded-xl bg-[#ded4e8] hover:bg-[#c4b9d3] hover:shadow-xl hover:shadow-purple-500/20'
@@ -128,13 +122,14 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
             : 'px-4 py-2 rounded-lg bg-[#111113] border border-[#1f1f23] text-white hover:bg-[#1a1a1d]'
         }`}
       >
-        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold">
-          {user?.wallet ? 'W' : user?.email ? 'E' : 'U'}
+        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold relative">
+          {smartAccount ? <Shield className="w-4 h-4" /> : 'W'}
+          {isCreatingSmartAccount && (
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
+          )}
         </div>
         <span className="text-sm">
-          {walletAddress 
-            ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`
-            : user?.email?.address || 'User'}
+          {address ? `${address.slice(0, 4)}...${address.slice(-4)}` : 'Wallet'}
         </span>
         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -146,12 +141,17 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
           <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-[#2a2a2e] p-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                <Wallet className="w-6 h-6 text-white" />
+                {smartAccount ? <Shield className="w-6 h-6 text-white" /> : <Wallet className="w-6 h-6 text-white" />}
               </div>
               <div className="flex-1">
-                <div className="text-xs text-gray-400 mb-1">Your Wallet</div>
+                <div className="text-xs text-gray-400 mb-1">
+                  {smartAccount ? 'Smart Account' : 'EOA Wallet'}
+                </div>
                 <div className="text-sm font-mono text-white">
-                  {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-6)}` : 'Not connected'}
+                  {smartAccount 
+                    ? `${smartAccount.address.slice(0, 6)}...${smartAccount.address.slice(-6)}`
+                    : address ? `${address.slice(0, 6)}...${address.slice(-6)}` : 'Not connected'
+                  }
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
           </div>
 
           {/* Balances */}
-          {showBalance && walletAddress && (
+          {showBalance && address && (
             <div className="p-4 border-b border-[#2a2a2e]">
               <div className="text-xs text-gray-400 mb-3">Balances</div>
               <div className="space-y-2">
@@ -189,7 +189,7 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
 
           {/* Actions */}
           <div className="p-2">
-            {walletAddress && (
+            {address && (
               <>
                 <button
                   onClick={copyAddress}
@@ -215,7 +215,7 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
             )}
             <button
               onClick={() => {
-                logout()
+                disconnect()
                 setIsOpen(false)
               }}
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/10 transition-colors text-left mt-1"

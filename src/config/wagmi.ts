@@ -1,17 +1,9 @@
-import { http, createConfig, cookieStorage, createStorage } from 'wagmi'
+import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { mainnet, polygon, base, sepolia, baseSepolia } from 'wagmi/chains'
 
-export const config = createConfig({
-  chains: [polygon, mainnet, base, sepolia, baseSepolia],
-  transports: {
-    [polygon.id]: http(),
-    [mainnet.id]: http(),
-    [base.id]: http(),
-    [sepolia.id]: http(),
-    [baseSepolia.id]: http(),
-  },
-  ssr: true,
-  storage: createStorage({
-    storage: cookieStorage,
-  }),
+export const config = getDefaultConfig({
+  appName: 'Kindred',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
+  chains: [baseSepolia, base, mainnet, polygon, sepolia],
+  ssr: true, // Enable server-side rendering support
 })
