@@ -52,8 +52,9 @@ export type SupportedChainId = keyof typeof CONTRACTS
 export function getContract(
   chain: SupportedChainId,
   contractName: 'kindToken' | 'kindredComment' | 'reputationOracle' | 'kindredHook'
-) {
-  return CONTRACTS[chain][contractName]
+): any {
+  const contracts = CONTRACTS[chain] as any
+  return contracts[contractName]
 }
 
 /**
