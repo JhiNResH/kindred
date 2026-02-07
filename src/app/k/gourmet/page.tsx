@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 }
 
 export default async function GourmetPage() {
-  // Fetch recently searched restaurants (from project database)
+  // Fetch popular restaurants (only ones with reviews)
   let recentRestaurants: Array<{
     id: string
     name: string
@@ -27,10 +27,12 @@ export default async function GourmetPage() {
     const projects = await prisma.project.findMany({
       where: {
         category: 'k/gourmet',
+        reviewCount: { gt: 0 },  // Only show restaurants with at least 1 review
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: [
+        { reviewCount: 'desc' },  // Sort by most reviewed first
+        { avgRating: 'desc' },    // Then by highest rating
+      ],
       take: 20,
       select: {
         id: true,
@@ -42,7 +44,7 @@ export default async function GourmetPage() {
     })
     recentRestaurants = projects
   } catch (error) {
-    console.error('Error fetching recent restaurants:', error)
+    console.error('Error fetching popular restaurants:', error)
   }
 
   return (

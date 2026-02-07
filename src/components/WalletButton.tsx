@@ -55,36 +55,39 @@ export function WalletButton({ variant = 'default', showBalance = true }: Wallet
 
   // Fetch balances when wallet connected
   useEffect(() => {
-    if (!walletAddress || !publicClient) return
+    if (!walletAddress) {
+      console.log('[WalletButton] No wallet address')
+      return
+    }
 
     const fetchBalances = async () => {
       try {
-        // Fetch ETH balance
-        const ethBal = await publicClient.getBalance({ address: walletAddress })
-        setEthBalance(parseFloat(formatEther(ethBal)).toFixed(4))
+        console.log('[WalletButton] Fetching balances for:', walletAddress)
 
-        // Fetch USDC balance (Base Sepolia)
-        const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
-        const usdcBal = await publicClient.readContract({
-          address: USDC_ADDRESS,
-          abi: [
-            {
-              name: 'balanceOf',
-              type: 'function',
-              stateMutability: 'view',
-              inputs: [{ name: 'account', type: 'address' }],
-              outputs: [{ name: '', type: 'uint256' }],
-            },
-          ],
-          functionName: 'balanceOf',
-          args: [walletAddress],
-        }) as bigint
+        // Fetch ETH balance via direct RPC call
+        const ethResponse = await fetch('/api/balance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: walletAddress }),
+        })
 
-        // USDC has 6 decimals
-        const usdcFormatted = (Number(usdcBal) / 1e6).toFixed(2)
-        setUsdcBalance(usdcFormatted)
+        if (ethResponse.ok) {
+          const data = await ethResponse.json()
+          setEthBalance(data.eth || '0.0000')
+          setUsdcBalance(data.usdc || '0.00')
+          console.log('[WalletButton] Balances fetched:', data)
+        } else {
+          console.error('[WalletButton] Balance API failed:', await ethResponse.text())
+          // Fallback: try publicClient directly
+          if (publicClient) {
+            const ethBal = await publicClient.getBalance({ address: walletAddress })
+            setEthBalance(parseFloat(formatEther(ethBal)).toFixed(4))
+          }
+        }
       } catch (error) {
         console.error('[WalletButton] Failed to fetch balances:', error)
+        setEthBalance('0.0000')
+        setUsdcBalance('0.00')
       }
     }
 

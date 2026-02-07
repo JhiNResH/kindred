@@ -105,12 +105,12 @@ export function GourmetSearchPage({ recentRestaurants }: GourmetSearchPageProps)
           </p>
         </form>
 
-        {/* Recently Searched Restaurants */}
+        {/* Popular Restaurants (with reviews) */}
         {recentRestaurants.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <Clock className="w-5 h-5 text-gray-400" />
-              <h2 className="text-2xl font-bold">Recently Searched</h2>
+              <TrendingUp className="w-5 h-5 text-orange-400" />
+              <h2 className="text-2xl font-bold">Popular Restaurants</h2>
             </div>
 
             <div className="grid gap-4">
@@ -157,7 +157,7 @@ export function GourmetSearchPage({ recentRestaurants }: GourmetSearchPageProps)
           <div className="text-center py-16">
             <Utensils className="w-16 h-16 text-gray-700 mx-auto mb-4" />
             <p className="text-gray-500 text-lg">
-              No restaurants searched yet. Be the first to review!
+              No restaurants reviewed yet. Search for one and be the first to review!
             </p>
           </div>
         )}
