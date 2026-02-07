@@ -5,19 +5,31 @@
 
 import KindredCommentABI from './abi/KindredComment.json'
 import KindTokenABI from './abi/KindToken.json'
+import KindredHookABI from './abi/KindredHook.json'
+import ReputationOracleABI from './abi/ReputationOracle.json'
 
 export const CONTRACTS = {
-  // Base Sepolia (testnet) - Deployed 2026-02-05
+  // Base Sepolia (testnet) - Deployed 2026-02-05 (core) + 2026-02-07 (hook)
   baseSepolia: {
     kindToken: {
-      address: '0x75c0915F19Aeb2FAaA821A72b8DE64e52EE7c06B' as `0x${string}`,
+      address: '0xf0b5477386810559e3e8c03f10dd10b0a9222b2a' as `0x${string}`,
       abi: KindTokenABI,
     },
     kindredComment: {
-      address: '0xB6762e27A049A478da74C4a4bA3ba5fd179b76cf' as `0x${string}`,
+      address: '0xb3bb93089404ce4c2f64535e5d513093625fedc8' as `0x${string}`,
       abi: KindredCommentABI,
     },
     treasury: '0x872989F7fCd4048acA370161989d3904E37A3cB3' as `0x${string}`,
+    // Uniswap v4 Hook System - Deployed 2026-02-07
+    reputationOracle: {
+      address: '0xff4676Fe08B94a113bF27cf7EaF632e71f7A13b0' as `0x${string}`,
+      abi: ReputationOracleABI,
+    },
+    kindredHook: {
+      address: '0x05544abA9166F3DEC5aB241429135f65bEE05C6e' as `0x${string}`,
+      abi: KindredHookABI,
+    },
+    mockPoolManager: '0x2EB499d04aEE87cc6ae886115D9c37c2ffe3A2a8' as `0x${string}`, // Demo only
   },
   // Base (mainnet)
   base: {
@@ -39,7 +51,30 @@ export type SupportedChainId = keyof typeof CONTRACTS
  */
 export function getContract(
   chain: SupportedChainId,
-  contractName: 'kindToken' | 'kindredComment'
+  contractName: 'kindToken' | 'kindredComment' | 'reputationOracle' | 'kindredHook'
 ) {
   return CONTRACTS[chain][contractName]
+}
+
+/**
+ * Dynamic Fee Tiers based on Reputation Score
+ * @see KindredHook.sol for implementation
+ */
+export const FEE_TIERS = {
+  HIGH_TRUST: { minScore: 850, feePercent: 0.15 },   // 0.15% fee
+  MEDIUM_TRUST: { minScore: 600, feePercent: 0.22 }, // 0.22% fee
+  LOW_TRUST: { minScore: 0, feePercent: 0.30 },      // 0.30% fee
+} as const
+
+/**
+ * Calculate expected swap fee based on reputation score
+ */
+export function calculateSwapFee(reputationScore: number): number {
+  if (reputationScore >= FEE_TIERS.HIGH_TRUST.minScore) {
+    return FEE_TIERS.HIGH_TRUST.feePercent
+  } else if (reputationScore >= FEE_TIERS.MEDIUM_TRUST.minScore) {
+    return FEE_TIERS.MEDIUM_TRUST.feePercent
+  } else {
+    return FEE_TIERS.LOW_TRUST.feePercent
+  }
 }
