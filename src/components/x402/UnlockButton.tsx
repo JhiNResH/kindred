@@ -56,6 +56,40 @@ export function UnlockButton({
       addressMatch: address === TREASURY_ADDRESS
     })
 
+    // Dev mode: Skip payment if user is Treasury (testing scenario)
+    if (address === TREASURY_ADDRESS) {
+      console.log('[UnlockButton] 🔧 Dev mode: Skipping payment (user is Treasury)')
+      setStatus('unlocking')
+      
+      try {
+        const response = await fetch('/api/x402', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contentId,
+            contentType,
+            userAddress: address,
+            txHash: '0xDEV_MODE_SKIP_PAYMENT', // Special flag for dev mode
+            amount: price,
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to unlock content')
+        }
+
+        const data = await response.json()
+        console.log('[UnlockButton] ✅ Content unlocked (dev mode)')
+        setStatus('unlocked')
+        onUnlock(data)
+      } catch (err: any) {
+        console.error('[UnlockButton] Dev mode unlock error:', err)
+        setError(err.message || 'Failed to unlock content')
+        setStatus('idle')
+      }
+      return
+    }
+
     setStatus('paying')
     setError(null)
 

@@ -16,7 +16,7 @@ import { verifyMessage } from 'viem'
 export const dynamic = 'force-dynamic'
 
 // Treasury address for receiving payments
-const TREASURY_ADDRESS = process.env.TREASURY_ADDRESS || '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+const TREASURY_ADDRESS = '0x872989F7fCd4048acA370161989d3904E37A3cB3'
 
 // USDC contract addresses
 const USDC_ADDRESSES: Record<number, string> = {
@@ -291,6 +291,13 @@ async function verifyTransaction(
   userAddress: string
 ): Promise<boolean> {
   console.log('[x402] Verifying transaction:', { txHash, contentId, userAddress })
+  
+  // Dev mode: Skip payment verification if user is Treasury
+  if (txHash === '0xDEV_MODE_SKIP_PAYMENT' && 
+      userAddress.toLowerCase() === TREASURY_ADDRESS.toLowerCase()) {
+    console.log('[x402] 🔧 Dev mode: Skipping payment verification (Treasury user)')
+    return true
+  }
   
   try {
     // Import here to avoid bundling issues
