@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAccount } from 'wagmi'
 import { WalletButton } from '@/components/WalletButton'
 import { useIsMounted } from '@/components/layout/ClientOnly'
@@ -34,12 +34,17 @@ const STAKE_OPTIONS = [
 ]
 
 export function ReviewForm() {
+  // === ALL HOOKS MUST BE AT THE TOP, UNCONDITIONALLY ===
   const isMounted = useIsMounted()
   const { address, isConnected } = useAccount()
+  
+  // State hooks
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
+  const [needsApproval, setNeedsApproval] = useState(false)
+  const [approvalDone, setApprovalDone] = useState(false)
   
   const [formData, setFormData] = useState<ReviewFormData>({
     targetAddress: '',
@@ -50,14 +55,13 @@ export function ReviewForm() {
     predictedRank: undefined,
   })
 
-  // On-chain hooks
+  // Ref to track if we've already triggered comment creation after approval
+  const commentTriggeredRef = useRef(false)
+
+  // On-chain hooks - MUST be called unconditionally
   const { createComment, hash: commentHash, isPending: isCreating, isConfirming: isConfirmingComment, isSuccess: commentSuccess, isError: commentError, error: commentErrorMsg } = useCreateComment()
   const { approve, hash: approveHash, isPending: isApproving, isConfirming: isConfirmingApprove, isSuccess: approveSuccess } = useApproveKindToken()
   const { data: allowance } = useKindTokenAllowance(address)
-  
-  // Track approval state
-  const [needsApproval, setNeedsApproval] = useState(false)
-  const [approvalDone, setApprovalDone] = useState(false)
 
   // Check if approval is needed
   useEffect(() => {
@@ -84,6 +88,7 @@ export function ReviewForm() {
       setTxHash(commentHash)
       setSubmitted(true)
       setIsSubmitting(false)
+      commentTriggeredRef.current = false
     }
   }, [commentSuccess, commentHash])
 
@@ -92,9 +97,31 @@ export function ReviewForm() {
     if (commentError && commentErrorMsg) {
       setError(`Transaction failed: ${commentErrorMsg.message}`)
       setIsSubmitting(false)
+      commentTriggeredRef.current = false
     }
   }, [commentError, commentErrorMsg])
 
+  // Handle approval completion - auto-proceed to comment creation
+  useEffect(() => {
+    if (approvalDone && isSubmitting && !commentSuccess && formData.targetAddress && !commentTriggeredRef.current) {
+      commentTriggeredRef.current = true
+      // Approval done, now create comment
+      try {
+        createComment({
+          targetAddress: formData.targetAddress as Address,
+          content: formData.content,
+          stakeAmount: formData.stakeAmount,
+        })
+      } catch (err: any) {
+        setError(err?.message || 'Comment creation failed')
+        setIsSubmitting(false)
+        commentTriggeredRef.current = false
+      }
+    }
+  }, [approvalDone, isSubmitting, commentSuccess, formData.targetAddress, formData.content, formData.stakeAmount, createComment])
+
+  // === EARLY RETURNS ONLY AFTER ALL HOOKS ===
+  
   // Prevent SSR hydration mismatch
   if (!isMounted) {
     return (
@@ -112,6 +139,7 @@ export function ReviewForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    commentTriggeredRef.current = false
     
     // Validation
     if (!formData.targetAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
@@ -132,12 +160,12 @@ export function ReviewForm() {
     try {
       // Step 1: Approve if needed (for staking)
       if (needsApproval && !approvalDone) {
-        await approve(formData.stakeAmount)
-        return // Wait for approval to complete
+        approve(formData.stakeAmount)
+        return // Wait for approval to complete, useEffect will handle next step
       }
       
-      // Step 2: Create comment on-chain
-      await createComment({
+      // Step 2: Create comment on-chain (if no approval needed or already approved)
+      createComment({
         targetAddress: formData.targetAddress as Address,
         content: formData.content,
         stakeAmount: formData.stakeAmount,
@@ -149,21 +177,6 @@ export function ReviewForm() {
       setIsSubmitting(false)
     }
   }
-  
-  // Handle approval completion - auto-proceed to comment creation
-  useEffect(() => {
-    if (approvalDone && isSubmitting && !commentSuccess && formData.targetAddress) {
-      // Approval done, now create comment
-      createComment({
-        targetAddress: formData.targetAddress as Address,
-        content: formData.content,
-        stakeAmount: formData.stakeAmount,
-      }).catch((err) => {
-        setError(err?.message || 'Comment creation failed')
-        setIsSubmitting(false)
-      })
-    }
-  }, [approvalDone, isSubmitting, commentSuccess, formData.targetAddress, formData.content, formData.stakeAmount, createComment])
 
   if (!isConnected) {
     return (
