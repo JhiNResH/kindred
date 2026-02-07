@@ -9,7 +9,10 @@ import KindClawTokenABI from './abi/KindClawToken.json'
 import KindredHookABI from './abi/KindredHook.json'
 import KindredHookV2ABI from './abi/KindredHookV2.json'
 import ReputationOracleABI from './abi/ReputationOracle.json'
+import KindClawTokenABI from './abi/KindClawToken.json'
+import OpenWorkMockABI from './abi/OpenWorkMock.json'
 import SimpleSwapABI from './abi/SimpleSwap.json'
+import KindClawABI from './abi/KindClaw.json'
 
 export const CONTRACTS = {
   // Base Sepolia (testnet) - Deployed 2026-02-05 (core) + 2026-02-07 (hook + arcade tokens)
@@ -52,6 +55,13 @@ export const CONTRACTS = {
       abi: SimpleSwapABI,
     },
     usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as `0x${string}`,
+    // KindClaw arcade token - Deployed 2026-02-07
+    kindClaw: {
+      address: '0x03c1F6E4f6EfF220dE00b508005F2c7dc3Bd925D' as `0x${string}`,
+      abi: KindClawABI,
+    },
+    // $OPENWORK token (Clawathon) - Base mainnet
+    openwork: '0x299c30dd5974bf4d5bfe42d340ca40462816ab07' as `0x${string}`,
   },
   // Base (mainnet)
   base: {

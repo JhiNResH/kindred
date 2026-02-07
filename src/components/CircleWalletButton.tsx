@@ -1,177 +1,108 @@
+/**
+ * Circle Wallet Connect Button
+ * Alternative to RainbowKit for Circle wallet users
+ */
+
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useCircleWallet } from '@/hooks/useCircleWallet'
-import { LogOut, Copy, Check, Wallet, ExternalLink, ChevronDown } from 'lucide-react'
-import { useIsMounted } from './ClientOnly'
 
-interface CircleWalletButtonProps {
-  variant?: 'default' | 'large' | 'minimal'
-  showBalance?: boolean
-}
+export function CircleWalletButton() {
+  const [showModal, setShowModal] = useState(false)
+  const [username, setUsername] = useState('')
+  const circleWallet = useCircleWallet()
 
-export function CircleWalletButton({ 
-  variant = 'default', 
-  showBalance = true 
-}: CircleWalletButtonProps) {
-  const isMounted = useIsMounted()
-  const [isOpen, setIsOpen] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  
-  const { 
-    address, 
-    isConnected, 
-    isLoading, 
-    error,
-    connect, 
-    disconnect 
-  } = useCircleWallet()
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
+  const handleConnect = async () => {
+    if (!username) return
+    
+    // Try to load existing wallets first
+    await circleWallet.loadWallets(username)
+    
+    // If no wallets, create one
+    if (circleWallet.wallets.length === 0) {
+      await circleWallet.createWallet(username)
     }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  const copyAddress = async () => {
-    if (!address) return
-    await navigator.clipboard.writeText(address)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    
+    setShowModal(false)
   }
 
-  const openExplorer = () => {
-    if (!address) return
-    window.open(`https://sepolia.basescan.org/address/${address}`, '_blank')
+  if (!circleWallet.isConfigured) {
+    return null // Don't show if Circle not configured
   }
 
-  if (!isMounted) {
+  if (circleWallet.wallet) {
     return (
-      <button className="px-5 py-2.5 rounded-lg bg-[#1f1f23] animate-pulse">
-        <span className="invisible">Connect Wallet</span>
-      </button>
-    )
-  }
-
-  if (!isConnected) {
-    return (
-      <div>
-        <button
-          onClick={connect}
-          disabled={isLoading}
-          className={`font-bold transition-all text-black ${
-            variant === 'large'
-              ? 'px-8 py-4 text-lg rounded-xl bg-[#ded4e8] hover:bg-[#c4b9d3] hover:shadow-xl hover:shadow-purple-500/20'
-              : variant === 'minimal'
-              ? 'px-4 py-2 text-sm rounded-lg bg-transparent border border-[#2a2a2e] text-[#adadb0] hover:bg-[#111113] hover:text-white'
-              : 'px-5 py-2.5 rounded-lg bg-[#ded4e8] hover:bg-[#c4b9d3] hover:shadow-lg hover:shadow-purple-500/20'
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
-        >
-          {isLoading ? 'Connecting...' : 'Login with Email'}
-        </button>
-        {error && (
-          <div className="mt-2 text-xs text-red-400">
-            {error}
-          </div>
-        )}
+      <div className="flex items-center gap-2 bg-gray-800 rounded-lg px-4 py-2 border border-gray-700">
+        <div className="w-2 h-2 bg-green-400 rounded-full" />
+        <div className="font-mono text-sm">
+          {circleWallet.wallet.address.slice(0, 6)}...{circleWallet.wallet.address.slice(-4)}
+        </div>
+        <div className="text-xs text-gray-400">
+          {circleWallet.balance.slice(0, 8)} ETH
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      {/* Wallet Button */}
+    <>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 font-medium transition-all ${
-          variant === 'large'
-            ? 'px-6 py-3 text-base rounded-xl bg-[#111113] border border-[#2a2a2e] text-white hover:bg-[#1a1a1d]'
-            : 'px-4 py-2 rounded-lg bg-[#111113] border border-[#1f1f23] text-white hover:bg-[#1a1a1d]'
-        }`}
+        onClick={() => setShowModal(true)}
+        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition"
       >
-        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold">
-          W
-        </div>
-        <span className="text-sm">
-          {address ? `${address.slice(0, 4)}...${address.slice(-4)}` : 'Wallet'}
-        </span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        Connect Circle Wallet
       </button>
 
-      {/* Dropdown Menu */}
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-[#111113] border border-[#2a2a2e] rounded-xl shadow-2xl z-50 overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-[#2a2a2e] p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                <Wallet className="w-6 h-6 text-white" />
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-900 rounded-xl p-6 max-w-md w-full border border-gray-800">
+            <h2 className="text-2xl font-bold mb-4">Connect Circle Wallet</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">
+                  Username or Wallet Address
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter your username"
+                  className="w-full bg-gray-800 rounded-lg px-4 py-2 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                  onKeyPress={(e) => e.key === 'Enter' && handleConnect()}
+                />
               </div>
-              <div className="flex-1">
-                <div className="text-xs text-gray-400 mb-1">
-                  Circle Wallet
-                </div>
-                <div className="text-sm font-mono text-white">
-                  {address ? `${address.slice(0, 6)}...${address.slice(-6)}` : 'Not connected'}
-                </div>
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={handleConnect}
+                  disabled={!username || circleWallet.loading}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold transition"
+                >
+                  {circleWallet.loading ? 'Connecting...' : 'Connect'}
+                </button>
+                
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-800 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+              
+              {circleWallet.error && (
+                <div className="text-red-400 text-sm">{circleWallet.error}</div>
+              )}
+              
+              <div className="text-xs text-gray-500">
+                🔒 Your wallet is secured by Circle&apos;s MPC technology.
+                No private keys stored on this device.
               </div>
             </div>
-          </div>
-
-          {/* Network */}
-          <div className="px-4 py-3 border-b border-[#2a2a2e] flex items-center justify-between">
-            <span className="text-xs text-gray-400">Network</span>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-              <span className="text-sm font-medium text-white">Base Sepolia</span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="p-2">
-            {address && (
-              <>
-                <button
-                  onClick={copyAddress}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#1a1a1d] transition-colors text-left"
-                >
-                  {copied ? (
-                    <Check className="w-4 h-4 text-green-400" />
-                  ) : (
-                    <Copy className="w-4 h-4 text-gray-400" />
-                  )}
-                  <span className="text-sm text-white">
-                    {copied ? 'Copied!' : 'Copy Address'}
-                  </span>
-                </button>
-                <button
-                  onClick={openExplorer}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#1a1a1d] transition-colors text-left"
-                >
-                  <ExternalLink className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-white">View on Explorer</span>
-                </button>
-              </>
-            )}
-            <button
-              onClick={() => {
-                disconnect()
-                setIsOpen(false)
-              }}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/10 transition-colors text-left mt-1"
-            >
-              <LogOut className="w-4 h-4 text-red-400" />
-              <span className="text-sm text-red-400">Disconnect</span>
-            </button>
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

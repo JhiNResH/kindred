@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi'
 import { WalletButton } from '@/components/WalletButton'
 import { useIsMounted } from '@/components/layout/ClientOnly'
 import { useCreateComment } from '@/hooks/useKindredComment'
-import { useApproveKindToken, useKindTokenAllowance } from '@/hooks/useKindToken'
+import { useApproveKindClaw, useKindClawAllowance } from '@/hooks/useKindClawToken'
 import { type Address } from 'viem'
 
 type Category = 'k/memecoin' | 'k/defi' | 'k/perp-dex' | 'k/ai'
