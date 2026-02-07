@@ -25,10 +25,20 @@ export interface PlaceDetails {
  * Search for a place by text query
  */
 export async function searchPlace(query: string): Promise<PlaceDetails | null> {
-  if (!GOOGLE_API_KEY) {
-    console.error('Google API key not configured')
+  // Re-read API key from env (Next.js API routes context)
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_PLACES_API_KEY || GOOGLE_API_KEY
+  
+  if (!apiKey) {
+    console.error('[searchPlace] ❌ Google API key not configured')
+    console.error('[searchPlace] ENV keys:', {
+      GOOGLE_GENERATIVE_AI_API_KEY: !!process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+      GOOGLE_PLACES_API_KEY: !!process.env.GOOGLE_PLACES_API_KEY,
+      module_GOOGLE_API_KEY: !!GOOGLE_API_KEY
+    })
     return null
   }
+  
+  console.log('[searchPlace] 🔑 Using API key:', apiKey.substring(0, 20) + '...')
 
   try {
     // Use Places API (New) - Text Search
@@ -38,7 +48,7 @@ export async function searchPlace(query: string): Promise<PlaceDetails | null> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Goog-Api-Key': GOOGLE_API_KEY,
+          'X-Goog-Api-Key': apiKey,
           'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.priceLevel,places.photos,places.types,places.websiteUri,places.nationalPhoneNumber,places.regularOpeningHours,places.location'
         },
         body: JSON.stringify({
@@ -64,7 +74,7 @@ export async function searchPlace(query: string): Promise<PlaceDetails | null> {
 
     // Convert photo references to URLs (Places API New format)
     const photos = place.photos?.slice(0, 5).map((photo: any) => 
-      `https://places.googleapis.com/v1/${photo.name}/media?maxHeightPx=600&maxWidthPx=800&key=${GOOGLE_API_KEY}`
+      `https://places.googleapis.com/v1/${photo.name}/media?maxHeightPx=600&maxWidthPx=800&key=${apiKey}`
     ) || []
     
     console.log('[Google Places] Found', photos.length, 'photos for', place.displayName?.text)

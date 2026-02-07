@@ -64,12 +64,16 @@ async function getRestaurantInfo(restaurantName: string): Promise<RestaurantInfo
   // CRITICAL: Get real photos from Google Places API first!
   let placesData = null
   try {
+    console.log('[Gourmet Info] 🔍 Calling searchPlace for:', sanitizedName)
     placesData = await searchPlace(sanitizedName)
-    if (placesData?.photos) {
-      console.log('[Gourmet Info] Got', placesData.photos.length, 'real photos from Google Places')
+    
+    if (placesData?.photos && placesData.photos.length > 0) {
+      console.log('[Gourmet Info] ✅ Got', placesData.photos.length, 'real photos from Google Places')
+    } else {
+      console.warn('[Gourmet Info] ⚠️  searchPlace returned but no photos:', placesData)
     }
   } catch (e) {
-    console.warn('[Gourmet Info] Google Places failed:', e)
+    console.error('[Gourmet Info] ❌ Google Places exception:', e)
   }
 
   const prompt = `You are a restaurant information expert. Analyze the restaurant: "${sanitizedName}"

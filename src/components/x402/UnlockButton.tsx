@@ -31,13 +31,28 @@ export function UnlockButton({
   const TREASURY_ADDRESS = CONTRACTS.baseSepolia.treasury
 
   const handleUnlock = async () => {
+    console.log('[UnlockButton] Click detected', {
+      authenticated,
+      ready,
+      walletsCount: wallets.length,
+      status,
+    })
+
+    if (!ready) {
+      console.log('[UnlockButton] Privy not ready yet')
+      setError('Wallet not ready. Please wait...')
+      return
+    }
+
     if (!authenticated) {
+      console.log('[UnlockButton] Not authenticated, triggering login')
       login()
       return
     }
 
     if (!wallets.length) {
-      setError('No wallet connected')
+      console.log('[UnlockButton] No wallets connected')
+      setError('No wallet connected. Please connect wallet first.')
       return
     }
 
@@ -136,17 +151,18 @@ export function UnlockButton({
     <div className="space-y-2">
       <button
         onClick={handleUnlock}
-        disabled={status !== 'idle' || !ready}
+        disabled={status === 'paying' || status === 'unlocking' || status === 'unlocked'}
         className={`
           w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg
           font-medium text-white transition-all
           ${
             status === 'idle'
-              ? 'bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 shadow-lg hover:shadow-xl'
+              ? 'bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 shadow-lg hover:shadow-xl cursor-pointer'
               : status === 'unlocked'
-              ? 'bg-green-500'
-              : 'bg-gray-600 cursor-not-allowed'
+              ? 'bg-green-500 cursor-default'
+              : 'bg-gray-600 cursor-wait'
           }
+          ${status === 'paying' || status === 'unlocking' ? 'opacity-75' : ''}
           ${className}
         `}
       >
