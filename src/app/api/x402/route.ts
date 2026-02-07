@@ -200,6 +200,24 @@ export async function POST(request: NextRequest) {
       }).catch(() => {}) // Ignore if field doesn't exist
     }
 
+    // Distribute payment to stakeholders (early voter rewards)
+    try {
+      const price = formatUsdc(MIN_PAYMENT_USDC)
+      await fetch(`${request.nextUrl.origin}/api/x402/distribute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contentId,
+          amount: price,
+          payer: normalizedAddress,
+        }),
+      })
+      console.log('[x402] ✅ Payment distributed to stakeholders')
+    } catch (distributeError) {
+      console.error('[x402] Failed to distribute payment:', distributeError)
+      // Continue anyway - content is already unlocked
+    }
+
     // Return unlocked content
     const content = await getContent(contentId, contentType || 'review')
 
