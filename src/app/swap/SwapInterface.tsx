@@ -6,6 +6,8 @@ import { CircleWalletButton } from '@/components/CircleWalletButton'
 import { ArrowDown, Info, TrendingDown, Award, Shield, AlertCircle, ChevronDown, ArrowDownUp } from 'lucide-react'
 import { useSwapETHForUSDC, useSwapUSDCForETH } from '@/hooks/useSimpleSwap'
 import { formatEther, formatUnits } from 'viem'
+import { PriorityBadge } from '@/components/swap/PriorityBadge'
+import { ReferralWidget } from '@/components/swap/ReferralWidget'
 
 // Fee calculation matching KindredHook.sol
 const HIGH_TRUST_THRESHOLD = 850
