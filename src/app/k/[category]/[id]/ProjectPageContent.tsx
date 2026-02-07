@@ -324,60 +324,10 @@ export function ProjectPageContent({
             totalStaked={reviews.reduce((sum, r) => sum + parseFloat(r.stakeAmount || '0'), 0).toString()}
           />
 
-          {/* Funding & Risk Info Grid - Hide for k/gourmet */}
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* Funding Info - Not for restaurants */}
-            {data.funding && category !== 'gourmet' && (
-              <div className="p-4 rounded-xl bg-[#1a1a1d] border border-green-500/20">
-                <h3 className="font-bold text-green-400 mb-3 flex items-center gap-2">
-                  💰 Funding Information
-                </h3>
-                <div className="space-y-3">
-                  {data.funding.totalRaised && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400 uppercase">Total Raised</span>
-                      <span className="text-lg font-bold text-green-400">{data.funding.totalRaised}</span>
-                    </div>
-                  )}
-                  {data.funding.valuation && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400 uppercase">Valuation</span>
-                      <span className="text-md font-semibold text-gray-300">{data.funding.valuation}</span>
-                    </div>
-                  )}
-                  {data.funding.lastRound && (
-                    <div className="pt-2 border-t border-gray-700">
-                      <span className="text-xs text-gray-400 uppercase block mb-1">Latest Round</span>
-                      <span className="text-sm text-gray-300">{data.funding.lastRound}</span>
-                    </div>
-                  )}
-                  {data.funding.rounds && data.funding.rounds.length > 0 && (
-                    <div className="pt-2 border-t border-gray-700">
-                      <span className="text-xs text-gray-400 uppercase block mb-2">Funding Rounds</span>
-                      <div className="space-y-2 max-h-48 overflow-y-auto">
-                        {data.funding.rounds.map((round: any, i: number) => (
-                          <div key={i} className="bg-black/20 p-2 rounded text-xs">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-semibold text-white">{round.round}</span>
-                              <span className="text-green-400 font-bold">{round.amount}</span>
-                            </div>
-                            {round.date && <div className="text-gray-500">{round.date}</div>}
-                            {round.investors && round.investors.length > 0 && (
-                              <div className="text-gray-400 mt-1">
-                                {round.investors.join(', ')}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Restaurant Info - For k/gourmet only */}
-            {category === 'gourmet' && (
+          {/* Restaurant Info - For k/gourmet, shown in main content area */}
+          {category === 'gourmet' && (
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              {/* Left Column: Basic Info */}
               <div className="p-4 rounded-xl bg-[#1a1a1d] border border-orange-500/20">
                 <h3 className="font-bold text-orange-400 mb-3 flex items-center gap-2">
                   🍽️ Restaurant Info
@@ -392,14 +342,13 @@ export function ProjectPageContent({
                           <div key={i} className="bg-black/30 border border-gray-700 rounded-lg px-3 py-1.5 flex items-center gap-2">
                             <span className="text-xs text-gray-400">{ps.platform}</span>
                             <span className="text-sm font-bold text-orange-400">{ps.score}</span>
-                            {ps.reviewCount && <span className="text-[10px] text-gray-500">({ps.reviewCount})</span>}
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
-                  {/* Basic Info Grid */}
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 pb-3 border-b border-gray-700">
+                  {/* Basic Info */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                     {data.cuisine && (
                       <>
                         <span className="text-xs text-gray-400 uppercase">Cuisine</span>
@@ -420,19 +369,19 @@ export function ProjectPageContent({
                     )}
                   </div>
                   {data.hours && (
-                    <div className="pt-2 border-t border-gray-700">
+                    <div className="pt-3 border-t border-gray-700">
                       <span className="text-xs text-gray-400 uppercase block mb-1">Hours</span>
                       <span className="text-sm text-gray-300">{data.hours}</span>
                     </div>
                   )}
                   {data.address && (
-                    <div className="pt-2 border-t border-gray-700">
+                    <div className="pt-3 border-t border-gray-700">
                       <span className="text-xs text-gray-400 uppercase block mb-1">Address</span>
                       <span className="text-sm text-gray-300">{data.address}</span>
                     </div>
                   )}
                   {data.bestFor?.length > 0 && (
-                    <div className="pt-2 border-t border-gray-700">
+                    <div className="pt-3 border-t border-gray-700">
                       <span className="text-xs text-gray-400 uppercase block mb-2">Best For</span>
                       <div className="flex flex-wrap gap-2">
                         {data.bestFor.map((tag: string, i: number) => (
@@ -443,45 +392,6 @@ export function ProjectPageContent({
                       </div>
                     </div>
                   )}
-                  {data.mustTry?.length > 0 && (
-                    <div className="pt-2 border-t border-gray-700">
-                      <span className="text-xs text-gray-400 uppercase block mb-2">🌟 Must Try</span>
-                      <div className="space-y-2">
-                        {data.mustTry.slice(0, 5).map((dish: any, i: number) => (
-                          <div key={i} className="bg-black/20 p-2 rounded text-sm">
-                            <span className="font-semibold text-white">{dish.name}</span>
-                            {dish.price && <span className="text-orange-400 ml-2">{dish.price}</span>}
-                            {dish.description && <p className="text-xs text-gray-400 mt-1">{dish.description}</p>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {/* Restaurant Warnings (not corporate scandals) */}
-                  {data.warnings?.length > 0 && (
-                    <div className="pt-2 border-t border-gray-700">
-                      <span className="text-xs text-yellow-400 uppercase block mb-2">⚠️ 注意事項</span>
-                      <ul className="space-y-1">
-                        {data.warnings.map((w: string, i: number) => (
-                          <li key={i} className="text-sm text-yellow-200/80">• {w}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {/* Critical Reviews */}
-                  {data.criticalReviews?.length > 0 && (
-                    <div className="pt-2 border-t border-gray-700">
-                      <span className="text-xs text-red-400 uppercase block mb-2">😤 常見差評</span>
-                      <ul className="space-y-1">
-                        {data.criticalReviews.map((cr: any, i: number) => (
-                          <li key={i} className="text-sm text-red-200/80">
-                            • {cr.issue || cr} {cr.source && <span className="text-red-400/60">({cr.source})</span>}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {/* Google Maps Link */}
                   {data.googleMapsUrl && (
                     <div className="pt-3 border-t border-gray-700">
                       <a 
@@ -496,42 +406,164 @@ export function ProjectPageContent({
                   )}
                 </div>
               </div>
-            )}
 
-            {/* Ma'at Risk Analysis - Hide for k/gourmet (restaurants don't need security audits) */}
-            {category !== 'gourmet' && (data.riskWarnings?.length > 0 || data.audits?.length > 0) && (
-              <div className="p-4 rounded-xl bg-[#1a1a1d] border border-yellow-500/20">
-                <h3 className="font-bold text-yellow-400 mb-3 flex items-center gap-2">
-                  ⚠️ Ma'at Risk Analysis
-                </h3>
-                <div className="space-y-3">
-                   {data.riskWarnings?.length > 0 && (
-                     <div>
-                       <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Warnings</h4>
-                       <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
-                         {data.riskWarnings.map((w: string, i: number) => (
-                           <li key={i}>{w}</li>
-                         ))}
-                       </ul>
-                     </div>
-                   )}
-                   {data.audits?.length > 0 && (
-                     <div className={data.riskWarnings?.length > 0 ? 'pt-3 border-t border-gray-700' : ''}>
-                       <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Security Audits</h4>
-                       <ul className="space-y-2">
-                         {data.audits.map((a: any, i: number) => (
-                           <li key={i} className="flex items-center justify-between text-sm bg-black/20 p-2 rounded">
-                             <span className="text-green-400 font-medium">{a.auditor}</span>
-                             <span className="text-gray-500 text-xs">{a.date || 'Verified'}</span>
-                           </li>
-                         ))}
-                       </ul>
-                     </div>
-                   )}
-                </div>
+              {/* Right Column: Must Try + Warnings + Photos */}
+              <div className="space-y-4">
+                {/* Photo Gallery */}
+                {data.photos?.length > 0 && (
+                  <div className="p-4 rounded-xl bg-[#1a1a1d] border border-orange-500/20">
+                    <h3 className="font-bold text-orange-400 mb-3">📸 Photos</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      {data.photos.slice(0, 4).map((photo: string, i: number) => (
+                        <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
+                          <Image 
+                            src={photo} 
+                            alt={`${data.name} photo ${i + 1}`}
+                            fill
+                            className="object-cover hover:scale-105 transition-transform"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none'
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Must Try */}
+                {data.mustTry?.length > 0 && (
+                  <div className="p-4 rounded-xl bg-[#1a1a1d] border border-orange-500/20">
+                    <h3 className="font-bold text-orange-400 mb-3">🌟 Must Try</h3>
+                    <div className="space-y-2">
+                      {data.mustTry.slice(0, 5).map((dish: any, i: number) => (
+                        <div key={i} className="bg-black/20 p-3 rounded text-sm">
+                          <div className="flex justify-between items-start">
+                            <span className="font-semibold text-white">{dish.name}</span>
+                            {dish.price && <span className="text-orange-400 font-medium">{dish.price}</span>}
+                          </div>
+                          {dish.description && <p className="text-xs text-gray-400 mt-1">{dish.description}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Warnings & Critical Reviews */}
+                {(data.warnings?.length > 0 || data.criticalReviews?.length > 0) && (
+                  <div className="p-4 rounded-xl bg-[#1a1a1d] border border-yellow-500/20">
+                    <h3 className="font-bold text-yellow-400 mb-3">⚠️ 注意事項</h3>
+                    {data.warnings?.length > 0 && (
+                      <ul className="space-y-1 mb-3">
+                        {data.warnings.map((w: string, i: number) => (
+                          <li key={i} className="text-sm text-yellow-200/80">• {w}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {data.criticalReviews?.length > 0 && (
+                      <div className="pt-3 border-t border-gray-700">
+                        <span className="text-xs text-red-400 uppercase block mb-2">😤 常見差評</span>
+                        <ul className="space-y-1">
+                          {data.criticalReviews.slice(0, 3).map((cr: any, i: number) => (
+                            <li key={i} className="text-sm text-red-200/80">• {cr.issue || cr}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* Funding & Risk Info Grid - Only for crypto projects */}
+          {category !== 'gourmet' && (
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              {/* Funding Info */}
+              {data.funding && (
+                <div className="p-4 rounded-xl bg-[#1a1a1d] border border-green-500/20">
+                  <h3 className="font-bold text-green-400 mb-3 flex items-center gap-2">
+                    💰 Funding Information
+                  </h3>
+                  <div className="space-y-3">
+                    {data.funding.totalRaised && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400 uppercase">Total Raised</span>
+                        <span className="text-lg font-bold text-green-400">{data.funding.totalRaised}</span>
+                      </div>
+                    )}
+                    {data.funding.valuation && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400 uppercase">Valuation</span>
+                        <span className="text-md font-semibold text-gray-300">{data.funding.valuation}</span>
+                      </div>
+                    )}
+                    {data.funding.lastRound && (
+                      <div className="pt-2 border-t border-gray-700">
+                        <span className="text-xs text-gray-400 uppercase block mb-1">Latest Round</span>
+                        <span className="text-sm text-gray-300">{data.funding.lastRound}</span>
+                      </div>
+                    )}
+                    {data.funding.rounds && data.funding.rounds.length > 0 && (
+                      <div className="pt-2 border-t border-gray-700">
+                        <span className="text-xs text-gray-400 uppercase block mb-2">Funding Rounds</span>
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {data.funding.rounds.map((round: any, i: number) => (
+                            <div key={i} className="bg-black/20 p-2 rounded text-xs">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-semibold text-white">{round.round}</span>
+                                <span className="text-green-400 font-bold">{round.amount}</span>
+                              </div>
+                              {round.date && <div className="text-gray-500">{round.date}</div>}
+                              {round.investors && round.investors.length > 0 && (
+                                <div className="text-gray-400 mt-1">
+                                  {round.investors.join(', ')}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Ma'at Risk Analysis */}
+              {(data.riskWarnings?.length > 0 || data.audits?.length > 0) && (
+                <div className="p-4 rounded-xl bg-[#1a1a1d] border border-yellow-500/20">
+                  <h3 className="font-bold text-yellow-400 mb-3 flex items-center gap-2">
+                    ⚠️ Ma'at Risk Analysis
+                  </h3>
+                  <div className="space-y-3">
+                     {data.riskWarnings?.length > 0 && (
+                       <div>
+                         <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Warnings</h4>
+                         <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
+                           {data.riskWarnings.map((w: string, i: number) => (
+                             <li key={i}>{w}</li>
+                           ))}
+                         </ul>
+                       </div>
+                     )}
+                     {data.audits?.length > 0 && (
+                       <div className={data.riskWarnings?.length > 0 ? 'pt-3 border-t border-gray-700' : ''}>
+                         <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">Security Audits</h4>
+                         <ul className="space-y-2">
+                           {data.audits.map((a: any, i: number) => (
+                             <li key={i} className="flex items-center justify-between text-sm bg-black/20 p-2 rounded">
+                               <span className="text-green-400 font-medium">{a.auditor}</span>
+                               <span className="text-gray-500 text-xs">{a.date || 'Verified'}</span>
+                             </li>
+                           ))}
+                         </ul>
+                       </div>
+                     )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Discussion / Reviews */}
           <div className="mb-6 flex items-center justify-between">
@@ -591,39 +623,41 @@ export function ProjectPageContent({
         </div>
 
         {/* Right Sidebar */}
-        <div className="hidden xl:block">
+        <div className="hidden xl:block w-80">
            <CommunityInfo category={`k/${category}`} />
            
-           {/* Project Stats Widget */}
-           <div className="w-80 mt-6 bg-[#111113] border border-[#1f1f23] rounded-xl p-4">
-              <h3 className="font-semibold mb-4 text-sm text-gray-400 uppercase">Market Stats</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Price</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono">{tokenPrice?.price || data.price || '-'}</span>
-                    {tokenPrice?.priceChange24h && (
-                      <span className={`text-xs ${parseFloat(tokenPrice.priceChange24h) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {parseFloat(tokenPrice.priceChange24h) >= 0 ? '↑' : '↓'}{tokenPrice.priceChange24h}
-                      </span>
-                    )}
+           {/* Market Stats Widget - For crypto projects only */}
+           {category !== 'gourmet' && (
+             <div className="mt-6 bg-[#111113] border border-[#1f1f23] rounded-xl p-4">
+                <h3 className="font-semibold mb-4 text-sm text-gray-400 uppercase">Market Stats</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 text-sm">Price</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono">{tokenPrice?.price || data.price || '-'}</span>
+                      {tokenPrice?.priceChange24h && (
+                        <span className={`text-xs ${parseFloat(tokenPrice.priceChange24h) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {parseFloat(tokenPrice.priceChange24h) >= 0 ? '↑' : '↓'}{tokenPrice.priceChange24h}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 text-sm">24h Vol</span>
+                    <span className="font-mono">{tokenPrice?.volume24h || data.volume24h || '-'}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 text-sm">Market Cap</span>
+                    <span className="font-mono">{tokenPrice?.marketCap || data.marketCap || '-'}</span>
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">24h Vol</span>
-                  <span className="font-mono">{tokenPrice?.volume24h || data.volume24h || '-'}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Market Cap</span>
-                  <span className="font-mono">{tokenPrice?.marketCap || data.marketCap || '-'}</span>
-                </div>
-              </div>
-              {tokenPrice && (
-                <div className="mt-3 pt-3 border-t border-[#1f1f23]">
-                  <span className="text-[10px] text-gray-600">via CoinGecko • Live</span>
-                </div>
-              )}
-           </div>
+                {tokenPrice && (
+                  <div className="mt-3 pt-3 border-t border-[#1f1f23]">
+                    <span className="text-[10px] text-gray-600">via CoinGecko • Live</span>
+                  </div>
+                )}
+             </div>
+           )}
         </div>
       </div>
     </main>
