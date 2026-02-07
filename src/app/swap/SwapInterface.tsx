@@ -178,13 +178,24 @@ export function SwapInterface() {
     async function fetchReputation() {
       setLoading(true)
       try {
-        // Mock reputation for demo (in production, call KindredReputationOracle.getScore)
-        // For now, generate based on address
-        const mockScore = 500 + (parseInt(address.slice(-4), 16) % 450)
-        setReputation(mockScore)
+        // Fetch real reputation from ReputationOracle contract
+        const response = await fetch('/api/reputation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address }),
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          setReputation(data.score || 0)
+          console.log('[Swap] Reputation fetched:', data.score)
+        } else {
+          console.warn('[Swap] Reputation fetch failed, using fallback')
+          setReputation(0)
+        }
       } catch (error) {
-        console.error('Failed to fetch reputation:', error)
-        setReputation(500) // Default fallback
+        console.error('[Swap] Failed to fetch reputation:', error)
+        setReputation(0) // Default fallback
       } finally {
         setLoading(false)
       }
