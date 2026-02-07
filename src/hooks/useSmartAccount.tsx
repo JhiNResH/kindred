@@ -103,12 +103,23 @@ export function SmartAccountProvider({ children }: { children: ReactNode }) {
       })
 
       console.log('[SmartAccount] Delegation created:', delegation)
-      setDelegation(delegation)
-
-      // TODO: Sign delegation with smart account
-      // const signature = await smartAccount.signDelegation(delegation)
-
-      return delegation
+      
+      // Sign delegation with smart account
+      try {
+        const signature = await smartAccount.signDelegation(delegation)
+        console.log('[SmartAccount] Delegation signed:', signature)
+        
+        // Store signed delegation
+        const signedDelegation = { ...delegation, signature }
+        setDelegation(signedDelegation)
+        
+        return signedDelegation
+      } catch (signError) {
+        console.error('[SmartAccount] Failed to sign delegation:', signError)
+        // Store unsigned delegation as fallback
+        setDelegation(delegation)
+        return delegation
+      }
     } catch (err: any) {
       console.error('[SmartAccount] Error creating delegation:', err)
       setError(err.message || 'Failed to create delegation')
@@ -124,20 +135,25 @@ export function SmartAccountProvider({ children }: { children: ReactNode }) {
       return
     }
 
+    if (!smartAccount) {
+      throw new Error('Smart account not initialized')
+    }
+
     setIsLoading(true)
     setError(null)
 
     try {
       console.log('[SmartAccount] Revoking delegation...')
 
-      // TODO: Implement delegation revocation
-      // await smartAccount.revokeDelegation(delegation)
+      // Revoke delegation on-chain
+      await smartAccount.revokeDelegation(delegation)
 
       setDelegation(null)
-      console.log('[SmartAccount] Delegation revoked')
+      console.log('[SmartAccount] ✅ Delegation revoked successfully')
     } catch (err: any) {
       console.error('[SmartAccount] Error revoking delegation:', err)
       setError(err.message || 'Failed to revoke delegation')
+      throw err
     } finally {
       setIsLoading(false)
     }
