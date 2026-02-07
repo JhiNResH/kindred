@@ -37,6 +37,22 @@ const TOKENS: Record<string, Token> = {
     decimals: 18,
     balance: '0.5',
   },
+  KINDCLAW: {
+    symbol: 'KINDCLAW',
+    name: 'Kindred Arcade Token',
+    color: 'from-orange-500 to-red-500',
+    icon: '🎮',
+    decimals: 18,
+    balance: '1,000',
+  },
+  OPENWORK: {
+    symbol: 'OPENWORK',
+    name: 'OpenWork Token',
+    color: 'from-blue-500 to-cyan-500',
+    icon: '⚡',
+    decimals: 18,
+    balance: '500',
+  },
   WBTC: {
     symbol: 'WBTC',
     name: 'Wrapped Bitcoin',
@@ -65,10 +81,12 @@ const TOKENS: Record<string, Token> = {
 
 // Mock exchange rates (vs USDC)
 const EXCHANGE_RATES: Record<string, number> = {
-  ETH: 2000,    // 1 ETH = 2000 USDC
-  WBTC: 40000,  // 1 WBTC = 40000 USDC
-  USDC: 1,      // 1 USDC = 1 USDC
-  DAI: 1,       // 1 DAI = 1 USDC
+  ETH: 2000,       // 1 ETH = 2000 USDC
+  KINDCLAW: 0.01,  // 1 KINDCLAW = 0.01 USDC (arcade token)
+  OPENWORK: 2.5,   // 1 OPENWORK = 2.5 USDC
+  WBTC: 40000,     // 1 WBTC = 40000 USDC
+  USDC: 1,         // 1 USDC = 1 USDC
+  DAI: 1,          // 1 DAI = 1 USDC
 }
 
 function calculateFee(score: number): number {

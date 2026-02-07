@@ -9,10 +9,8 @@ import KindClawTokenABI from './abi/KindClawToken.json'
 import KindredHookABI from './abi/KindredHook.json'
 import KindredHookV2ABI from './abi/KindredHookV2.json'
 import ReputationOracleABI from './abi/ReputationOracle.json'
-import KindClawTokenABI from './abi/KindClawToken.json'
 import OpenWorkMockABI from './abi/OpenWorkMock.json'
 import SimpleSwapABI from './abi/SimpleSwap.json'
-import KindClawABI from './abi/KindClaw.json'
 
 export const CONTRACTS = {
   // Base Sepolia (testnet) - Deployed 2026-02-05 (core) + 2026-02-07 (hook + arcade tokens)
@@ -109,8 +107,5 @@ export function calculateSwapFee(reputationScore: number): number {
     return FEE_TIERS.MEDIUM_TRUST.feePercent
   } else {
     return FEE_TIERS.LOW_TRUST.feePercent
-  }
-}
-RUST.feePercent
   }
 }
