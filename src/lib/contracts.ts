@@ -22,14 +22,14 @@ export const CONTRACTS = {
     treasury: '0x872989F7fCd4048acA370161989d3904E37A3cB3' as `0x${string}`,
     // Uniswap v4 Hook System - Deployed 2026-02-07
     reputationOracle: {
-      address: '0xff4676Fe08B94a113bF27cf7EaF632e71f7A13b0' as `0x${string}`,
+      address: '0xb3Af55a046aC669642A8FfF10FC6492c22C17235' as `0x${string}`,
       abi: ReputationOracleABI,
     },
     kindredHook: {
-      address: '0x05544abA9166F3DEC5aB241429135f65bEE05C6e' as `0x${string}`,
+      address: '0x03C8fFc3E6820Ef40d43F76F66e8B9C1A1DFaD4d' as `0x${string}`,
       abi: KindredHookABI,
     },
-    mockPoolManager: '0x2EB499d04aEE87cc6ae886115D9c37c2ffe3A2a8' as `0x${string}`, // Demo only
+    mockPoolManager: '0x7350Cc2655004d32e234094C847bfac789D19408' as `0x${string}`, // Demo only
   },
   // Base (mainnet)
   base: {
