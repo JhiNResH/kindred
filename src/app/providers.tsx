@@ -1,24 +1,17 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { config } from '../config/wagmi'
-import { SmartAccountProvider } from '@/hooks/useSmartAccount'
+import { config } from '@/config/wagmi'
+import { useState, useEffect } from 'react'
 import { getCircleSDK } from '@/lib/circle'
 
+const queryClient = new QueryClient()
+
 export function Providers({ children }: { children: React.ReactNode }) {
-  // Create QueryClient inside component to prevent SSR issues
-  const queryClient = useMemo(() => new QueryClient({
-    defaultOptions: {
-      queries: { staleTime: 60 * 1000 }
-    }
-  }), [])
-  
   const [mounted, setMounted] = useState(false)
-  
+
   useEffect(() => {
-    setMounted(true)
     // Initialize Circle SDK on client-side
     try {
       getCircleSDK()
@@ -26,14 +19,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('[Circle] Failed to initialize:', error)
     }
+    setMounted(true)
   }, [])
+
+  // Prevent SSR hydration mismatch
+  if (!mounted) {
+    return null
+  }
 
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <SmartAccountProvider>
-          {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
-        </SmartAccountProvider>
+        {children}
       </QueryClientProvider>
     </WagmiProvider>
   )
