@@ -122,14 +122,17 @@ model Review {
   updatedAt       DateTime  @updatedAt
   
   // Relations
-  reviewer        User      @relation(fields: [reviewerId], references: [id])
-  reviewerId      String
+  reviewer        User?     @relation(fields: [reviewerId], references: [id])
+  reviewerId      String?
+  agent           Agent?    @relation(fields: [agentId], references: [id])
+  agentId         String?
   project         Project   @relation(fields: [projectId], references: [id])
   projectId       String
   stakes          Stake[]
   votes           Vote[]
   
   @@index([reviewerId])
+  @@index([agentId])
   @@index([projectId])
   @@index([createdAt])
   @@index([nftTokenId])
@@ -171,19 +174,25 @@ model Stake {
 model Vote {
   id              String    @id @default(cuid())
   direction       String    // "up" or "down"
+  stakeAmount     String?   // Amount staked on this vote
   
   // Timestamps
   createdAt       DateTime  @default(now())
   
   // Relations
-  voter           User      @relation(fields: [voterId], references: [id])
-  voterId         String
+  voter           User?     @relation(fields: [voterId], references: [id])
+  voterId         String?
+  agent           Agent?    @relation(fields: [agentId], references: [id])
+  agentId         String?
   review          Review    @relation(fields: [reviewId], references: [id])
   reviewId        String
   
-  // Unique constraint: one vote per user per review
+  // Unique constraint: one vote per user/agent per review
   @@unique([voterId, reviewId])
+  @@unique([agentId, reviewId])
   @@index([reviewId])
+  @@index([voterId])
+  @@index([agentId])
 }
 
 // Sentiment vote on a project (bullish/bearish) - FREE, no staking
@@ -316,4 +325,248 @@ model ContentAccess {
   @@unique([contentId, userAddress])
   @@index([userAddress])
   @@index([contentId])
+}
+
+// ============================================
+// Autonomous Operations System (Day 2-4)
+// ============================================
+
+// Proposal for a task/mission
+model OpsProposal {
+  id              String    @id @default(cuid())
+  
+  // Proposal metadata
+  title           String
+  description     String?
+  source          String    // "api" | "trigger" | "reaction"
+  created_by      String?
+  
+  // Step breakdown
+  step_kinds      String[]  // e.g., ["build", "test", "deploy"]
+  
+  // Status
+  status          String    @default("pending") // pending, approved, rejected
+  approved_at     DateTime?
+  rejection_reason String?
+  
+  // Auto-approve flag
+  auto_approve    Boolean   @default(false)
+  
+  // Timestamps
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  
+  // Relations
+  missions        OpsMission[]
+  
+  @@index([status])
+  @@index([created_at])
+}
+
+// Mission (collection of related steps)
+model OpsMission {
+  id              String    @id @default(cuid())
+  
+  // Mission metadata
+  proposal_id     String
+  proposal        OpsProposal @relation(fields: [proposal_id], references: [id])
+  title           String
+  description     String?
+  
+  // Status
+  status          String    @default("pending") // pending, executing, succeeded, failed
+  step_count      Int       @default(0)
+  completed_count Int       @default(0)
+  failed_count    Int       @default(0)
+  
+  // Timestamps
+  created_at      DateTime  @default(now())
+  started_at      DateTime?
+  finalized_at    DateTime?
+  
+  // Relations
+  steps           OpsMissionStep[]
+  events          OpsAgentEvent[]
+  
+  @@index([status])
+  @@index([proposal_id])
+}
+
+// Individual step within a mission
+model OpsMissionStep {
+  id              String    @id @default(cuid())
+  
+  // Step metadata
+  mission_id      String
+  mission         OpsMission @relation(fields: [mission_id], references: [id], onDelete: Cascade)
+  step_kind       String    // e.g., "build", "test", "deploy", "code_review"
+  step_order      Int       // Execution order within mission
+  
+  // Claim info
+  reserved_by     String?   // Agent ID if claimed (e.g., "steve", "patrick")
+  
+  // Status & Execution
+  status          String    @default("queued") // queued, running, completed, failed
+  
+  // Results
+  result          String?   // JSON result from execution
+  error           String?   // Error message if failed
+  
+  // Timing
+  created_at      DateTime  @default(now())
+  started_at      DateTime?
+  completed_at    DateTime?
+  
+  @@index([mission_id])
+  @@index([status])
+  @@index([reserved_by])
+  @@index([step_kind])
+}
+
+// Event stream for agent activity
+model OpsAgentEvent {
+  id              String    @id @default(cuid())
+  
+  // Event metadata
+  agent_id        String    // Which agent emitted this
+  event_type      String    // "step_completed", "step_failed", "proposal_approved", etc.
+  
+  // Contextual data
+  mission_id      String?
+  mission         OpsMission? @relation(fields: [mission_id], references: [id])
+  step_id         String?   // Which step (if any)
+  
+  // Event payload
+  event_data      String    // JSON data
+  
+  // Timestamps
+  created_at      DateTime  @default(now())
+  
+  @@index([agent_id])
+  @@index([event_type])
+  @@index([mission_id])
+  @@index([created_at])
+}
+
+// Operational policies (cap gates, auto-approve rules, etc.)
+model OpsPolicy {
+  id              String    @id @default(cuid())
+  
+  // Policy name and value
+  name            String    @unique // e.g., "agent_daily_cap_steve", "auto_approve_step_kinds"
+  description     String?
+  
+  // JSON value (flexible for different policy types)
+  value           String    // JSON object
+  
+  // Timestamps
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+}
+
+// Trigger definitions (conditions that auto-create proposals)
+model OpsTrigger {
+  id              String    @id @default(cuid())
+  
+  // Trigger metadata
+  name            String    @unique
+  description     String?
+  
+  // Condition (JavaScript code that evaluates event)
+  condition       String
+  
+  // Cooldown to prevent rapid re-triggers
+  cooldown_seconds Int      @default(0)
+  last_triggered  DateTime?
+  
+  // Action: What proposal to create
+  action          String    // JSON with proposal template
+  
+  // Status
+  enabled         Boolean   @default(true)
+  
+  // Timestamps
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  
+  @@index([enabled])
+}
+
+// Reaction queue (events waiting to be processed)
+model OpsReactionQueue {
+  id              String    @id @default(cuid())
+  
+  // Source event
+  source_event_id String
+  source_event_type String
+  
+  // Reaction rule to apply
+  reaction_id     String?
+  
+  // Status
+  status          String    @default("pending") // pending, processing, completed, failed
+  
+  // Timestamps
+  created_at      DateTime  @default(now())
+  processed_at    DateTime?
+  
+  @@index([status])
+  @@index([created_at])
+}
+
+// ============================================
+// Agent System (for autonomous agents)
+// ============================================
+
+// AI Agent profile and reputation
+model Agent {
+  id              String    @id @default(cuid())
+  name            String
+  description     String    @db.Text
+  wallet          String    @unique
+  chain           String    // "solana" | "base" | "ethereum"
+  
+  // API access
+  apiKey          String    @unique @db.Text
+  signature       String    @db.Text // Signed message for verification
+  message         String    @db.Text // Original message that was signed
+  
+  // Reputation stats
+  commentCount    Int       @default(0)
+  followers       Int       @default(0)
+  totalEarnings   Float     @default(0)
+  accuracy        Float     @default(0) // 0-100
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  reviews         Review[]
+  votes           Vote[]
+  followers_rel   AgentFollower[] @relation("followers")
+  following_rel   AgentFollower[] @relation("following")
+  
+  @@index([wallet])
+  @@index([chain])
+  @@index([createdAt])
+}
+
+// Agent follower relationships
+model AgentFollower {
+  id              String    @id @default(cuid())
+  
+  // Relations
+  follower        Agent     @relation("followers", fields: [followerId], references: [id])
+  followerId      String
+  following       Agent     @relation("following", fields: [followingId], references: [id])
+  followingId     String
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  
+  // Unique constraint: one follow relationship per pair
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
 }
