@@ -186,6 +186,15 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         {openSections["communities"] && (
           <div className="flex flex-col">
             <Link
+              href="/k/wallet"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/wallet" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <div className="w-7 h-7 rounded-md bg-orange-500/15 text-orange-500 flex items-center justify-center">
+                💳
+              </div>
+              <span>k/wallet</span>
+            </Link>
+            <Link
               href="/k/defi"
               className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/defi" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
             >

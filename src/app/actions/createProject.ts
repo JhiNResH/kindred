@@ -19,9 +19,20 @@ const KNOWN_INFRA = [
   'eigenlayer', 'celestia', 'layerzero', 'chainlink', 'the graph'
 ]
 
+// Known wallet projects
+const KNOWN_WALLETS = [
+  'phantom', 'metamask', 'ledger', 'trezor', 'safe', 'gnosis', 'argent', 'wallet',
+  'rainbow', 'frame', 'coinbase wallet', 'trust wallet', 'exodus', 'myetherwallet'
+]
+
 // Map Gemini type to our category format
 function mapTypeToCategory(type: string, projectName?: string): string {
   const nameLower = (projectName || '').toLowerCase()
+  
+  // Override for known wallets
+  if (KNOWN_WALLETS.some(w => nameLower.includes(w))) {
+    return 'k/wallet'
+  }
   
   // Override for known perp DEXes
   if (KNOWN_PERP_DEXES.some(p => nameLower.includes(p))) {

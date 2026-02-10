@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-type Category = 'k/defi' | 'k/perp-dex' | 'k/ai'
+type Category = 'k/wallet' | 'k/defi' | 'k/perp-dex' | 'k/ai'
 
 interface LeaderboardEntry {
   rank: number
@@ -17,6 +17,7 @@ interface LeaderboardEntry {
 }
 
 const CATEGORIES: { value: Category; label: string; icon: string }[] = [
+  { value: 'k/wallet', label: 'Wallets', icon: '💳' },
   { value: 'k/defi', label: 'DeFi', icon: '🏦' },
   { value: 'k/perp-dex', label: 'Perp DEX', icon: '📈' },
   { value: 'k/ai', label: 'AI Agents', icon: '🤖' },
