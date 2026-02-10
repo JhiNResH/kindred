@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { TrendingUp, TrendingDown, Minus, Flame, Clock, Award, BarChart3, ArrowUpRight, ThumbsUp, ThumbsDown } from 'lucide-react'
 
@@ -34,6 +33,9 @@ const PROJECT_EMOJIS: Record<string, string> = {
   'Drift Protocol': '🚀',
   'Jupiter': '🪐',
 }
+
+// Use emoji as primary display (more reliable than external images)
+const USE_EMOJI_ICONS = true
 
 interface LeaderboardEntry {
   rank: number
@@ -214,12 +216,8 @@ export function MindshareBoard() {
             <div key={entry.id} className="bg-[#111113] border border-[#1f1f23] rounded-xl p-4 hover:border-[#2a2a2e] transition-colors">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg font-bold overflow-hidden flex-shrink-0">
-                    {entry.image ? (
-                      <Image src={entry.image} alt={entry.name} width={32} height={32} className="w-full h-full object-contain" />
-                    ) : (
-                      PROJECT_EMOJIS[entry.name] || entry.ticker.slice(0, 2)
-                    )}
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg font-bold flex-shrink-0">
+                    {PROJECT_EMOJIS[entry.name] || entry.ticker.slice(0, 2)}
                   </div>
                   <div>
                     <div className="text-sm font-semibold">{entry.ticker}</div>
@@ -303,13 +301,9 @@ export function MindshareBoard() {
             {/* Project */}
             <div className="col-span-3 flex items-center gap-3">
               <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold shrink-0 overflow-hidden flex-shrink-0"
+                className="w-10 h-10 rounded-lg flex items-center justify-center text-xl font-bold shrink-0"
               >
-                {entry.image ? (
-                  <Image src={entry.image} alt={entry.name} width={40} height={40} className="w-full h-full object-contain" />
-                ) : (
-                  PROJECT_EMOJIS[entry.name] || entry.ticker.slice(0, 3)
-                )}
+                {PROJECT_EMOJIS[entry.name] || entry.ticker.slice(0, 3)}
               </div>
               <div>
                 <div className="text-sm font-semibold">{entry.name}</div>
