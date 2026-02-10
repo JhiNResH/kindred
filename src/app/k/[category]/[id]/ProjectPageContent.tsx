@@ -179,17 +179,6 @@ export function ProjectPageContent({
       }
       
       setProjectData(fullData)
-
-      addProject({
-        id: projectId,
-        name: result.name,
-        ticker: result.tokenSymbol || "UNK",
-        category: result.type,
-        score: result.score,
-        tvl: result.tvl,
-        reviewsCount: 0,
-        logo: result.image
-      })
     }).catch((err) => {
       console.error('[Ma\'at] Analysis failed:', err)
       // Fallback to basic info
