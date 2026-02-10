@@ -1,34 +1,59 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import { WalletButton } from '@/components/WalletButton'
-import { Trophy, TrendingUp, Clock, Gift } from 'lucide-react'
+import { Trophy, TrendingUp, Clock, Gift, Loader2 } from 'lucide-react'
 
-const PROJECTS = [
-  { id: '0x1', name: 'Uniswap', category: 'DeFi', currentRank: 1 },
-  { id: '0x2', name: 'Aave', category: 'DeFi', currentRank: 2 },
-  { id: '0x3', name: 'Compound', category: 'DeFi', currentRank: 3 },
-  { id: '0x4', name: 'Curve', category: 'DeFi', currentRank: 4 },
-  { id: '0x5', name: 'MakerDAO', category: 'DeFi', currentRank: 5 },
-  { id: '0x6', name: 'Lido', category: 'DeFi', currentRank: 6 },
-  { id: '0x7', name: 'Synthetix', category: 'DeFi', currentRank: 7 },
-  { id: '0x8', name: 'Balancer', category: 'DeFi', currentRank: 8 },
-  { id: '0x9', name: 'Yearn', category: 'DeFi', currentRank: 9 },
-  { id: '0xa', name: 'Convex', category: 'DeFi', currentRank: 10 },
-]
+interface Project {
+  id: string
+  name: string
+  category: string
+  currentRank: number
+}
 
 export function WeeklySettlement() {
   const { isConnected } = useAccount()
   const [selectedProject, setSelectedProject] = useState<string | null>(null)
   const [predictedRank, setPredictedRank] = useState<number | null>(null)
   const [stakeAmount, setStakeAmount] = useState('10')
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+  const [roundData, setRoundData] = useState({
+    roundEndTime: Date.now() + 5 * 24 * 60 * 60 * 1000,
+    isEarlyBird: true,
+    totalStaked: '15420',
+    yourPredictions: 3,
+  })
 
-  // Mock data
-  const roundEndTime = Date.now() + 5 * 24 * 60 * 60 * 1000 // 5 days from now
-  const isEarlyBird = true // Within first 24h
-  const totalStaked = '15420'
-  const yourPredictions = 3
+  // 從 API 抓取排行榜
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      try {
+        const res = await fetch('/api/leaderboard?category=k/defi&limit=10')
+        const data = await res.json()
+        const projectsData = data.leaderboard.map((p: any, idx: number) => ({
+          id: p.projectAddress,
+          name: p.projectName,
+          category: p.category,
+          currentRank: p.rank,
+        }))
+        setProjects(projectsData)
+      } catch (error) {
+        console.error('無法抓取排行榜:', error)
+        setProjects([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLeaderboard()
+  }, [])
+
+  const roundEndTime = roundData.roundEndTime
+  const isEarlyBird = roundData.isEarlyBird
+  const totalStaked = roundData.totalStaked
+  const yourPredictions = roundData.yourPredictions
 
   const handlePredict = () => {
     if (!selectedProject || !predictedRank) return
@@ -107,24 +132,34 @@ export function WeeklySettlement() {
               <label className="block text-sm font-medium text-gray-400 mb-3">
                 Select Project
               </label>
-              <div className="grid gap-2">
-                {PROJECTS.slice(0, 5).map((project) => (
-                  <button
-                    key={project.id}
-                    onClick={() => setSelectedProject(project.id)}
-                    className={`flex items-center justify-between p-4 rounded-lg border transition ${
-                      selectedProject === project.id
-                        ? 'border-purple-500 bg-purple-500/20'
-                        : 'border-gray-700 hover:border-gray-600'
-                    }`}
-                  >
-                    <span className="font-semibold">{project.name}</span>
-                    <span className="text-sm text-gray-400">
-                      Current: #{project.currentRank}
-                    </span>
-                  </button>
-                ))}
-              </div>
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-5 h-5 text-purple-400 animate-spin" />
+                </div>
+              ) : projects.length > 0 ? (
+                <div className="grid gap-2">
+                  {projects.slice(0, 5).map((project) => (
+                    <button
+                      key={project.id}
+                      onClick={() => setSelectedProject(project.id)}
+                      className={`flex items-center justify-between p-4 rounded-lg border transition ${
+                        selectedProject === project.id
+                          ? 'border-purple-500 bg-purple-500/20'
+                          : 'border-gray-700 hover:border-gray-600'
+                      }`}
+                    >
+                      <span className="font-semibold">{project.name}</span>
+                      <span className="text-sm text-gray-400">
+                        Current: #{project.currentRank}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 text-center text-gray-400">
+                  No projects available
+                </div>
+              )}
             </div>
 
             {/* Predict Rank */}
@@ -187,7 +222,7 @@ export function WeeklySettlement() {
             {selectedProject && predictedRank && (
               <div className="mt-4 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
                 <div className="text-sm text-purple-300">
-                  You're predicting <strong>{PROJECTS.find(p => p.id === selectedProject)?.name}</strong> will rank <strong>#{predictedRank}</strong> with <strong>{stakeAmount} KIND</strong> staked.
+                  You're predicting <strong>{projects.find(p => p.id === selectedProject)?.name}</strong> will rank <strong>#{predictedRank}</strong> with <strong>{stakeAmount} KIND</strong> staked.
                 </div>
               </div>
             )}
@@ -196,27 +231,37 @@ export function WeeklySettlement() {
           {/* Current Rankings */}
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
             <h2 className="text-2xl font-bold mb-6">Current Rankings</h2>
-            <div className="space-y-2">
-              {PROJECTS.map((project, index) => (
-                <div
-                  key={project.id}
-                  className="flex items-center justify-between p-4 bg-gray-800 rounded-lg"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="text-2xl font-bold text-gray-500">
-                      #{index + 1}
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-5 h-5 text-purple-400 animate-spin" />
+              </div>
+            ) : projects.length > 0 ? (
+              <div className="space-y-2">
+                {projects.map((project, index) => (
+                  <div
+                    key={project.id}
+                    className="flex items-center justify-between p-4 bg-gray-800 rounded-lg"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="text-2xl font-bold text-gray-500">
+                        #{index + 1}
+                      </div>
+                      <div>
+                        <div className="font-semibold">{project.name}</div>
+                        <div className="text-sm text-gray-400">{project.category}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-semibold">{project.name}</div>
-                      <div className="text-sm text-gray-400">{project.category}</div>
-                    </div>
+                    {index < 3 && (
+                      <Trophy className="w-5 h-5 text-yellow-400" />
+                    )}
                   </div>
-                  {index < 3 && (
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                  )}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 text-center text-gray-400">
+                No rankings available
+              </div>
+            )}
           </div>
         </div>
 
