@@ -16,7 +16,8 @@ const KNOWN_PREDICTION = [
 
 // Known infrastructure projects
 const KNOWN_INFRA = [
-  'eigenlayer', 'celestia', 'layerzero', 'chainlink', 'the graph'
+  'eigenlayer', 'celestia', 'layerzero', 'chainlink', 'the graph',
+  'circle', 'tether', 'stripe', 'paxos', 'coinbase commerce' // Stablecoin issuers
 ]
 
 // Known wallet projects
