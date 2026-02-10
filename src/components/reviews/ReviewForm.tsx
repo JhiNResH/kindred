@@ -5,8 +5,10 @@ import { useAccount } from 'wagmi'
 import { WalletButton } from '@/components/WalletButton'
 import { useIsMounted } from '@/components/layout/ClientOnly'
 import { useCreateComment } from '@/hooks/useKindredComment'
-import { useApproveKindClaw, useKindClawAllowance } from '@/hooks/useKindClawToken'
+import { useDRONE } from '@/hooks/useDRONE'
 import { type Address } from 'viem'
+
+const DRONE_ADDRESS = process.env.NEXT_PUBLIC_DRONE_ADDRESS as Address
 
 type Category = 'k/memecoin' | 'k/defi' | 'k/perp-dex' | 'k/ai'
 
@@ -28,9 +30,9 @@ const CATEGORIES: { value: Category; label: string; icon: string; description: s
 
 const STAKE_OPTIONS = [
   { value: '0', label: 'No Stake', description: 'Basic review' },
-  { value: '1000000000000000000', label: '1 KINDCLAW', description: '+10% reputation' },
-  { value: '5000000000000000000', label: '5 KINDCLAW', description: '+25% reputation' },
-  { value: '10000000000000000000', label: '10 KINDCLAW', description: '+50% reputation' },
+  { value: '1000000000000000000', label: '1 DRONE', description: '+10% reputation' },
+  { value: '5000000000000000000', label: '5 DRONE', description: '+25% reputation' },
+  { value: '10000000000000000000', label: '10 DRONE', description: '+50% reputation' },
 ]
 
 export function ReviewForm() {
@@ -43,8 +45,6 @@ export function ReviewForm() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
-  const [needsApproval, setNeedsApproval] = useState(false)
-  const [approvalDone, setApprovalDone] = useState(false)
   
   const [formData, setFormData] = useState<ReviewFormData>({
     targetAddress: '',
@@ -55,32 +55,12 @@ export function ReviewForm() {
     predictedRank: undefined,
   })
 
-  // Ref to track if we've already triggered comment creation after approval
+  // Ref to track if we've already triggered comment creation
   const commentTriggeredRef = useRef(false)
 
   // On-chain hooks - MUST be called unconditionally
   const { createComment, hash: commentHash, isPending: isCreating, isConfirming: isConfirmingComment, isSuccess: commentSuccess, isError: commentError, error: commentErrorMsg } = useCreateComment()
-  const { approve, hash: approveHash, isPending: isApproving, isConfirming: isConfirmingApprove, isSuccess: approveSuccess } = useApproveKindClaw()
-  const { data: allowance } = useKindClawAllowance(address)
-
-  // Check if approval is needed
-  useEffect(() => {
-    if (formData.stakeAmount !== '0' && allowance !== undefined && allowance !== null) {
-      const stakeAmountBigInt = BigInt(formData.stakeAmount)
-      const allowanceBigInt = BigInt(allowance.toString())
-      setNeedsApproval(allowanceBigInt < stakeAmountBigInt)
-    } else {
-      setNeedsApproval(false)
-    }
-  }, [formData.stakeAmount, allowance])
-
-  // Handle approval success
-  useEffect(() => {
-    if (approveSuccess && !approvalDone) {
-      setApprovalDone(true)
-      setNeedsApproval(false)
-    }
-  }, [approveSuccess, approvalDone])
+  const { approveDRONE, isLoading: isApprovingDRONE } = useDRONE(DRONE_ADDRESS)
 
   // Handle comment creation success
   useEffect(() => {
@@ -100,25 +80,6 @@ export function ReviewForm() {
       commentTriggeredRef.current = false
     }
   }, [commentError, commentErrorMsg])
-
-  // Handle approval completion - auto-proceed to comment creation
-  useEffect(() => {
-    if (approvalDone && isSubmitting && !commentSuccess && formData.targetAddress && !commentTriggeredRef.current) {
-      commentTriggeredRef.current = true
-      // Approval done, now create comment
-      try {
-        createComment({
-          targetAddress: formData.targetAddress as Address,
-          content: formData.content,
-          stakeAmount: formData.stakeAmount,
-        })
-      } catch (err: any) {
-        setError(err?.message || 'Comment creation failed')
-        setIsSubmitting(false)
-        commentTriggeredRef.current = false
-      }
-    }
-  }, [approvalDone, isSubmitting, commentSuccess, formData.targetAddress, formData.content, formData.stakeAmount, createComment])
 
   // === EARLY RETURNS ONLY AFTER ALL HOOKS ===
   
@@ -158,20 +119,12 @@ export function ReviewForm() {
     setIsSubmitting(true)
     
     try {
-      // Step 1: Approve if needed (for staking)
-      if (needsApproval && !approvalDone) {
-        approve(formData.stakeAmount)
-        return // Wait for approval to complete, useEffect will handle next step
-      }
-      
-      // Step 2: Create comment on-chain (if no approval needed or already approved)
+      // Create comment on-chain with DRONE staking
       createComment({
         targetAddress: formData.targetAddress as Address,
         content: formData.content,
         stakeAmount: formData.stakeAmount,
       })
-      
-      // Note: Don't set isSubmitting to false here - useEffect handles it on success
     } catch (err: any) {
       setError(err?.message || 'Transaction failed. Please try again.')
       setIsSubmitting(false)
@@ -386,25 +339,18 @@ export function ReviewForm() {
       {/* Submit */}
       <button
         type="submit"
-        disabled={isSubmitting || isApproving || isApproving || isCreating || isConfirmingApprove || isConfirmingComment}
+        disabled={isSubmitting || isCreating || isConfirmingComment}
         className={`w-full py-4 rounded-lg font-semibold text-lg transition ${
-          isSubmitting || isApproving || isCreating || isConfirmingApprove || isConfirmingComment
+          isSubmitting || isCreating || isConfirmingComment
             ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
             : 'bg-kindred-primary hover:bg-orange-600 text-white'
         }`}
       >
-        {isApproving || isConfirmingApprove ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="animate-spin">⏳</span>
-            {isApproving ? 'Approving $OPEN...' : 'Confirming approval...'}
-          </span>
-        ) : isCreating || isConfirmingComment ? (
+        {isCreating || isConfirmingComment ? (
           <span className="flex items-center justify-center gap-2">
             <span className="animate-spin">⏳</span>
             {isCreating ? 'Minting NFT...' : 'Confirming transaction...'}
           </span>
-        ) : needsApproval && !approvalDone ? (
-          'Approve $OPEN'
         ) : (
           'Mint Review NFT'
         )}
