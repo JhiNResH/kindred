@@ -92,9 +92,7 @@ export function ProjectPageContent({
     setProjectData(LOADING_PROJECT)
     
     // For restaurants (k/gourmet), use restaurant-specific analysis
-    console.log('[Kindred] Category check:', category, 'Is gourmet?', category === 'gourmet')
-    if (category === 'gourmet') {
-      console.log('[Kindred] Calling analyzeRestaurant for:', projectId)
+    if (category === 'gourmet' || category.includes('gourmet')) {
       analyzeRestaurant(projectId).then((result) => {
         console.log('[Kindred] analyzeRestaurant result:', result ? 'got data' : 'null')
         if (result) {
@@ -155,37 +153,14 @@ export function ProjectPageContent({
       return
     }
     
-    findOrCreateProject(projectId).then((createResult) => {
-      if (!createResult.success || !createResult.analysis) {
-        analyzeProject(projectId).then((result) => {
-          setProjectData({
-            ...LOADING_PROJECT,
-            id: projectId,
-            name: result.name,
-            ticker: result.tokenSymbol || result.name.substring(0, 4).toUpperCase(),
-            category: `k/${result.type.toLowerCase()}`,
-            image: result.image,
-            aiVerdict: result.status === 'VERIFIED' ? 'bullish' : result.status === 'RISKY' ? 'bearish' : 'neutral',
-            aiScore: result.score * 20,
-            aiSummary: result.summary,
-            keyPoints: result.features,
-            riskWarnings: result.warnings,
-            audits: result.audits,
-            investors: result.investors,
-            funding: result.funding,
-            maAtStatus: result.status,
-          })
-        })
-        return
-      }
-
-      const result = createResult.analysis
+    // Always call Gemini for real analysis (no mock data)
+    analyzeProject(initialProject?.name || projectId).then((result) => {
       const fullData = {
         ...LOADING_PROJECT,
-        id: createResult.project?.id || projectId,
+        id: projectId,
         name: result.name,
         ticker: result.tokenSymbol || result.name.substring(0, 4).toUpperCase(),
-        category: createResult.project?.category || `k/${result.type.toLowerCase()}`,
+        category: `k/${result.type.toLowerCase()}`,
         price: result.tokenPrice || '-',
         marketCap: result.tvl || '-',
         volume24h: '-',
@@ -199,12 +174,14 @@ export function ProjectPageContent({
         investors: result.investors,
         funding: result.funding,
         maAtStatus: result.status,
+        _cached: result._cached,
+        _cacheAge: result._cacheAge,
       }
       
       setProjectData(fullData)
 
       addProject({
-        id: createResult.project?.id || projectId,
+        id: projectId,
         name: result.name,
         ticker: result.tokenSymbol || "UNK",
         category: result.type,
@@ -212,6 +189,19 @@ export function ProjectPageContent({
         tvl: result.tvl,
         reviewsCount: 0,
         logo: result.image
+      })
+    }).catch((err) => {
+      console.error('[Ma\'at] Analysis failed:', err)
+      // Fallback to basic info
+      setProjectData({
+        ...LOADING_PROJECT,
+        id: projectId,
+        name: initialProject?.name || projectId,
+        category: category,
+        aiVerdict: 'neutral',
+        aiScore: 0,
+        aiSummary: 'Ma\'at analysis unavailable. Try refreshing the page.',
+        keyPoints: [],
       })
     })
   }, [projectId, addProject, initialProject])
