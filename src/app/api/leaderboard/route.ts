@@ -29,7 +29,15 @@ export async function GET(request: NextRequest) {
   const offset = parseInt(searchParams.get('offset') || '0')
 
   try {
-    const where = category && category !== 'all' ? { category } : {}
+    // Build where clause: always exclude k/gourmet
+    let where: any = {
+      NOT: { category: 'k/gourmet' } // Filter out gourmet/restaurant projects
+    }
+    
+    // If specific category is requested, add it to the where clause
+    if (category && category !== 'all') {
+      where.category = category
+    }
 
     const projects = await prisma.project.findMany({
       where,
