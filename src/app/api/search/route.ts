@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     // 2. Not found locally - use Gemini to analyze
     const analysis = await analyzeProjectQuery(query);
 
-    // If Gemini says it's a real project
+    // If Gemini says it's a real project with high confidence
     if (analysis.isRealProject && analysis.confidence >= 70) {
       return NextResponse.json({
         found: false,
@@ -74,12 +74,23 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // If Gemini says it's not a real project
+    // If confidence is low or Gemini says it's not a real project
+    // Return empty/no results instead of showing garbage
+    if (analysis.confidence < 50) {
+      return NextResponse.json({
+        found: false,
+        source: 'none',
+        results: [],
+        message: `No results found for "${query}". Try searching for known DeFi projects like "Uniswap", "Aave", "Curve", etc.`,
+      });
+    }
+
+    // Medium confidence - show with warning
     return NextResponse.json({
       found: false,
       source: 'gemini',
       analysis,
-      message: `"${query}" doesn't appear to be a recognized project.`,
+      message: `"${query}" might be a project, but we're not sure. Try a more specific search.`,
     });
   } catch (error) {
     console.error('Search error:', error);
