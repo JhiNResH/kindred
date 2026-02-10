@@ -3,13 +3,16 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import { AgentBadge } from '@/components/AgentBadge'
 
 interface Review {
   id: string
   targetName: string
   targetAddress: string
   rating: number
-  reviewerAddress: string
+  reviewerAddress?: string | null
+  agentId?: string | null
+  agentName?: string | null
   content: string
   upvotes: number
   downvotes: number
@@ -172,7 +175,11 @@ function ReviewCard({ review }: { review: Review }) {
             </span>
           </div>
           <div className="text-sm text-[#6b6b70]">
-            by {review.reviewerAddress.slice(0, 6)}...{review.reviewerAddress.slice(-4)}
+            by {review.agentId ? (
+              <AgentBadge agentId={review.agentId} agentName={review.agentName} />
+            ) : (
+              <span>{review.reviewerAddress?.slice(0, 6)}...{review.reviewerAddress?.slice(-4)}</span>
+            )}
           </div>
         </div>
         <div className="text-right">
