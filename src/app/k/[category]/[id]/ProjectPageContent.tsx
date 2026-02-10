@@ -7,6 +7,7 @@ import { CommunityInfo } from '@/components/project/CommunityInfo'
 import { StakeVote } from '@/components/StakeVote'
 import { useStore } from '@/lib/store'
 import { useState, useEffect } from 'react'
+import { useAccount } from 'wagmi'
 import { analyzeProject } from '@/app/actions/analyze'
 import { findOrCreateProject } from '@/app/actions/createProject'
 import { getTokenPrice, TokenPrice } from '@/lib/coingecko'
@@ -36,6 +37,9 @@ export function ProjectPageContent({
   initialProject,
   initialReviews,
 }: ProjectPageContentProps) {
+  // Wallet
+  const { address: connectedAddress } = useAccount()
+
   // Store Hooks
   const addProject = useStore(state => state.addProject)
   const joinCommunity = useStore(state => state.joinCommunity)
@@ -48,7 +52,36 @@ export function ProjectPageContent({
   const [tokenPrice, setTokenPrice] = useState<TokenPrice | null>(null)
   const [imageError, setImageError] = useState(false)
   const [bannerError, setBannerError] = useState(false)
+  const [hasUsedProject, setHasUsedProject] = useState<boolean | null>(null)
+  const [userAddress, setUserAddress] = useState<string | null>(null)
   
+  // Check if user has used this project on-chain
+  useEffect(() => {
+    async function verifyUsage() {
+      if (!connectedAddress || !projectData?.address || category === 'gourmet') {
+        return
+      }
+
+      try {
+        const res = await fetch('/api/verify-usage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userAddress: connectedAddress,
+            projectAddress: projectData.address,
+            chains: ['ethereum', 'base', 'polygon', 'arbitrum']
+          })
+        })
+        const data = await res.json()
+        setHasUsedProject(data.used || false)
+      } catch (error) {
+        console.error('Failed to verify usage:', error)
+      }
+    }
+
+    verifyUsage()
+  }, [connectedAddress, projectData?.address, category])
+
   // Fetch real-time price from CoinGecko (only for crypto projects, not restaurants)
   useEffect(() => {
     async function fetchPrice() {
@@ -243,7 +276,7 @@ export function ProjectPageContent({
             </div>
             <div>
               <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-4xl font-bold text-white flex items-center gap-3">
+                <h1 className="text-4xl font-bold text-white flex items-center gap-3 flex-wrap">
                   {data.name}
                   {data === projectData && data.id !== 'loading' && (
                     <span className={`px-2 py-0.5 rounded-full border text-xs font-medium flex items-center gap-1 ${
@@ -253,6 +286,11 @@ export function ProjectPageContent({
                     }`}>
                       <Sparkles className="w-3 h-3" />
                       Ma'at Verified: {data.maAtStatus}
+                    </span>
+                  )}
+                  {hasUsedProject === true && (
+                    <span className="px-2 py-0.5 rounded-full border text-xs font-medium flex items-center gap-1 bg-green-500/10 border-green-500/30 text-green-400">
+                      ✓ You've used this
                     </span>
                   )}
                 </h1>
