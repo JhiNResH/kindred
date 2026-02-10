@@ -86,11 +86,11 @@ export async function POST(request: NextRequest) {
 
     // Calculate mindshare: Quality-weighted reviews + Net sentiment + Log-normalized stake
     // Formula: (reviewCount * avgRating/5) + (bullish - bearish) + log(stake + 1)
-    const stakeAmount = parseInt(project?.totalStaked || '0') / 1e18
+    const projectStakeAmount = parseInt(project?.totalStaked || '0') / 1e18
     const mindshareScore = 
       (project?.reviewCount || 0) * ((project?.avgRating || 0) / 5) +
       (bullishCount - bearishCount) +
-      Math.log(stakeAmount + 1)
+      Math.log(projectStakeAmount + 1)
     
     const updatedProject = await prisma.project.update({
       where: { id: targetProjectId },

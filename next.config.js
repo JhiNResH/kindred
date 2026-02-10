@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
   pageExtensions: ['tsx', 'ts'],
+  turbopack: {},
   
   images: {
     remotePatterns: [
@@ -106,9 +106,6 @@ const nextConfig = {
   
   typescript: {
     ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
 }
 
