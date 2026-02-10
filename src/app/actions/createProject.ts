@@ -142,6 +142,9 @@ export async function findOrCreateProject(query: string): Promise<CreateProjectR
         reviewCount: 0,
         totalStaked: '0',
         currentRank: null,
+        status: 'approved', // Immediately approve new projects
+        reviewedBy: 'gemini',
+        reviewedAt: new Date(),
       }
     })
     
