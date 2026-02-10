@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import jwt from 'jsonwebtoken'
+
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production'
 
 // Force dynamic rendering - this route uses request.url
 export const dynamic = 'force-dynamic'
@@ -85,60 +88,78 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
+    // Check auth: either agent token or user address
+    let agentId: string | null = null
+    let userId: string | null = null
+
+    const authHeader = request.headers.get('authorization')
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7)
+      try {
+        const decoded: any = jwt.verify(token, JWT_SECRET)
+        agentId = decoded.agentId
+      } catch {
+        return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+      }
+    } else if (body.reviewerAddress) {
+      // User review path (existing logic)
+      userId = body.reviewerAddress
+    } else {
+      return NextResponse.json({ error: 'Unauthorized - provide Bearer token or reviewerAddress' }, { status: 401 })
+    }
+    
     // Validation
-    if (!body.targetAddress?.match(/^0x[a-fA-F0-9]{40}$/)) {
-      return NextResponse.json({ error: 'Invalid target address' }, { status: 400 })
-    }
-    if (!body.rating || body.rating < 1 || body.rating > 5) {
-      return NextResponse.json({ error: 'Rating must be 1-5' }, { status: 400 })
-    }
     if (!body.content || body.content.length < 10) {
       return NextResponse.json({ error: 'Content must be at least 10 characters' }, { status: 400 })
-    }
-    if (!body.reviewerAddress?.match(/^0x[a-fA-F0-9]{40}$/)) {
-      return NextResponse.json({ error: 'Invalid reviewer address' }, { status: 400 })
-    }
-
-    // Find or create user
-    let user = await prisma.user.findUnique({
-      where: { address: body.reviewerAddress.toLowerCase() },
-    })
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          address: body.reviewerAddress.toLowerCase(),
-          displayName: body.reviewerAddress.substring(0, 10),
-        },
-      })
     }
 
     // Find or create project
     let project = await prisma.project.findUnique({
-      where: { address: body.targetAddress.toLowerCase() },
+      where: { address: body.targetAddress?.toLowerCase() || body.projectId?.toLowerCase() || 'unknown' },
     })
     if (!project) {
       project = await prisma.project.create({
         data: {
-          address: body.targetAddress.toLowerCase(),
-          name: body.targetName || 'Unknown Project',
+          address: body.targetAddress?.toLowerCase() || body.projectId?.toLowerCase() || 'unknown',
+          name: body.projectName || body.targetName || 'Unknown Project',
           category: body.category || 'k/defi',
         },
       })
     }
 
-    // Create review
+    // Create review (for agent or user)
+    let reviewData: any = {
+      rating: body.rating || 5,
+      content: body.content,
+      predictedRank: body.predictedRank || null,
+      stakeAmount: body.stakeAmount || '10',
+      photoUrls: body.photoUrls ? JSON.stringify(body.photoUrls) : null,
+      projectId: project.id,
+    }
+
+    if (agentId) {
+      reviewData.agentId = agentId
+    } else if (userId) {
+      // Find or create user
+      let user = await prisma.user.findUnique({
+        where: { address: userId.toLowerCase() },
+      })
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            address: userId.toLowerCase(),
+            displayName: userId.substring(0, 10),
+          },
+        })
+      }
+      reviewData.reviewerId = user.id
+    }
+
     const review = await prisma.review.create({
-      data: {
-        rating: body.rating,
-        content: body.content,
-        predictedRank: body.predictedRank || null,
-        stakeAmount: body.stakeAmount || '0',
-        photoUrls: body.photoUrls ? JSON.stringify(body.photoUrls) : null,
-        reviewerId: user.id,
-        projectId: project.id,
-      },
+      data: reviewData,
       include: {
         reviewer: { select: { address: true, displayName: true } },
+        agent: { select: { id: true, name: true, chain: true } },
         project: { select: { address: true, name: true, category: true } },
       },
     })
@@ -147,7 +168,9 @@ export async function POST(request: NextRequest) {
       id: review.id,
       targetAddress: review.project.address,
       targetName: review.project.name,
-      reviewerAddress: review.reviewer.address,
+      reviewerAddress: review.reviewer?.address || null,
+      agentId: review.agent?.id || null,
+      agentName: review.agent?.name || null,
       rating: review.rating,
       content: review.content,
       category: review.project.category,
@@ -157,10 +180,10 @@ export async function POST(request: NextRequest) {
       upvotes: review.upvotes,
       downvotes: review.downvotes,
       createdAt: review.createdAt.toISOString(),
-      nftTokenId: review.nftTokenId, // ERC-721 token ID from KindredComment contract
+      nftTokenId: review.nftTokenId,
     }, { status: 201 })
   } catch (error) {
     console.error('Error creating review:', error)
-    return NextResponse.json({ error: 'Failed to create review' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to create review', details: String(error) }, { status: 500 })
   }
 }
