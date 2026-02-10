@@ -115,6 +115,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Content must be at least 10 characters' }, { status: 400 })
     }
 
+    // Check DRONE stake requirement
+    const stakeAmount = body.stakeAmount ? parseInt(body.stakeAmount) : 0
+    if (stakeAmount < 1) {
+      return NextResponse.json(
+        { error: 'Minimum 1 DRONE stake required for reviews' },
+        { status: 400 }
+      )
+    }
+
+    // TODO: Verify user has sufficient DRONE balance (requires on-chain check or local DB balance tracking)
+    // For MVP, we trust the client and will validate on settlement
+
     // Find or create project (needed for Gemini check context)
     let project = await prisma.project.findUnique({
       where: { address: body.targetAddress?.toLowerCase() || body.projectId?.toLowerCase() || 'unknown' },
@@ -162,7 +174,7 @@ export async function POST(request: NextRequest) {
       rating: body.rating || 5,
       content: body.content,
       predictedRank: body.predictedRank || null,
-      stakeAmount: body.stakeAmount || '10',
+      stakeAmount: stakeAmount.toString(), // DRONE stake (required for settlement)
       photoUrls: body.photoUrls ? JSON.stringify(body.photoUrls) : null,
       projectId: project.id,
       status: qualityCheck.status === 'flagged' ? 'flagged' : 'active', // Mark flagged reviews

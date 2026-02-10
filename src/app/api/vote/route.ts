@@ -24,6 +24,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check DRONE stake requirement for votes
+    const stakeAmount = body.stakeAmount ? parseInt(body.stakeAmount) : 1
+    if (stakeAmount < 1) {
+      return NextResponse.json(
+        { error: 'Minimum 1 DRONE stake required for voting' },
+        { status: 400 }
+      )
+    }
+
+    // TODO: Verify user has sufficient DRONE balance
+    // For MVP, we trust the client and will validate on settlement
+
     // Check if project exists
     const project = await prisma.project.findUnique({
       where: { id: projectId }
