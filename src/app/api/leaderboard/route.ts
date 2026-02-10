@@ -29,12 +29,10 @@ export async function GET(request: NextRequest) {
   const offset = parseInt(searchParams.get('offset') || '0')
 
   try {
-    // Build where clause: always exclude k/gourmet
-    let where: any = {
-      NOT: { category: 'k/gourmet' } // Filter out gourmet/restaurant projects
-    }
+    // Build where clause
+    let where: any = {}
     
-    // If specific category is requested, add it to the where clause
+    // If specific category is requested, filter by it
     if (category && category !== 'all') {
       where.category = category
     }
