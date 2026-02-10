@@ -53,6 +53,37 @@ const nextConfig = {
         hostname: 'places.googleapis.com',
         pathname: '/**',
       },
+      // Project logos
+      {
+        protocol: 'https',
+        hostname: 'token.uniswap.org',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'aave.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.curve.fi',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'hyperliquid.xyz',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'drift.trade',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'jup.ag',
+        pathname: '/**',
+      },
     ],
   },
   
