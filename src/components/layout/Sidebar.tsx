@@ -15,7 +15,6 @@ import {
   ShieldCheck,
   HelpCircle,
   ChevronDown,
-  Plus,
   PanelLeftClose,
   Repeat,
 } from "lucide-react";
@@ -61,13 +60,9 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
     <aside className="fixed top-[65px] left-0 h-[calc(100vh-65px)] w-[260px] bg-[#111113] border-r border-[#1f1f23] overflow-y-auto z-40 hidden md:block transition-all scrollbar-thin scrollbar-thumb-[#2a2a2e] scrollbar-track-transparent">
       {/* Sidebar Header */}
       <div className="flex items-center justify-between px-4 pb-3 pt-5">
-        <button className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#ded4e8] rounded-lg text-black text-[13px] font-bold transition-all hover:bg-[#c4b9d3] hover:shadow-lg hover:shadow-purple-500/20">
-          <Plus className="w-4 h-4" />
-          <span>Create Board</span>
-        </button>
         <button
           onClick={() => setCollapsed(true)}
-          className="ml-2 p-2 text-[#6b6b70] hover:bg-[#0d0d0e] hover:text-white rounded-lg transition-colors"
+          className="p-2 text-[#6b6b70] hover:bg-[#0d0d0e] hover:text-white rounded-lg transition-colors"
         >
           <PanelLeftClose className="w-[18px] h-[18px]" />
         </button>
