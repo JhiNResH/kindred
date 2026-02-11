@@ -595,3 +595,123 @@ model ReputationCache {
   
   @@index([updatedAt])
 }
+
+// ============================================
+// Opinion Market Models (Phase 2 - Stake-Weighted Rankings)
+// ============================================
+
+// A ranking category (e.g., "Top 10 Memecoin Teams by Credibility")
+model OpinionRanking {
+  id              String    @id @default(cuid())
+  category        String    // "memecoin-credibility", "perp-risk", "agent-experts"
+  title           String    // "Top 10 Memecoin Teams by Credibility"
+  description     String?
+  
+  // Resolution schedule
+  resolvesAt      DateTime  // When this ranking round closes
+  resolvedAt      DateTime? // When it was actually resolved
+  isActive        Boolean   @default(true)
+  
+  // Aggregate stats
+  totalStaked     Float     @default(0)
+  totalVoters     Int       @default(0)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  items           OpinionItem[]
+  votes           OpinionVote[]
+  resolutions     OpinionResolution[]
+  
+  @@index([category])
+  @@index([isActive])
+  @@index([resolvesAt])
+}
+
+// An item within a ranking (e.g., "DOGE", "Hyperliquid")
+model OpinionItem {
+  id              String    @id @default(cuid())
+  ranking         OpinionRanking @relation(fields: [rankingId], references: [id], onDelete: Cascade)
+  rankingId       String
+  
+  itemId          String    // Token symbol, protocol name, or agent address
+  name            String    // Display name
+  description     String?
+  logoUrl         String?
+  chain           String?   // "solana", "base", "ethereum"
+  
+  // Current aggregate score (updated in real-time)
+  currentScore    Float     @default(50)  // 0-100
+  currentRank     Int       @default(0)
+  stakeWeightedVotes Float  @default(0)
+  voterCount      Int       @default(0)
+  consensus       String    @default("weak") // "strong", "moderate", "weak"
+  
+  // Final resolved state
+  finalScore      Float?
+  finalRank       Int?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  votes           OpinionVote[]
+  
+  @@unique([rankingId, itemId])
+  @@index([rankingId])
+  @@index([currentRank])
+}
+
+// A user's vote on an item's rank position
+model OpinionVote {
+  id              String    @id @default(cuid())
+  ranking         OpinionRanking @relation(fields: [rankingId], references: [id], onDelete: Cascade)
+  rankingId       String
+  item            OpinionItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId          String
+  
+  voterAddress    String    // Wallet address of voter
+  isAgent         Boolean   @default(false)
+  
+  rankedPosition  Int       // Where voter ranks this item (1 = best)
+  stakeAmount     Float     // DRONE staked on this vote
+  
+  // Weight calculation
+  voterReputation Float     @default(30) // Rep score at time of vote
+  effectiveWeight Float     // stakeAmount * (voterReputation/50) * (1 + tier/10)
+  
+  // Resolution result
+  rewardEarned    Float?    // DRONE earned after resolution
+  accuracy        Float?    // How close to final rank (0-1)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@unique([rankingId, itemId, voterAddress])
+  @@index([voterAddress])
+  @@index([rankingId])
+  @@index([itemId])
+}
+
+// Weekly resolution result
+model OpinionResolution {
+  id              String    @id @default(cuid())
+  ranking         OpinionRanking @relation(fields: [rankingId], references: [id], onDelete: Cascade)
+  rankingId       String
+  
+  week            String    // "2026-W07" (ISO week)
+  
+  // Final rankings (JSON array of {itemId, finalRank, finalScore})
+  finalRankings   String    // JSON serialized
+  
+  // Reward distribution
+  totalDroneDistributed Float @default(0)
+  totalVotersRewarded   Int   @default(0)
+  avgRewardPerVoter     Float @default(0)
+  
+  resolvedAt      DateTime  @default(now())
+  
+  @@unique([rankingId, week])
+  @@index([week])
+}
