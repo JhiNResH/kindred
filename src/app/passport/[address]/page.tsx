@@ -22,18 +22,6 @@ const COLORS = {
   border: '#1f1f23',
 }
 
-// Mock data for demo
-const MOCK_STATS: UserStats = {
-  exp: 650,
-  reputation: 420,
-  reviewCount: 12,
-  verifiedReviews: 3,
-  totalStaked: 2500,
-  totalUpvotes: 87,
-  currentStreak: 5,
-  longestStreak: 14,
-}
-
 export default function PassportPage({ params }: { params: Promise<{ address: string }> }) {
   const router = useRouter()
   const [address, setAddress] = useState<string | null>(null)
@@ -54,15 +42,21 @@ export default function PassportPage({ params }: { params: Promise<{ address: st
     async function fetchStats() {
       try {
         const res = await fetch(`/api/users/${address}/stats`)
-        if (res.ok) {
-          const data = await res.json()
-          setStats(data)
-        } else {
-          setStats(MOCK_STATS)
-        }
+        const data = await res.json()
+        setStats(data)
       } catch (error) {
         console.error('Failed to fetch stats:', error)
-        setStats(MOCK_STATS)
+        // Set default "New explorer" stats
+        setStats({
+          exp: 0,
+          reputation: 0,
+          reviewCount: 0,
+          verifiedReviews: 0,
+          totalStaked: 0,
+          totalUpvotes: 0,
+          currentStreak: 0,
+          longestStreak: 0,
+        })
       } finally {
         setLoading(false)
       }

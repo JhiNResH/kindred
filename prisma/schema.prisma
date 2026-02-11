@@ -38,6 +38,9 @@ model User {
   longestStreak   Int       @default(0)
   lastCheckIn     DateTime?
 
+  // DRONE balance (off-chain reward token)
+  droneBalance    Int       @default(0)
+
   // Fee tier for Uniswap v4 Hook
   feeTier         String    @default("normal") // "elite" | "trusted" | "normal" | "risky"
   

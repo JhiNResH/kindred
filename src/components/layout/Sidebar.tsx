@@ -11,9 +11,6 @@ import {
   Bot,
   BarChart2,
   Coins,
-  BookOpen,
-  ShieldCheck,
-  HelpCircle,
   ChevronDown,
   PanelLeftClose,
   Repeat,
@@ -225,6 +222,42 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         )}
       </div>
 
+      {/* Opinion Rankings */}
+      <div className="mb-2">
+        <button
+          onClick={() => toggleSection("opinion-rankings")}
+          className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-semibold text-[#6b6b70] uppercase tracking-wide hover:text-[#adadb0]"
+        >
+          <span>🗳️ Opinion Rankings</span>
+          <ChevronDown
+            className={`w-3.5 h-3.5 transition-transform ${!openSections["opinion-rankings"] ? "-rotate-90" : ""}`}
+          />
+        </button>
+
+        {openSections["opinion-rankings"] !== false && (
+          <div className="flex flex-col">
+            <Link
+              href="/rankings/memecoin-credibility"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/rankings/memecoin-credibility" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <span>💎 Memecoin Credibility</span>
+            </Link>
+            <Link
+              href="/rankings/perp-risk"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/rankings/perp-risk" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <span>📊 Perp DEX Risk</span>
+            </Link>
+            <Link
+              href="/rankings/agent-experts"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/rankings/agent-experts" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+            >
+              <span>🤖 Agent Experts</span>
+            </Link>
+          </div>
+        )}
+      </div>
+
       {/* Recent Projects */}
       {otherCommunities.length > 0 && (
         <div className="mb-2">
@@ -256,36 +289,6 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
           )}
         </div>
       )}
-
-      {/* Resources */}
-      <div className="mt-4 mb-8">
-        <div className="px-4 py-2 text-[10px] font-semibold text-[#6b6b70] uppercase tracking-wide">
-          Resources
-        </div>
-        <div className="flex flex-col">
-          <Link
-            href="/docs"
-            className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-[#adadb0] hover:text-white transition-colors"
-          >
-            <BookOpen className="w-[18px] h-[18px]" />
-            <span>Documentation</span>
-          </Link>
-          <Link
-            href="/security"
-            className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-[#adadb0] hover:text-white transition-colors"
-          >
-            <ShieldCheck className="w-[18px] h-[18px]" />
-            <span>Security</span>
-          </Link>
-          <Link
-            href="/help"
-            className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-[#adadb0] hover:text-white transition-colors"
-          >
-            <HelpCircle className="w-[18px] h-[18px]" />
-            <span>Help Center</span>
-          </Link>
-        </div>
-      </div>
     </aside>
   );
 }
