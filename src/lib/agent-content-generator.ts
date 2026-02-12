@@ -74,7 +74,7 @@ export class AgentContentGenerator {
     const { agentId, projectName, projectCategory, projectDescription } = params
     const profile = AGENT_PROFILES[agentId]
 
-    const model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     const prompt = this.buildPrompt(profile, projectName, projectCategory, projectDescription)
 
@@ -152,26 +152,57 @@ export class AgentContentGenerator {
     projectCategory: string,
     projectDescription?: string
   ): string {
+    const categoryPrompts: Record<string, string> = {
+      'k/defi': `Focus on:
+1. **Security** - Smart contract audits, TVL safety, oracle risks
+2. **Innovation** - Protocol mechanics, what's unique vs competitors
+3. **Yield & Sustainability** - Are returns sustainable or inflationary?
+4. **Risk** - Impermanent loss, liquidation risks, composability risks`,
+
+      'k/perp-dex': `Focus on:
+1. **Execution** - Latency, slippage, order types, funding rates
+2. **Liquidity** - Depth, spread, open interest
+3. **Security** - Insurance fund, socialized loss, oracle manipulation risk
+4. **UX** - Trading interface, mobile support, onboarding`,
+
+      'k/memecoin': `Focus on:
+1. **Community** - Telegram/Discord activity, holder count, engagement rate
+2. **Narrative** - Meme strength, viral potential, cultural relevance
+3. **On-chain** - Holder distribution, whale concentration, LP locked?
+4. **Risk** - Contract backdoors (mint/blacklist), team wallet %, rug potential
+NOTE: This is a memecoin. Don't analyze "technology" — analyze community, narrative, and risk.`,
+
+      'k/ai-agents': `Focus on:
+1. **Agent Capability** - What can the agent actually do? Autonomous actions?
+2. **Token Utility** - Does the token have real utility or is it speculative?
+3. **Team & Ecosystem** - Who built it? What platform (Virtuals, etc.)?
+4. **Risk** - AI hype bubble risk, actual usage vs narrative, token unlock schedule
+NOTE: AI agent tokens are part meme, part utility. Evaluate both honestly.`,
+
+      'k/bnb-meme': `Focus on:
+1. **Community** - BSC community strength, Telegram activity, holder growth
+2. **Ecosystem** - PancakeSwap integration, BNB Chain ecosystem support
+3. **Narrative** - What's the meme? Does it have staying power?
+4. **Risk** - Contract safety, LP status, team transparency, BNB Chain specific risks`,
+    }
+
+    const focusPrompt = categoryPrompts[projectCategory] || categoryPrompts['k/defi']
+
     return `You are ${profile.name}, ${profile.persona}
 
-Review the following Web3/DeFi project:
+Review the following project:
 - Name: ${projectName}
 - Category: ${projectCategory}
 ${projectDescription ? `- Description: ${projectDescription}` : ''}
 
-Write a professional review (100-300 words) with your unique perspective. Your tone is ${profile.tone}.
+Write a review (100-250 words) with your unique perspective. Your tone is ${profile.tone}.
 
-Focus on:
-1. **Security Analysis** - Identify potential vulnerabilities or trust assumptions
-2. **Innovation** - What's unique or differentiated?
-3. **User Experience** - Ease of use, onboarding friction
-4. **Risk Assessment** - Market risks, regulatory concerns, technical debt
+${focusPrompt}
 
 **Important:**
 - Be opinionated and specific (no generic statements)
 - Rate 1-5 based on your expertise (${profile.minRating}-${profile.maxRating} typical range)
-- Write in a professional but conversational tone
-- Avoid jargon unless necessary
+- Conversational tone, not robotic
 - Do NOT repeat the project name excessively
 
 Output format:

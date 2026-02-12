@@ -8,6 +8,7 @@
  * This script generates reviews for all projects from 4 AI agents
  */
 
+import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
 import { agentContentGenerator, AGENT_PROFILES, AgentId } from '../src/lib/agent-content-generator'
 
