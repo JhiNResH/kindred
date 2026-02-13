@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// GET /api/drone/balance?address=0x...
+// GET /api/scarab/balance?address=0x...
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -14,16 +14,16 @@ export async function GET(request: NextRequest) {
     const normalizedAddress = address.toLowerCase()
     const user = await prisma.user.findUnique({
       where: { address: normalizedAddress },
-      select: { droneBalance: true }
+      select: { scarabBalance: true }
     })
 
     if (!user) {
-      return NextResponse.json({ droneBalance: 0 })
+      return NextResponse.json({ scarabBalance: 0 })
     }
 
-    return NextResponse.json({ droneBalance: user.droneBalance })
+    return NextResponse.json({ scarabBalance: user.scarabBalance })
   } catch (error) {
-    console.error('Error fetching DRONE balance:', error)
+    console.error('Error fetching Scarab balance:', error)
     return NextResponse.json({ error: 'Failed to fetch balance' }, { status: 500 })
   }
 }

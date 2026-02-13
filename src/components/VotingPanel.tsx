@@ -59,7 +59,7 @@ export function VotingPanel({
     }
 
     if (totalStake === 0) {
-      alert('Please stake some DRONE on at least one item');
+      alert('Please stake some Scarab on at least one item');
       return;
     }
 
@@ -94,7 +94,7 @@ export function VotingPanel({
       <div className="bg-gradient-to-r from-orange-500/10 to-purple-500/10 border border-orange-500/30 rounded-xl p-6 text-center">
         <h3 className="text-xl font-bold text-white mb-2">🗳️ Make Your Prediction</h3>
         <p className="text-sm text-gray-400 mb-4">
-          Rank the top 10 projects and stake DRONE to boost your vote weight
+          Rank the top 10 projects and stake Scarab to boost your vote weight
         </p>
         <button
           onClick={() => setExpanded(true)}
@@ -112,7 +112,7 @@ export function VotingPanel({
       <div className="flex justify-between items-center mb-4">
         <div>
           <h3 className="text-xl font-bold text-white">🗳️ Your Prediction</h3>
-          <p className="text-xs text-gray-500">Drag to reorder, stake DRONE to boost your vote</p>
+          <p className="text-xs text-gray-500">Drag to reorder, stake Scarab to boost your vote</p>
         </div>
         <button
           onClick={() => setExpanded(false)}
@@ -130,7 +130,7 @@ export function VotingPanel({
         </div>
         <div>
           <div className="text-gray-500">Total Stake</div>
-          <div className="text-white font-bold">{totalStake.toFixed(0)} DRONE</div>
+          <div className="text-white font-bold">{totalStake.toFixed(0)} Scarab</div>
         </div>
         <div>
           <div className="text-gray-500">Effective Weight</div>
@@ -194,7 +194,7 @@ export function VotingPanel({
                 onChange={(e) => updateStake(item.itemId, parseFloat(e.target.value) || 0)}
                 className="w-24 px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-orange-500"
               />
-              <span className="text-xs text-gray-500">DRONE</span>
+              <span className="text-xs text-gray-500">Scarab</span>
             </div>
           </div>
         ))}
@@ -210,7 +210,7 @@ export function VotingPanel({
             : 'bg-orange-500 hover:bg-orange-600 text-white'
         }`}
       >
-        {submitting ? '⏳ Submitting...' : totalStake === 0 ? '⚠️ Enter stake amounts' : `🚀 Submit Vote (${totalStake} DRONE)`}
+        {submitting ? '⏳ Submitting...' : totalStake === 0 ? '⚠️ Enter stake amounts' : `🚀 Submit Vote (${totalStake} Scarab)`}
       </button>
 
       {!userAddress && (

@@ -28,7 +28,7 @@ export function HomePage() {
       {/* Header */}
       <header className="sticky top-0 z-50 flex items-center justify-between gap-10 px-10 py-5 bg-[#0a0a0b]/80 backdrop-blur-xl border-b border-[#1f1f23]">
         <div className="flex items-center gap-2.5">
-          <img src="/logo.jpg" alt="Kindred" className="w-8 h-8 rounded-md object-contain" />
+          <img src="/logo.jpg" alt="Maat" className="w-8 h-8 rounded-md object-contain" />
           <span className="text-[#d9d4e8] font-cinzel text-2xl font-bold tracking-wide uppercase">
             KINDRED
           </span>

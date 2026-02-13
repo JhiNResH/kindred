@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAccount } from 'wagmi'
 import { WalletButton } from '@/components/WalletButton'
 import { useIsMounted } from '@/components/layout/ClientOnly'
-import { useCreateComment } from '@/hooks/useKindredComment'
-import { useDRONE } from '@/hooks/useDRONE'
+import { useCreateComment } from '@/hooks/useMaatComment'
+import { useScarab } from '@/hooks/useScarab'
 import { type Address } from 'viem'
 
-const DRONE_ADDRESS = process.env.NEXT_PUBLIC_DRONE_ADDRESS as Address
+const Scarab_ADDRESS = process.env.NEXT_PUBLIC_Scarab_ADDRESS as Address
 
 type Category = 'k/memecoin' | 'k/defi' | 'k/perp-dex' | 'k/ai'
 
@@ -30,9 +30,9 @@ const CATEGORIES: { value: Category; label: string; icon: string; description: s
 
 const STAKE_OPTIONS = [
   { value: '0', label: 'No Stake', description: 'Basic review' },
-  { value: '1000000000000000000', label: '1 DRONE', description: '+10% reputation' },
-  { value: '5000000000000000000', label: '5 DRONE', description: '+25% reputation' },
-  { value: '10000000000000000000', label: '10 DRONE', description: '+50% reputation' },
+  { value: '1000000000000000000', label: '1 Scarab', description: '+10% reputation' },
+  { value: '5000000000000000000', label: '5 Scarab', description: '+25% reputation' },
+  { value: '10000000000000000000', label: '10 Scarab', description: '+50% reputation' },
 ]
 
 export function ReviewForm() {
@@ -60,7 +60,7 @@ export function ReviewForm() {
 
   // On-chain hooks - MUST be called unconditionally
   const { createComment, hash: commentHash, isPending: isCreating, isConfirming: isConfirmingComment, isSuccess: commentSuccess, isError: commentError, error: commentErrorMsg } = useCreateComment()
-  const { approveDRONE, isLoading: isApprovingDRONE } = useDRONE(DRONE_ADDRESS)
+  const { approveScarab, isLoading: isApprovingScarab } = useScarab(Scarab_ADDRESS)
 
   // Handle comment creation success
   useEffect(() => {
@@ -119,7 +119,7 @@ export function ReviewForm() {
     setIsSubmitting(true)
     
     try {
-      // Create comment on-chain with DRONE staking
+      // Create comment on-chain with Scarab staking
       createComment({
         targetAddress: formData.targetAddress as Address,
         content: formData.content,

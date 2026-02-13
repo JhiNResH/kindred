@@ -1,5 +1,5 @@
 /**
- * Kindred Experience Points System
+ * Maat Experience Points System
  * Gamified rewards for authentic Web3 participation
  */
 
@@ -118,7 +118,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'legend',
     icon: '👑',
-    label: 'Kindred Legend',
+    label: 'Maat Legend',
     desc: 'Reach 3000 EXP',
     check: (stats: UserStats) => stats.exp >= 3000,
     target: 3000,

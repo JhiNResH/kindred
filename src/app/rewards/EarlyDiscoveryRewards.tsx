@@ -218,7 +218,7 @@ export function EarlyDiscoveryRewards() {
             Browse projects and upvote early to maximize your rewards
           </p>
           <a
-            href="/k/defi"
+            href="/m/defi"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition"
           >
             Explore Projects

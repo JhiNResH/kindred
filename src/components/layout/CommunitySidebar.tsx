@@ -47,7 +47,7 @@ export function CommunitySidebar({ selectedCategory, onSelectCategory }: Communi
         <div className="p-4 border-t border-[#1f1f23] mt-2">
           <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Resources</h2>
           <div className="space-y-2 text-sm text-gray-500">
-            <a href="#" className="block hover:text-white transition">About Kindred</a>
+            <a href="#" className="block hover:text-white transition">About Maat</a>
             <a href="#" className="block hover:text-white transition">Content Policy</a>
             <a href="#" className="block hover:text-white transition">Privacy Policy</a>
           </div>

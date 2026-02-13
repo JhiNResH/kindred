@@ -136,7 +136,7 @@ export default function ReviewsPage() {
 
       {/* Footer */}
       <footer className="border-t border-[#1f1f23] py-8 text-center text-gray-500 mt-12 bg-[#0a0a0b]">
-        <p>Built with 🦞 by Team Kindred for Openwork Hackathon 2025</p>
+        <p>Built with 🦞 by Team Maat for Openwork Hackathon 2025</p>
       </footer>
     </main>
   )

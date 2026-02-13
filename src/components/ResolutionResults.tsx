@@ -76,7 +76,7 @@ export function ResolutionResults({ category, userAddress }: ResolutionResultsPr
   const userVoteMap = new Map(userVotes.map((v) => [v.itemId, v.rank]));
   let totalAccuracy = 0;
   let matchedCount = 0;
-  let droneEarned = 0;
+  let scarabEarned = 0;
 
   data.finalRanking.forEach((item) => {
     const userRank = userVoteMap.get(item.itemId);
@@ -85,7 +85,7 @@ export function ResolutionResults({ category, userAddress }: ResolutionResultsPr
       if (diff <= 1) {
         // Within ±1 rank = "close"
         matchedCount++;
-        droneEarned += item.rewardDistribution || 0;
+        scarabEarned += item.rewardDistribution || 0;
       }
       totalAccuracy += diff === 0 ? 100 : diff === 1 ? 80 : diff === 2 ? 60 : 0;
     }
@@ -123,8 +123,8 @@ export function ResolutionResults({ category, userAddress }: ResolutionResultsPr
               <div className="text-orange-400 font-bold">{matchedCount}/{userVotes.length}</div>
             </div>
             <div>
-              <div className="text-gray-500">DRONE Earned</div>
-              <div className="text-purple-400 font-bold">{droneEarned.toFixed(0)}</div>
+              <div className="text-gray-500">Scarab Earned</div>
+              <div className="text-purple-400 font-bold">{scarabEarned.toFixed(0)}</div>
             </div>
           </div>
         )}
@@ -139,7 +139,7 @@ export function ResolutionResults({ category, userAddress }: ResolutionResultsPr
         <div>
           <h3 className="text-xl font-bold text-white">📊 Last Week's Resolution</h3>
           <p className="text-xs text-gray-500">
-            Resolved on {new Date(data.resolvedAt * 1000).toLocaleDateString()} • Total rewards: {data.rewardStats?.totalDroneDistributed.toFixed(0) || 0} DRONE
+            Resolved on {new Date(data.resolvedAt * 1000).toLocaleDateString()} • Total rewards: {data.rewardStats?.totalDroneDistributed.toFixed(0) || 0} Scarab
           </p>
         </div>
         <button onClick={() => setExpanded(false)} className="text-gray-500 hover:text-gray-300 text-sm">
@@ -163,8 +163,8 @@ export function ResolutionResults({ category, userAddress }: ResolutionResultsPr
               <div className="text-orange-400 font-bold">{matchedCount}/{userVotes.length}</div>
             </div>
             <div>
-              <div className="text-gray-500">DRONE Earned</div>
-              <div className="text-purple-400 font-bold">{droneEarned.toFixed(0)}</div>
+              <div className="text-gray-500">Scarab Earned</div>
+              <div className="text-purple-400 font-bold">{scarabEarned.toFixed(0)}</div>
             </div>
             <div>
               <div className="text-gray-500">Reputation Gain</div>

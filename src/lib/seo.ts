@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://kindred.app'
-const SITE_NAME = 'Kindred'
+const SITE_NAME = 'Maat'
 const DEFAULT_DESCRIPTION = 'The trust layer for everything. Stake tokens to review, predict project rankings, build reputation, and earn rewards.'
 
 // ============================================================
@@ -45,9 +45,9 @@ export function generateMetadata({
     title: fullTitle,
     description,
     keywords: [...defaultKeywords, ...keywords],
-    authors: [{ name: 'Kindred Protocol' }],
-    creator: 'Kindred',
-    publisher: 'Kindred',
+    authors: [{ name: 'Maat Protocol' }],
+    creator: 'Maat',
+    publisher: 'Maat',
     robots: noIndex ? 'noindex, nofollow' : 'index, follow',
     alternates: {
       canonical: url,
@@ -73,7 +73,7 @@ export function generateMetadata({
       title: fullTitle,
       description,
       images: [image.startsWith('http') ? image : `${BASE_URL}${image}`],
-      creator: '@KindredProtocol',
+      creator: '@MaatProtocol',
     },
     metadataBase: new URL(BASE_URL),
   }
@@ -186,7 +186,7 @@ export function generateReviewSchema(review: ReviewSchemaData): object {
     datePublished: review.datePublished,
     publisher: {
       '@type': 'Organization',
-      name: 'Kindred',
+      name: 'Maat',
       url: BASE_URL,
     },
     interactionStatistic: [
@@ -253,12 +253,12 @@ export function generateOrganizationSchema(): object {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Kindred',
+    name: 'Maat',
     description: 'The trust layer for everything. Decentralized reputation protocol.',
     url: BASE_URL,
     logo: `${BASE_URL}/logo.jpg`,
     sameAs: [
-      'https://twitter.com/KindredProtocol',
+      'https://twitter.com/MaatProtocol',
       'https://github.com/kindred-protocol',
     ],
     contactPoint: {
@@ -273,7 +273,7 @@ export function generateWebsiteSchema(): object {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Kindred',
+    name: 'Maat',
     url: BASE_URL,
     description: DEFAULT_DESCRIPTION,
     potentialAction: {

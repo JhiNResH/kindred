@@ -81,7 +81,7 @@ export function LandingPage() {
                  <Link href="#" className="hover:underline">Bug Bounty</Link>
                </div>
                <div className="mt-4">
-                 © 2026 Kindred. All rights reserved.
+                 © 2026 Maat. All rights reserved.
                </div>
             </div>
           </aside>

@@ -145,13 +145,13 @@ export async function findOrCreateProject(query: string): Promise<CreateProjectR
     }
     
     // 2. Project doesn't exist - analyze with Gemini
-    console.log(`[Kindred] Project "${query}" not found, running Ma'at analysis...`)
+    console.log(`[Maat] Project "${query}" not found, running Ma'at analysis...`)
     const analysis = await analyzeProject(query)
     
     // 3. Create project in database
     const address = generateProjectAddress(analysis.name || query)
     const category = mapTypeToCategory(analysis.type, analysis.name || query)
-    console.log(`[Kindred] Analysis type: "${analysis.type}" -> Category: "${category}"`)
+    console.log(`[Maat] Analysis type: "${analysis.type}" -> Category: "${category}"`)
     
     const newProject = await prisma.project.create({
       data: {
@@ -171,7 +171,7 @@ export async function findOrCreateProject(query: string): Promise<CreateProjectR
       }
     })
     
-    console.log(`[Kindred] Created new project: ${newProject.name} (${newProject.id})`)
+    console.log(`[Maat] Created new project: ${newProject.name} (${newProject.id})`)
     
     return {
       success: true,
@@ -188,7 +188,7 @@ export async function findOrCreateProject(query: string): Promise<CreateProjectR
     }
     
   } catch (error) {
-    console.error('[Kindred] findOrCreateProject error:', error)
+    console.error('[Maat] findOrCreateProject error:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -232,7 +232,7 @@ export async function getProjectWithAnalysis(projectId: string) {
     
     return { project, analysis }
   } catch (error) {
-    console.error('[Kindred] getProjectWithAnalysis error:', error)
+    console.error('[Maat] getProjectWithAnalysis error:', error)
     return null
   }
 }

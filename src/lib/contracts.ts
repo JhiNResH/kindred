@@ -1,13 +1,13 @@
 /**
  * Smart Contract Configuration
- * Addresses and ABIs for Kindred contracts
+ * Addresses and ABIs for Maat contracts
  */
 
-import KindredCommentABI from './abi/KindredComment.json'
+import MaatCommentABI from './abi/MaatComment.json'
 import KindTokenABI from './abi/KindToken.json'
 import KindClawTokenABI from './abi/KindClawToken.json'
-import KindredHookABI from './abi/KindredHook.json'
-import KindredHookV2ABI from './abi/KindredHookV2.json'
+import MaatHookABI from './abi/MaatHook.json'
+import MaatHookV2ABI from './abi/MaatHookV2.json'
 import ReputationOracleABI from './abi/ReputationOracle.json'
 import OpenWorkMockABI from './abi/OpenWorkMock.json'
 import SimpleSwapABI from './abi/SimpleSwap.json'
@@ -30,7 +30,7 @@ export const CONTRACTS = {
     },
     kindredComment: {
       address: '0xb3bb93089404ce4c2f64535e5d513093625fedc8' as `0x${string}`,
-      abi: KindredCommentABI,
+      abi: MaatCommentABI,
     },
     treasury: '0x872989F7fCd4048acA370161989d3904E37A3cB3' as `0x${string}`,
     // Uniswap v4 Hook System - Deployed 2026-02-07
@@ -40,11 +40,11 @@ export const CONTRACTS = {
     },
     kindredHook: {
       address: '0x03C8fFc3E6820Ef40d43F76F66e8B9C1A1DFaD4d' as `0x${string}`,
-      abi: KindredHookABI,
+      abi: MaatHookABI,
     },
     kindredHookV2: {
       address: '0x5238C910f0690eb9C8b4f34Cf78c97C3D7f9E313' as `0x${string}`,
-      abi: KindredHookV2ABI,
+      abi: MaatHookV2ABI,
     },
     mockPoolManager: '0x7350Cc2655004d32e234094C847bfac789D19408' as `0x${string}`, // Demo only
     // Simple Swap - Deployed 2026-02-07
@@ -69,7 +69,7 @@ export const CONTRACTS = {
     },
     kindredComment: {
       address: '0x0000000000000000000000000000000000000000' as `0x${string}`, // TODO: Deploy
-      abi: KindredCommentABI,
+      abi: MaatCommentABI,
     },
   },
 } as const
@@ -89,7 +89,7 @@ export function getContract(
 
 /**
  * Dynamic Fee Tiers based on Reputation Score
- * @see KindredHook.sol for implementation
+ * @see MaatHook.sol for implementation
  */
 export const FEE_TIERS = {
   HIGH_TRUST: { minScore: 850, feePercent: 0.15 },   // 0.15% fee

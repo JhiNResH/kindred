@@ -127,11 +127,11 @@ export async function POST(
     // Recalculate item scores
     await recalculateRankingScores(ranking.id);
 
-    // Award +10 DRONE for voting
+    // Award +10 Scarab for voting
     await prisma.user.update({
       where: { address: address.toLowerCase() },
       data: {
-        droneBalance: { increment: 10 }
+        scarabBalance: { increment: 10 }
       }
     });
 
@@ -142,7 +142,7 @@ export async function POST(
       weightMultiplier: Math.round(weightMultiplier * 100) / 100,
       totalStaked,
       nextResolutionAt: ranking.resolvesAt.getTime(),
-      droneEarned: 10,
+      scarabEarned: 10,
     });
   } catch (error) {
     console.error('[RANKINGS] Error voting:', error);

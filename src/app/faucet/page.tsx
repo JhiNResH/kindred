@@ -4,7 +4,7 @@ import { KindClawFaucet } from '@/components/KindClawFaucet'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'KINDCLAW Faucet - Kindred',
+  title: 'KINDCLAW Faucet - Maat',
   description: 'Claim free KINDCLAW tokens for the Clawathon hackathon',
 }
 

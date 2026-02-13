@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       upvotes: r.upvotes,
       downvotes: r.downvotes,
       createdAt: r.createdAt.toISOString(),
-      nftTokenId: r.nftTokenId, // ERC-721 token ID from KindredComment contract
+      nftTokenId: r.nftTokenId, // ERC-721 token ID from MaatComment contract
     }))
 
     // Sort by hot if requested
@@ -115,16 +115,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Content must be at least 10 characters' }, { status: 400 })
     }
 
-    // Check DRONE stake requirement
+    // Check Scarab stake requirement
     const stakeAmount = body.stakeAmount ? parseInt(body.stakeAmount) : 0
     if (stakeAmount < 1) {
       return NextResponse.json(
-        { error: 'Minimum 1 DRONE stake required for reviews' },
+        { error: 'Minimum 1 Scarab stake required for reviews' },
         { status: 400 }
       )
     }
 
-    // TODO: Verify user has sufficient DRONE balance (requires on-chain check or local DB balance tracking)
+    // TODO: Verify user has sufficient Scarab balance (requires on-chain check or local DB balance tracking)
     // For MVP, we trust the client and will validate on settlement
 
     // Find or create project (needed for Gemini check context)
@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
       rating: body.rating || 5,
       content: body.content,
       predictedRank: body.predictedRank || null,
-      stakeAmount: stakeAmount.toString(), // DRONE stake (required for settlement)
+      stakeAmount: stakeAmount.toString(), // Scarab stake (required for settlement)
       photoUrls: body.photoUrls ? JSON.stringify(body.photoUrls) : null,
       projectId: project.id,
       status: qualityCheck.status === 'flagged' ? 'flagged' : 'active', // Mark flagged reviews

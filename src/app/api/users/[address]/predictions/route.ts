@@ -38,7 +38,7 @@ export async function GET(
         finalRank: v.item.finalRank,
         accuracy: v.accuracy,
         staked: v.stakeAmount,
-        droneEarned: v.rewardEarned || 0,
+        scarabEarned: v.rewardEarned || 0,
         resolvedAt: v.ranking.resolvedAt,
       }));
 
@@ -47,7 +47,7 @@ export async function GET(
     const avgAccuracy = resolvedWithAccuracy.length > 0
       ? resolvedWithAccuracy.reduce((sum, r) => sum + (r.accuracy || 0), 0) / resolvedWithAccuracy.length
       : 0;
-    const totalDroneEarned = resolved.reduce((sum, r) => sum + r.droneEarned, 0);
+    const totalDroneEarned = resolved.reduce((sum, r) => sum + r.scarabEarned, 0);
 
     return NextResponse.json({
       address: addr,

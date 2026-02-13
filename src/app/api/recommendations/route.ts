@@ -18,7 +18,7 @@ interface Recommendation {
   market?: string
   reason: string
   confidence: number // 0-100
-  expectedReward: number // Estimated DRONE earnings
+  expectedReward: number // Estimated Scarab earnings
   effortLevel: 'low' | 'medium' | 'high'
   timelineWeeks: number
   competitorCount: number

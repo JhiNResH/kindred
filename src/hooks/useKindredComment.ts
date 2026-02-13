@@ -1,5 +1,5 @@
 /**
- * On-chain interaction hooks for KindredComment contract
+ * On-chain interaction hooks for MaatComment contract
  * Uses $KINDCLAW token for staking (not ETH)
  */
 

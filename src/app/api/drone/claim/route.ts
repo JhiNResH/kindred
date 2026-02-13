@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// POST /api/drone/claim
+// POST /api/scarab/claim
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -24,15 +24,15 @@ export async function POST(request: NextRequest) {
       user = await prisma.user.create({
         data: {
           address: normalizedAddress,
-          droneBalance: 100,
+          scarabBalance: 100,
           lastCheckIn: now,
         }
       })
       return NextResponse.json({
         success: true,
-        droneEarned: 100,
+        scarabEarned: 100,
         newBalance: 100,
-        message: 'First time claim! Welcome to Kindred!'
+        message: 'First time claim! Welcome to Maat!'
       })
     }
 
@@ -48,30 +48,30 @@ export async function POST(request: NextRequest) {
       if (lastCheckInDay.getTime() === today.getTime()) {
         return NextResponse.json({
           success: false,
-          message: 'Already claimed DRONE today! Come back tomorrow.',
-          currentBalance: user.droneBalance
+          message: 'Already claimed Scarab today! Come back tomorrow.',
+          currentBalance: user.scarabBalance
         }, { status: 400 })
       }
     }
 
-    // Award 100 DRONE
-    const newBalance = user.droneBalance + 100
+    // Award 100 Scarab
+    const newBalance = user.scarabBalance + 100
     await prisma.user.update({
       where: { address: normalizedAddress },
       data: {
-        droneBalance: newBalance,
+        scarabBalance: newBalance,
         lastCheckIn: now,
       }
     })
 
     return NextResponse.json({
       success: true,
-      droneEarned: 100,
+      scarabEarned: 100,
       newBalance,
-      message: 'Daily DRONE claimed successfully!'
+      message: 'Daily Scarab claimed successfully!'
     })
   } catch (error) {
-    console.error('Error claiming DRONE:', error)
-    return NextResponse.json({ error: 'Failed to claim DRONE' }, { status: 500 })
+    console.error('Error claiming Scarab:', error)
+    return NextResponse.json({ error: 'Failed to claim Scarab' }, { status: 500 })
   }
 }

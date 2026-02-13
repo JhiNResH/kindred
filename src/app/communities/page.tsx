@@ -207,7 +207,7 @@ export default function CommunitiesPage() {
               <div className="text-3xl mb-3">📝</div>
               <h4 className="font-bold text-white mb-2">Write Reviews</h4>
               <p className="text-gray-400 text-sm">
-                Post high-quality comments about projects to earn reputation and DRONE
+                Post high-quality comments about projects to earn reputation and Scarab
               </p>
             </div>
             <div className="p-6 bg-slate-800/50 border border-purple-500/30 rounded-lg">

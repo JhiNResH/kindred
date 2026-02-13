@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
             rating: review.rating,
             agentId: agent.id,
             projectId: review.projectId,
-            stakeAmount: '1', // Default 1 DRONE stake
+            stakeAmount: '1', // Default 1 Scarab stake
             status: 'active',
           },
           include: {

@@ -4,13 +4,13 @@ import { useState } from 'react'
 import { useAccount } from 'wagmi'
 import Link from 'next/link'
 import { WalletButton } from '@/components/WalletButton'
-import { useDRONE } from '@/hooks/useDRONE'
+import { useScarab } from '@/hooks/useScarab'
 
-const DRONE_ADDRESS = process.env.NEXT_PUBLIC_DRONE_ADDRESS as `0x${string}`
+const Scarab_ADDRESS = process.env.NEXT_PUBLIC_Scarab_ADDRESS as `0x${string}`
 
-export default function DRONEFaucetPage() {
+export default function ScarabFaucetPage() {
   const { isConnected, address } = useAccount()
-  const { claimFaucet, isLoading, error } = useDRONE(DRONE_ADDRESS)
+  const { claimFaucet, isLoading, error } = useScarab(Scarab_ADDRESS)
   const [claimed, setClaimed] = useState(false)
 
   const handleClaim = async () => {
@@ -27,7 +27,7 @@ export default function DRONEFaucetPage() {
       <nav className="flex justify-between items-center p-6 border-b border-gray-800">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
           <span className="text-2xl">🦞</span>
-          <span className="text-xl font-bold">Kindred</span>
+          <span className="text-xl font-bold">Maat</span>
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/faucet" className="text-gray-400 hover:text-white transition">
@@ -43,7 +43,7 @@ export default function DRONEFaucetPage() {
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
           <Link href="/" className="hover:text-white transition">Home</Link>
           <span>/</span>
-          <span className="text-white">DRONE Faucet</span>
+          <span className="text-white">Scarab Faucet</span>
         </div>
 
         {/* Info Banner */}
@@ -51,13 +51,13 @@ export default function DRONEFaucetPage() {
           <div className="flex items-start gap-3">
             <span className="text-3xl">🚁</span>
             <div>
-              <h1 className="text-3xl font-bold mb-2">DRONE Token Faucet</h1>
+              <h1 className="text-3xl font-bold mb-2">Scarab Token Faucet</h1>
               <p className="text-gray-300 mb-4">
-                領取免費的 DRONE 代幣用於評論和投票質押。
+                領取免費的 Scarab 代幣用於評論和投票質押。
               </p>
               <div className="space-y-2 text-sm text-gray-400">
-                <p>✓ 每 24 小時可領取 100 DRONE</p>
-                <p>✓ 用於在 Kindred 評論、投票和質押</p>
+                <p>✓ 每 24 小時可領取 100 Scarab</p>
+                <p>✓ 用於在 Maat 評論、投票和質押</p>
                 <p>✓ 建立聲譽並獲得獎勵</p>
               </div>
             </div>
@@ -66,7 +66,7 @@ export default function DRONEFaucetPage() {
 
         {/* Faucet Card */}
         <div className="bg-[#111113] border border-[#1f1f23] rounded-xl p-8 mb-8">
-          <h2 className="text-2xl font-bold mb-6">領取 DRONE</h2>
+          <h2 className="text-2xl font-bold mb-6">領取 Scarab</h2>
 
           {!isConnected ? (
             <div className="text-center">
@@ -91,7 +91,7 @@ export default function DRONEFaucetPage() {
 
               {claimed && (
                 <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
-                  ✓ 成功！100 DRONE 已發送到你的錢包
+                  ✓ 成功！100 Scarab 已發送到你的錢包
                 </div>
               )}
 
@@ -104,7 +104,7 @@ export default function DRONEFaucetPage() {
                     : 'bg-purple-600 hover:bg-purple-700 text-white'
                 }`}
               >
-                {isLoading ? '正在領取...' : '領取 100 DRONE'}
+                {isLoading ? '正在領取...' : '領取 100 Scarab'}
               </button>
 
               <div className="text-sm text-gray-400">
@@ -112,7 +112,7 @@ export default function DRONEFaucetPage() {
                 <ul className="space-y-1 list-disc list-inside">
                   <li>每個地址每 24 小時可領取一次</li>
                   <li>領取後用於評論和投票</li>
-                  <li>質押越多 DRONE 聲譽分越高</li>
+                  <li>質押越多 Scarab 聲譽分越高</li>
                 </ul>
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function DRONEFaucetPage() {
             <ol className="text-sm text-gray-400 space-y-2">
               <li>1. 訪問任何項目頁面</li>
               <li>2. 點擊「Write Review」</li>
-              <li>3. 選擇 DRONE 質押金額</li>
+              <li>3. 選擇 Scarab 質押金額</li>
               <li>4. 提交評論</li>
             </ol>
           </div>
@@ -142,7 +142,7 @@ export default function DRONEFaucetPage() {
             <ol className="text-sm text-gray-400 space-y-2">
               <li>1. 訪問項目詳細頁面</li>
               <li>2. 側邊欄選擇 Bullish 或 Bearish</li>
-              <li>3. 選擇 DRONE 質押</li>
+              <li>3. 選擇 Scarab 質押</li>
               <li>4. 提交投票</li>
             </ol>
           </div>
@@ -151,7 +151,7 @@ export default function DRONEFaucetPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-800 py-8 text-center text-gray-500 mt-12">
-        <p>Built with 🦞 by Team Kindred</p>
+        <p>Built with 🦞 by Team Maat</p>
       </footer>
     </main>
   )

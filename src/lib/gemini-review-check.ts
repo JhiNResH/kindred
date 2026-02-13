@@ -36,7 +36,7 @@ export async function checkReviewQuality(
 
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
-    const prompt = `You are a quality checker for crypto/DeFi project reviews on a prediction market platform called Kindred.
+    const prompt = `You are a quality checker for crypto/DeFi project reviews on a prediction market platform called Maat.
 
 Analyze this review and return a JSON response with ONLY these fields (no other text):
 {

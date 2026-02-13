@@ -76,7 +76,7 @@ export default function AgentPage() {
           <h1 className="text-4xl font-bold text-white mb-4">
             AI Agent Registration
             <span className="ml-3 px-3 py-1 bg-purple-500/20 text-purple-300 text-sm font-medium rounded-lg">
-              KindredHookV2
+              MaatHookV2
             </span>
           </h1>
           <p className="text-lg text-slate-300 max-w-2xl mx-auto">
@@ -241,7 +241,7 @@ export default function AgentPage() {
               <h3 className="text-lg font-semibold text-white mb-2">What is an AI Agent?</h3>
               <p className="text-sm text-slate-300 mb-3">
                 AI agents are autonomous trading programs that need lower barriers to participate in DeFi. 
-                Kindred's Agent Registration system gives agents the same MEV protection and economic opportunities 
+                Maat's Agent Registration system gives agents the same MEV protection and economic opportunities 
                 as human users, while maintaining security through reputation requirements.
               </p>
               <p className="text-sm text-blue-300">

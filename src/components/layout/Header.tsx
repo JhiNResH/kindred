@@ -47,21 +47,21 @@ export function Header() {
             <Link href="/" className="flex items-center gap-2.5">
               <img 
                 src="/logo.jpg" 
-                alt="Kindred" 
+                alt="Maat" 
                 className="w-8 h-8 rounded-md object-contain"
                 onError={(e) => {
                   e.currentTarget.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🦞</text></svg>'
                 }}
               />
               <span className="text-[22px] font-bold tracking-wide text-[#d9d4e8] font-['Cinzel_Decorative'] hidden sm:block">
-                KINDRED
+                MAAT
                 <span className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-purple-500 mb-1"></span>
               </span>
             </Link>
           </div>
 
           {/* Center: Search Bar (opens modal) - hidden on gourmet pages */}
-          {!pathname.startsWith('/k/gourmet') && (
+          {!pathname.startsWith('/m/gourmet') && (
             <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-[480px] hidden md:block">
               <button
                 onClick={() => setIsSearchOpen(true)}
@@ -84,6 +84,12 @@ export function Header() {
 
           {/* Right: Actions */}
           <div className="flex items-center gap-3">
+            {/* Scarab Balance */}
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a1d] border border-[#2a2a2e] rounded-lg">
+              <span className="text-base">🪲</span>
+              <span className="text-sm font-mono font-bold text-amber-400">20</span>
+            </div>
+
             <button 
               onClick={() => setIsPostModalOpen(true)}
               className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-kindred-primary text-white text-[13px] font-medium hover:bg-orange-600 transition-colors"

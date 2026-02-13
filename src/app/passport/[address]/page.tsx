@@ -13,7 +13,7 @@ import {
   type UserStats
 } from '@/lib/expSystem'
 
-// Kindred brand colors (matching logo)
+// Maat brand colors (matching logo)
 const COLORS = {
   deepPurple: '#7B5B9A',
   lavender: '#B8B0C8',
@@ -150,7 +150,7 @@ export default function PassportPage({ params }: { params: Promise<{ address: st
                  style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 85%, 85% 100%, 0% 100%, 0% 15%)' }}>
               <img
                 src="/logo.jpg"
-                alt="Kindred"
+                alt="Maat"
                 className="w-28 h-28 object-contain"
               />
             </div>

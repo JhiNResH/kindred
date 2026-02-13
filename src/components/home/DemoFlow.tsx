@@ -70,7 +70,7 @@ export function DemoFlow() {
   return (
     <div className="bg-gradient-to-br from-[#111113] to-[#0a0a0b] border border-[#1f1f23] rounded-2xl p-8">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">How Kindred Works</h2>
+        <h2 className="text-2xl font-bold mb-2">How Maat Works</h2>
         <p className="text-[#6b6b70]">Your journey from discovery to rewards</p>
       </div>
 

@@ -97,7 +97,7 @@ export async function POST(
         success: true,
         expGained: 5,
         currentStreak: 1,
-        message: 'First check-in! Welcome to Kindred!'
+        message: 'First check-in! Welcome to Maat!'
       })
     }
 

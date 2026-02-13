@@ -183,8 +183,8 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         {openSections["communities"] && (
           <div className="flex flex-col">
             <Link
-              href="/k/defi"
-              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/defi" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+              href="/m/defi"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/m/defi" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
             >
               <div className="w-7 h-7 rounded-md bg-pink-500/15 text-pink-500 flex items-center justify-center">
                 <Coins className="w-3.5 h-3.5" />
@@ -192,8 +192,8 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               <span>k/defi</span>
             </Link>
             <Link
-              href="/k/perp-dex"
-              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/perp-dex" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+              href="/m/perp-dex"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/m/perp-dex" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
             >
               <div className="w-7 h-7 rounded-md bg-purple-500/15 text-purple-500 flex items-center justify-center">
                 <BarChart2 className="w-3.5 h-3.5" />
@@ -201,8 +201,8 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               <span>k/perp-dex</span>
             </Link>
             <Link
-              href="/k/stablecoin"
-              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/stablecoin" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+              href="/m/stablecoin"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/m/stablecoin" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
             >
               <div className="w-7 h-7 rounded-md bg-blue-500/15 text-blue-500 flex items-center justify-center">
                 💵
@@ -210,8 +210,8 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               <span>k/stablecoin</span>
             </Link>
             <Link
-              href="/k/ai"
-              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/k/ai" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
+              href="/m/ai"
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium border-l-[3px] transition-colors ${pathname === "/m/ai" ? "bg-purple-500/10 text-purple-400 border-purple-500" : "border-transparent text-[#adadb0] hover:bg-purple-500/5 hover:text-white"}`}
             >
               <div className="w-7 h-7 rounded-md bg-green-500/15 text-green-500 flex items-center justify-center">
                 <Bot className="w-3.5 h-3.5" />

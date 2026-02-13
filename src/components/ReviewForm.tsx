@@ -13,7 +13,7 @@ import {
 } from '@/hooks/useKindToken'
 import {
   useCreateComment,
-} from '@/hooks/useKindredComment'
+} from '@/hooks/useMaatComment'
 
 type Category = 'k/memecoin' | 'k/defi' | 'k/perp-dex' | 'k/ai'
 

@@ -27,7 +27,7 @@ type Token = 'ETH' | 'USDC' | 'KINDCLAW' | 'OPENWORK'
 const TOKENS = {
   ETH: { symbol: 'ETH', name: 'Ethereum', decimals: 18, icon: 'Ξ' },
   USDC: { symbol: 'USDC', name: 'USD Coin', decimals: 6, icon: '$' },
-  KINDCLAW: { symbol: 'KINDCLAW', name: 'Kindred Arcade', decimals: 18, icon: '🦞' },
+  KINDCLAW: { symbol: 'KINDCLAW', name: 'Maat Arcade', decimals: 18, icon: '🦞' },
   OPENWORK: { symbol: 'OPENWORK', name: 'Builder Quest', decimals: 18, icon: '🔨' },
 }
 
@@ -283,7 +283,7 @@ export default function SwapInterfaceV2() {
             <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
               <p className="text-sm text-red-300">
                 ⚠️ Your reputation is too low to trade. Build reputation by creating reviews 
-                and participating in the Kindred community.
+                and participating in the Maat community.
               </p>
             </div>
           )}

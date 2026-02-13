@@ -31,12 +31,12 @@ export function OrganizationJsonLd() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Kindred',
+    name: 'Maat',
     description: 'The trust layer for everything. Decentralized reputation protocol.',
     url: process.env.NEXT_PUBLIC_APP_URL || 'https://kindred.app',
     logo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://kindred.app'}/logo.jpg`,
     sameAs: [
-      'https://twitter.com/KindredProtocol',
+      'https://twitter.com/MaatProtocol',
       'https://github.com/kindred-protocol',
     ],
   }
@@ -50,7 +50,7 @@ export function WebsiteJsonLd() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Kindred',
+    name: 'Maat',
     url: baseUrl,
     description: 'The trust layer for everything. Stake tokens to review, predict rankings, build reputation.',
     potentialAction: {
@@ -117,7 +117,7 @@ export function ReviewJsonLd({
     datePublished: datePublished,
     publisher: {
       '@type': 'Organization',
-      name: 'Kindred',
+      name: 'Maat',
       url: baseUrl,
     },
     interactionStatistic: [

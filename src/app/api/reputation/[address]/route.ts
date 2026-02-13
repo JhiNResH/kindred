@@ -30,7 +30,7 @@ interface ReputationResponse {
   tier: 1 | 2 | 3 | 4 | 5 | 6
   primarySignal: string // e.g. "defi_safety_predictor"
   secondarySignals: string[] // e.g. ["low_volatility", "consistent"]
-  stakedDRONE: number // Total DRONE staked for economic backing
+  stakedScarab: number // Total Scarab staked for economic backing
   verifiedProofs: number // Number of on-chain verification proofs
   trustedByCount: number // Number of entities trusting this address
   stats: {
@@ -204,7 +204,7 @@ export async function GET(
       tier,
       primarySignal,
       secondarySignals,
-      stakedDRONE: Math.round(userStats[0]?._avg.stakeAmount || 0),
+      stakedScarab: Math.round(userStats[0]?._avg.stakeAmount || 0),
       verifiedProofs: agent?.verifiedProofs || 0,
       trustedByCount: userComments.length > 0 ? Math.min(votes.length, 100) : 0,
       stats: {

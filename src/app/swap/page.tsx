@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import SwapInterfaceV2 from './SwapInterfaceV2'
 
 export const metadata: Metadata = {
-  title: 'Swap | Kindred',
+  title: 'Swap | Maat',
   description: 'Swap tokens with reputation-based dynamic fees. High trust = low fees. Protected by Anti-MEV priority queue.',
 }
 

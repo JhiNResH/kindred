@@ -2,8 +2,8 @@ import { useState, useCallback } from 'react'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
 import { parseUnits, Address, ContractFunctionRevertedError } from 'viem'
 
-// DRONE 合約 ABI（基礎版）
-const DRONE_ABI = [
+// Scarab 合約 ABI（基礎版）
+const Scarab_ABI = [
   {
     name: 'approve',
     type: 'function',
@@ -50,7 +50,7 @@ const DRONE_ABI = [
   }
 ]
 
-export function useDRONE(contractAddress: Address) {
+export function useScarab(contractAddress: Address) {
   const { address } = useAccount()
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
@@ -58,13 +58,13 @@ export function useDRONE(contractAddress: Address) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // 獲取 DRONE 餘額
+  // 獲取 Scarab 餘額
   const getBalance = useCallback(async () => {
     if (!address || !publicClient) return '0'
     try {
       const balance = await publicClient.readContract({
         address: contractAddress,
-        abi: DRONE_ABI,
+        abi: Scarab_ABI,
         functionName: 'balanceOf',
         args: [address]
       })
@@ -75,7 +75,7 @@ export function useDRONE(contractAddress: Address) {
     }
   }, [address, publicClient, contractAddress])
 
-  // 從水龍頭領取 DRONE
+  // 從水龍頭領取 Scarab
   const claimFaucet = useCallback(async () => {
     if (!walletClient || !address) {
       setError('錢包未連接')
@@ -88,7 +88,7 @@ export function useDRONE(contractAddress: Address) {
     try {
       const hash = await walletClient.writeContract({
         address: contractAddress,
-        abi: DRONE_ABI,
+        abi: Scarab_ABI,
         functionName: 'claimFromFaucet',
         account: address
       })
@@ -108,8 +108,8 @@ export function useDRONE(contractAddress: Address) {
     }
   }, [walletClient, address, contractAddress])
 
-  // 批准花費 DRONE
-  const approveDRONE = useCallback(
+  // 批准花費 Scarab
+  const approveScarab = useCallback(
     async (spender: Address, amount: string) => {
       if (!walletClient || !address) {
         setError('錢包未連接')
@@ -124,7 +124,7 @@ export function useDRONE(contractAddress: Address) {
 
         const hash = await walletClient.writeContract({
           address: contractAddress,
-          abi: DRONE_ABI,
+          abi: Scarab_ABI,
           functionName: 'approve',
           args: [spender, amountInWei],
           account: address
@@ -150,7 +150,7 @@ export function useDRONE(contractAddress: Address) {
   return {
     getBalance,
     claimFaucet,
-    approveDRONE,
+    approveScarab,
     isLoading,
     error
   }

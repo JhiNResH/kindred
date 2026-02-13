@@ -129,7 +129,7 @@ export default function RankingPage() {
               <div className="text-gray-500">Total Staked</div>
               <div className="text-2xl font-bold text-orange-400">
                 {data.metadata.totalStaked.toLocaleString()}
-                <span className="text-sm text-gray-500 ml-1">DRONE</span>
+                <span className="text-sm text-gray-500 ml-1">Scarab</span>
               </div>
             </div>
             <div>

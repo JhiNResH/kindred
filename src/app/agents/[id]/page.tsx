@@ -39,7 +39,7 @@ export default async function AgentProfilePage({
             <div>
               <p className="text-sm text-gray-600 font-semibold">Earnings</p>
               <p className="text-3xl font-bold text-purple-600">{agent.totalEarnings.toFixed(0)}</p>
-              <p className="text-xs text-gray-500">DRONE</p>
+              <p className="text-xs text-gray-500">Scarab</p>
             </div>
             <div>
               <p className="text-sm text-gray-600 font-semibold">Accuracy</p>

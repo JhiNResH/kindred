@@ -149,7 +149,7 @@ Look for:
 - Authentic screenshot format`,
   }
 
-  const verificationPrompt = `You are a verification AI for Kindred's k/gourmet restaurant review platform.
+  const verificationPrompt = `You are a verification AI for Maat's k/gourmet restaurant review platform.
 
 ${proofTypePrompts[proofType] || proofTypePrompts.receipt}
 

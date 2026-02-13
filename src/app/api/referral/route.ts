@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Address required' }, { status: 400 })
     }
 
-    // Query KindredHookV2 contract
+    // Query MaatHookV2 contract
     const hookAddress = CONTRACTS.baseSepolia.kindredHookV2.address
     const hookABI = CONTRACTS.baseSepolia.kindredHookV2.abi as Abi
 
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     // Return transaction data (user must call contract directly)
     return NextResponse.json({
       success: true,
-      message: 'Referrer validated. Call setReferrer() on KindredHookV2 contract.',
+      message: 'Referrer validated. Call setReferrer() on MaatHookV2 contract.',
       contract: CONTRACTS.baseSepolia.kindredHookV2.address,
       referrer,
     })

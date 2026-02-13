@@ -25,8 +25,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://kindred.app'
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'Kindred | Trust Layer for Everything',
-    template: '%s | Kindred',
+    default: 'Maat | Trust Layer for Everything',
+    template: '%s | Maat',
   },
   description: 'The trust layer for everything. Stake tokens to review, predict project rankings, build reputation, and earn rewards through the first decentralized reputation protocol.',
   keywords: [
@@ -41,9 +41,9 @@ export const metadata: Metadata = {
     'decentralized reviews',
     'token staking',
   ],
-  authors: [{ name: 'Kindred Protocol', url: BASE_URL }],
-  creator: 'Kindred',
-  publisher: 'Kindred',
+  authors: [{ name: 'Maat Protocol', url: BASE_URL }],
+  creator: 'Maat',
+  publisher: 'Maat',
   robots: {
     index: true,
     follow: true,
@@ -65,25 +65,25 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: BASE_URL,
-    siteName: 'Kindred',
-    title: 'Kindred | Trust Layer for Everything',
+    siteName: 'Maat',
+    title: 'Maat | Trust Layer for Everything',
     description: 'The trust layer for everything. Stake tokens to review, predict project rankings, build reputation, and earn rewards.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Kindred - Trust Layer for Everything',
+        alt: 'Maat - Trust Layer for Everything',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kindred | Trust Layer for Everything',
+    title: 'Maat | Trust Layer for Everything',
     description: 'The trust layer for everything. Decentralized reputation protocol.',
     images: ['/og-image.png'],
-    creator: '@KindredProtocol',
-    site: '@KindredProtocol',
+    creator: '@MaatProtocol',
+    site: '@MaatProtocol',
   },
   alternates: {
     canonical: BASE_URL,

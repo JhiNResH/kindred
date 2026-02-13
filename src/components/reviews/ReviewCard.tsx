@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Coins, Loader2, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react'
-import { useUpvote, useDownvote } from '@/hooks/useKindredComment'
+import { useUpvote, useDownvote } from '@/hooks/useMaatComment'
 import { useApproveKindToken, useKindTokenAllowance, useKindTokenBalance } from '@/hooks/useKindToken'
 import { parseEther, formatEther } from 'viem'
 import { useAccount } from 'wagmi'
@@ -19,7 +19,7 @@ interface Review {
   upvotes: number
   downvotes: number
   createdAt: string
-  nftTokenId?: string // ERC-721 token ID from KindredComment contract
+  nftTokenId?: string // ERC-721 token ID from MaatComment contract
 }
 
 interface ReviewCardProps {

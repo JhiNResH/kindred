@@ -1,5 +1,5 @@
 /**
- * Example: Contract Integration with KindredComment
+ * Example: Contract Integration with MaatComment
  * Shows complete flow: Approve → Stake → Create Comment → Vote
  */
 
@@ -21,7 +21,7 @@ import {
   useDownvote,
   useComment,
   useNetScore,
-} from '@/hooks/useKindredComment'
+} from '@/hooks/useMaatComment'
 
 export default function ContractIntegrationExample() {
   const { address, isConnected } = useAccount()
@@ -71,7 +71,7 @@ export default function ContractIntegrationExample() {
     <div className="max-w-4xl mx-auto p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Kindred Contract Integration</h1>
+        <h1 className="text-3xl font-bold mb-2">Maat Contract Integration</h1>
         <p className="text-gray-600">
           Connected: {address?.slice(0, 6)}...{address?.slice(-4)}
         </p>
@@ -84,7 +84,7 @@ export default function ContractIntegrationExample() {
       <div className="border rounded-lg p-6">
         <h2 className="text-xl font-bold mb-4">Step 1: Approve Tokens</h2>
         <p className="text-sm text-gray-600 mb-4">
-          Allow KindredComment contract to spend your KIND tokens
+          Allow MaatComment contract to spend your KIND tokens
         </p>
         
         {needsApproval ? (

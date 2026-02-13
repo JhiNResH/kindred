@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
         source: 'gemini',
         analysis,
         suggestion: {
-          text: `"${analysis.projectName}" is a real project but not in Kindred yet.`,
+          text: `"${analysis.projectName}" is a real project but not in Maat yet.`,
           action: 'Write a review to add it',
           category: analysis.category,
         },

@@ -33,7 +33,7 @@ export default function LeaderboardPage() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           {/* SEO Header */}
           <header className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">🏆 Kindred Leaderboard</h1>
+            <h1 className="text-3xl font-bold mb-2">🏆 Maat Leaderboard</h1>
             <p className="text-gray-400">
               Top-ranked projects and reviewers based on community votes and stake-weighted reviews.
             </p>

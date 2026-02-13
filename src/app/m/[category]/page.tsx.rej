@@ -1,0 +1,15 @@
+@@ -10,14 +10,14 @@
+ 
+ interface Project {
+   id: string
+   address: string
+   name: string
+   image: string | null
+   category: string
+   avgRating: number
+   reviewCount: number
+   bullishCount: number
+   bearishCount: number
+   mindshareScore: number
+ }
+ 

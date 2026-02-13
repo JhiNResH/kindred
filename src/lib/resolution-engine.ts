@@ -5,7 +5,7 @@
  * 1. Find all rankings past their resolvesAt time
  * 2. Calculate final rankings from stake-weighted votes
  * 3. Score each voter's accuracy (distance from final rank)
- * 4. Distribute DRONE rewards proportional to accuracy × stake
+ * 4. Distribute Scarab rewards proportional to accuracy × stake
  * 5. Update user reputation scores
  * 6. Create OpinionResolution record
  * 7. Spawn next week's ranking round
@@ -23,8 +23,8 @@ function getISOWeek(date: Date): string {
   return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
 }
 
-// DRONE reward pool per ranking resolution
-const BASE_REWARD_POOL = 500; // DRONE per ranking
+// Scarab reward pool per ranking resolution
+const BASE_REWARD_POOL = 500; // Scarab per ranking
 const ACCURACY_THRESHOLD = 0.5; // Minimum accuracy to earn rewards
 const REP_GAIN_PER_ACCURATE = 5; // Rep points for accurate prediction
 const REP_LOSS_PER_INACCURATE = 2; // Rep points lost for bad prediction
@@ -40,7 +40,7 @@ interface ResolutionResult {
 }
 
 /**
- * Resolve a single ranking: score voters, distribute DRONE, update rep
+ * Resolve a single ranking: score voters, distribute Scarab, update rep
  */
 async function resolveRanking(rankingId: string): Promise<ResolutionResult> {
   const ranking = await prisma.opinionRanking.findUnique({
@@ -123,22 +123,22 @@ async function resolveRanking(rankingId: string): Promise<ResolutionResult> {
     }
   }
 
-  // Step 4: Distribute DRONE + update votes + update reputation
+  // Step 4: Distribute Scarab + update votes + update reputation
   let totalDistributed = 0;
   let votersRewarded = 0;
 
   for (const scorer of voterScores) {
-    let droneReward = 0;
+    let scarabReward = 0;
 
     if (scorer.avgAccuracy >= ACCURACY_THRESHOLD && totalWeightedScore > 0) {
-      droneReward = Math.round((scorer.weightedScore / totalWeightedScore) * BASE_REWARD_POOL);
+      scarabReward = Math.round((scorer.weightedScore / totalWeightedScore) * BASE_REWARD_POOL);
       votersRewarded++;
     }
 
-    totalDistributed += droneReward;
+    totalDistributed += scarabReward;
 
     // Update each vote with accuracy + reward
-    const rewardPerVote = scorer.votes.length > 0 ? droneReward / scorer.votes.length : 0;
+    const rewardPerVote = scorer.votes.length > 0 ? scarabReward / scorer.votes.length : 0;
     for (const vote of scorer.votes) {
       const distance = Math.abs(vote.rankedPosition - vote.finalRank);
       const accuracy = Math.max(0, 1 - distance / totalItems);
@@ -152,7 +152,7 @@ async function resolveRanking(rankingId: string): Promise<ResolutionResult> {
       });
     }
 
-    // Update user DRONE balance + reputation
+    // Update user Scarab balance + reputation
     const repChange = scorer.avgAccuracy >= ACCURACY_THRESHOLD
       ? REP_GAIN_PER_ACCURATE
       : -REP_LOSS_PER_INACCURATE;
@@ -173,7 +173,7 @@ async function resolveRanking(rankingId: string): Promise<ResolutionResult> {
       await prisma.user.update({
         where: { address: scorer.address },
         data: {
-          droneBalance: { increment: droneReward },
+          scarabBalance: { increment: scarabReward },
           reputationScore: newRep,
           feeTier,
         },
@@ -285,7 +285,7 @@ export async function resolveExpiredRankings(): Promise<ResolutionResult[]> {
     try {
       const result = await resolveRanking(ranking.id);
       results.push(result);
-      console.log(`[RESOLUTION] ✅ Resolved ${ranking.category} (${result.week}): ${result.votersRewarded} voters, ${result.totalDroneDistributed} DRONE`);
+      console.log(`[RESOLUTION] ✅ Resolved ${ranking.category} (${result.week}): ${result.votersRewarded} voters, ${result.totalDroneDistributed} Scarab`);
     } catch (error) {
       console.error(`[RESOLUTION] ❌ Failed to resolve ${ranking.category}:`, error);
     }

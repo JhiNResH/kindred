@@ -9,7 +9,7 @@ import { formatEther, formatUnits } from 'viem'
 import { PriorityBadge } from '@/components/swap/PriorityBadge'
 import { ReferralWidget } from '@/components/swap/ReferralWidget'
 
-// Fee calculation matching KindredHook.sol
+// Fee calculation matching MaatHook.sol
 const HIGH_TRUST_THRESHOLD = 850
 const MEDIUM_TRUST_THRESHOLD = 600
 const MIN_SCORE_TO_TRADE = 100
@@ -39,7 +39,7 @@ const TOKENS: Record<string, Token> = {
   },
   KINDCLAW: {
     symbol: 'KINDCLAW',
-    name: 'Kindred Arcade Token',
+    name: 'Maat Arcade Token',
     color: 'from-orange-500 to-red-500',
     icon: '🎮',
     decimals: 18,
@@ -470,7 +470,7 @@ export function SwapInterface() {
 
         {/* Contract Info */}
         <div className="mt-6 text-xs text-gray-500 text-center">
-          <div>KindredHook (Base Sepolia)</div>
+          <div>MaatHook (Base Sepolia)</div>
           <div className="font-mono mt-1">0x... (coming soon)</div>
         </div>
       </div>
